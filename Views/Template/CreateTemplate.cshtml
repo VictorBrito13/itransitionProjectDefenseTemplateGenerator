@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Create Template";
+}
+
+<div>
+    <div class="header">
+        <div class="row align-items-center">
+            <h1 class="col-9">Create a new template</h1>
+            <button type="button" class="btn btn-success col">Create Template</button>
+        </div>
+        <div id="tool-bar">
+            <h3>Add questions</h3>
+            <div class="d-flex gap-5">
+                <!--q-sl means "question single-line"-->
+                <button type="button" id="q-sl" class="btn btn-secondary">Single-line string question</button>
+                <!--q-ml means "question multiline string"-->
+                <button type="button" id="q-ml" class="btn btn-secondary">Multiline string question</button>
+                <!--q-pi means "question positive integer"-->
+                <button type="button" id="q-pi" class="btn btn-secondary">Positive integer question</button>
+                <!--q-cb means "question checkbox"-->
+                <button type="button" id="q-cb" class="btn btn-secondary">Checkbox question</button>
+                <!--q-cb means "multiple options"-->
+                <button type="button" id="q-mo" class="btn btn-secondary">Multiple options question</button>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <!--Modal to edit the selection question options-->
+    <div class="modal fade" id="editOptionsModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Edit options</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <label for="addOpts">Add options</label>
+                <textarea style="height: 100px; resize: none;" id="textAreaAddOpts" placeholder="add options separate each option with a new line (enter or return)"></textarea>
+
+                <hr>
+                <h3>Current options</h3>
+                <div id="options-list" class="border-1" style="height: 200px; overflow-y: auto;"></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn-close-options-changes">Close</button>
+              <button type="button" class="btn btn-primary" id="btn-save-options-changes">Save changes</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!--Editable template-->
+    <div class="template">
+        <!--Basic settings for the template-->
+        <div>
+            <h2 id="template-title">Template title</h2>
+            <p id="template-description">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur ratione aut enim nobis. Quae labore eius laudantium soluta autem. Dolorem quae illo commodi quas nam, voluptas nostrum sequi pariatur ducimus.
+            </p>
+        </div>
+
+        <!--Questions for the template-->
+        <form id="template-questions">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" disabled>
+            </div>
+            <div class="mt-4">
+                <label for="date">Date</label>
+                <input type="datetime-local" class="form-control" name="date" id="date" disabled>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="~/js/createTemplate/createTemplate.js" type="module"></script>
+</div>
