@@ -34,12 +34,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGxhdGVcQ3JlYXRlVGVtcGxhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/victo_w36d393/OneDrive/programming_practices/c_sharp/itransition/project_defense_templates/ItransitionTemplates/Views/User/LogIn.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxMb2dJbi5jc2h0bWw=
+[C:/Users/victo_w36d393/OneDrive/programming_practices/c_sharp/itransition/project_defense_templates/ItransitionTemplates/Views/User/LogInView.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxMb2dJblZpZXcuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/victo_w36d393/OneDrive/programming_practices/c_sharp/itransition/project_defense_templates/ItransitionTemplates/Views/User/SignUp.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxTaWduVXAuY3NodG1s
+[C:/Users/victo_w36d393/OneDrive/programming_practices/c_sharp/itransition/project_defense_templates/ItransitionTemplates/Views/User/SignUpView.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxTaWduVXBWaWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/victo_w36d393/OneDrive/programming_practices/c_sharp/itransition/project_defense_templates/ItransitionTemplates/Views/_ViewImports.cshtml]
