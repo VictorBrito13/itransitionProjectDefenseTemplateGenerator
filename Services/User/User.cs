@@ -15,6 +15,12 @@ namespace ItransitionTemplates.Services.User
             _context = context;
         }
 
+        public async Task<Models.User> Login(Models.User user) {
+            if(user == null || user.Email == null || user.Password == null) return null;
+            user.Password = HashText.GetHashString(user.Password);
+            return await _context.Users.Where(u => (u.Email == user.Email) && (u.Password == user.Password)).FirstOrDefaultAsync();
+        }
+
         public async Task<string> AddUser(Models.User user) {
 
             if(user == null) return "There is no user to add";

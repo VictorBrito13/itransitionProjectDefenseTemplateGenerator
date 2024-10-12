@@ -1,6 +1,8 @@
 using ItransitionTemplates.Models;
 using ItransitionTemplates.Services.User;
+using ItransitionTemplates.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ItransitionTemplates.Controllers;
 
@@ -16,10 +18,17 @@ public class UserController : Controller {
         return View();
     }
 
-    //[HttpPost("/user/log-in")]
-    // public IActionResult LogIn([FromBody] User user) {
-
-    // }
+    [HttpPost("/user/log-in")]
+    public async Task<IActionResult> LogIn([FromBody] Models.User user) {
+        Models.User userFound = await _UserService.Login(user);
+        if(userFound != null) {
+            Console.WriteLine(userFound.Email);
+            return RedirectToAction("Index", "Home");
+        } else {
+            ViewData["errorMsg"] = "The user was not found, ensure email and password are correct";
+            return View("LogInView");
+        }
+    }
 
     [HttpGet("/user/sign-up")]
     public IActionResult SignUpView() {
