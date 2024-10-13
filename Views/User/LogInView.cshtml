@@ -16,14 +16,16 @@
 <form action="/user/log-in" method="post">
     <div>
         <label for="email">Email</label>
-        <input type="email" name="email" id="email" class="form-control">
+        <input type="email" name="email" id="email" class="form-control" required>
     </div>
     <div>
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" class="form-control">
+        <input type="password" name="password" id="password" class="form-control" required>
     </div>
 
     <div>
         <input type="submit" value="Login">
     </div>
 </form>
+
+<a href="/user/sign-up">Create an account now</a>

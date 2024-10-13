@@ -33,12 +33,12 @@ public class UserController : Controller {
     }
 
     [HttpPost("/user/sign-up")]
-    public async Task<IActionResult> SignUp([FromBody] Models.User user) {
+    public async Task<IActionResult> SignUp([FromForm] Models.User user) {
         //Store the user in the database
         try {
             string stored = await _UserService.AddUser(user);
             //This is temporary, this action must redirect to the templates view
-            return RedirectToAction("LoginView");
+            return RedirectToAction("LogInView");
         } catch (DBException err) {
             TempData["ErrorMsg"] = err.Msg;
             return View("SignUpView");
