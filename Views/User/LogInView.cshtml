@@ -1,4 +1,19 @@
-<form action="" method="post">
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div>
+    @{
+        string errorMsg = (string) TempData["errorMsg"];
+        Console.WriteLine(errorMsg);
+
+        if(errorMsg != null) {
+            <p class="bg-danger p-4 text-light">@errorMsg</p>
+        }
+    }
+</div>
+
+<form action="/user/log-in" method="post">
     <div>
         <label for="email">Email</label>
         <input type="email" name="email" id="email" class="form-control">
