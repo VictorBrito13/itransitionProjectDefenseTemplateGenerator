@@ -12,6 +12,9 @@ MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8,0,38));
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseMySql(dbConnection, serverVersion));
 
 builder.Services.AddScoped<IUserService, ItransitionTemplates.Services.User.User>();
+
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +25,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

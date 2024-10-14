@@ -34,7 +34,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Comment", b =>
@@ -47,7 +47,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasKey("UserId", "TemplateId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Like", b =>
@@ -62,7 +62,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Question", b =>
@@ -84,7 +84,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Question", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.QuestionOption", b =>
@@ -106,7 +106,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionOption");
+                    b.ToTable("QuestionOption", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Response", b =>
@@ -137,7 +137,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Response");
+                    b.ToTable("Response", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Tag", b =>
@@ -155,7 +155,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>
@@ -188,7 +188,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Templates");
+                    b.ToTable("Templates", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Topic", b =>
@@ -208,7 +208,7 @@ namespace ItransitionTemplates.Migrations
                     b.HasIndex("TopicId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Topic");
+                    b.ToTable("Topic", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.User", b =>
@@ -239,7 +239,7 @@ namespace ItransitionTemplates.Migrations
                     b.HasIndex(new[] { "Email" }, "IDX_User_Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.UserAllowedToAnswer", b =>
@@ -254,7 +254,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("UserAllowedToAnswer");
+                    b.ToTable("UserAllowedToAnswer", (string)null);
                 });
 
             modelBuilder.Entity("Tag_has_templates", b =>

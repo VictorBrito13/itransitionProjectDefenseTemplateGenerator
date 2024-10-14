@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ItransitionTemplates.Models
 {
@@ -12,11 +13,11 @@ namespace ItransitionTemplates.Models
         public ulong TopicId { get; set; }
         [Required]
         public Topic Topic { get; set; }
-
         public ICollection<Like> Likes { get; set; }
         public ICollection<Admin> Admins { get; set; }
         public ICollection<Tag> Tags { get; set; }
         [Required]
         public ICollection<Question> Questions { get; set; }
+        public ICollection<UserAllowedToAnswer> usersAllowedToAnswer { get; set; }
     }
 }
