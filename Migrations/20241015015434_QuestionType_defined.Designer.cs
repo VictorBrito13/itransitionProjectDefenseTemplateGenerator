@@ -4,6 +4,7 @@ using ItransitionTemplates.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItransitionTemplates.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241015015434_QuestionType_defined")]
+    partial class QuestionType_defined
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,12 +80,11 @@ namespace ItransitionTemplates.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("QuestionType")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<ulong>("TemplateId")
                         .HasColumnType("bigint unsigned");
+
+                    b.Property<int>("questionType")
+                        .HasColumnType("int");
 
                     b.HasKey("QuestionId");
 
@@ -411,7 +413,8 @@ namespace ItransitionTemplates.Migrations
                 {
                     b.Navigation("QuestionOptions");
 
-                    b.Navigation("Response");
+                    b.Navigation("Response")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>

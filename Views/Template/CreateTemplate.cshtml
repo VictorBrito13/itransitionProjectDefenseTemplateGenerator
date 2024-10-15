@@ -5,11 +5,37 @@
 <div>
     <div class="header">
         <div class="row align-items-center">
-            <h1 class="col-9">Create a new template</h1>
-            <button type="button" class="btn btn-success col" id="btn-create-template">Create Template</button>
+            <h1 class="col-4">Create a new template</h1>
+
+            @{
+                string? topicsString = (string) TempData["topics"];
+                ItransitionTemplates.Models.Topic[]? topics = JsonSerializer.Deserialize<ItransitionTemplates.Models.Topic[]>(topicsString??"[]");
+                <div class="col-2">
+                    <label for="">Select a topic</label>
+                    <select class="form-select" id="setting-template-topic">
+                        @{
+                            if(topics == null || topics.Length == 0) {
+                                <option>No topics here</option>
+                            } else {
+                                foreach(var topic in topics) {
+                                    <option value="@topic.TopicId">@topic.Name</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+            }
+
+            <div class="col-2">
+                <label for="">Uplad an image</label>
+                <input type="file" accept="image/*" class="form-control" id="setting-template-image">
+            </div>
+
+            <button type="button" class="btn btn-success col-4" id="btn-create-template">Create Template</button>
         </div>
         <div id="tool-bar">
             <h3>Add questions</h3>
+    using System.Text.Json;
             <div class="d-flex gap-5">
                 <!--q-sl means "question single-line"-->
                 <button type="button" id="q-sl" class="btn btn-secondary">Single-line string question</button>
@@ -56,8 +82,8 @@
     <div class="template">
         <!--Basic settings for the template-->
         <div>
-            <h2 id="template-title" contenteditable>Template title</h2>
-            <p id="template-description" contenteditable>
+            <h2 id="setting-template-title" contenteditable>Template title</h2>
+            <p id="setting-template-description" contenteditable>
                 Template Description
             </p>
         </div>

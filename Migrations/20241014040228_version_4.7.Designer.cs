@@ -4,6 +4,7 @@ using ItransitionTemplates.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItransitionTemplates.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241014040228_version_4.7")]
+    partial class version_47
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,10 +77,6 @@ namespace ItransitionTemplates.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("QuestionId"));
 
                     b.Property<string>("QuestionString")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("QuestionType")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -411,7 +410,8 @@ namespace ItransitionTemplates.Migrations
                 {
                     b.Navigation("QuestionOptions");
 
-                    b.Navigation("Response");
+                    b.Navigation("Response")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>

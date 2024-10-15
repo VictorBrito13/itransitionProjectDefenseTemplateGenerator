@@ -3,6 +3,7 @@ import MultilineQuestion from "./Multiline-question.js";
 import PositiveIntegerQuestion from "./Positive-integer-question.js";
 import CheckboxQuestion from "./Checkbox-question.js";
 import MultipleOptionsQuestion from "./Multiple-options-question.js";
+// import { URL_BASE } from "../site.js";
 
 //Questions container
 const $questionsContainer = document.getElementById("template-questions");
@@ -61,3 +62,54 @@ $btnCloseOptionsChanges.addEventListener("click", e => {
     $textAreaAddOpts.value = "";
     $optionsList.innerHTML = null;
 })
+
+//Questions for the database
+const $btnCreateTemplate = document.getElementById("btn-create-template");
+
+$btnCreateTemplate.addEventListener("click", e => {
+
+    //Template creation
+    const templateConfig = {
+        title: document.getElementById("setting-template-title").textContent.trim(),
+        description: document.getElementById("setting-template-description").textContent.trim(),
+        image_url: document.getElementById("setting-template-image").value.trim() || "default.png",
+        topicId: document.getElementById("setting-template-topic").value.trim()
+    };
+
+    //Save the template
+    fetch(`${location.origin}/template/create`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(templateConfig)
+    })
+    .then(res => res.json())
+    //Save the questions and admins
+    .then(json => {
+
+        //Questions
+        console.log(json);
+        const questions = [];
+
+        const $questions = Array.from($questionsContainer.children).splice(2);
+
+        $questions.forEach($question => {
+            questions.push({
+                questionString: $question.querySelector("label").textContent,
+                templateId: json.templateId,
+                questionType: parseInt($question.dataset["QuestionType"])
+            });
+        });        
+
+        fetch(`${location.origin}/question/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(questions)
+        })
+        .then(res => res.json())
+        .then(json => console.log(json))
+    });
+});

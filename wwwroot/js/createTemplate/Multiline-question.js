@@ -19,6 +19,8 @@ export default class MultilineQuestion {
         $btnDeleteQuestion.className = "btn btn-danger ms-3";
         $btnDeleteQuestion.textContent = "delete the question";
         deleteElementOnClick($btnDeleteQuestion, $div);
+        //QuestionType defined for the database
+        $div.dataset["QuestionType"] = "1";
 
         $div.appendChild($label);
         $div.appendChild($btnDeleteQuestion);

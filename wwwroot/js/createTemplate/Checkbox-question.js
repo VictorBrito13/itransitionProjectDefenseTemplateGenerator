@@ -21,6 +21,8 @@ export default class CheckboxQuestion {
         $btnDeleteQuestion.className = "btn btn-danger ms-3";
         $btnDeleteQuestion.textContent = "delete the question";
         deleteElementOnClick($btnDeleteQuestion, $div);
+        //QuestionType defined for the database
+        $div.dataset["QuestionType"] = "3";
 
         $div.appendChild($label);
         $div.appendChild($input);

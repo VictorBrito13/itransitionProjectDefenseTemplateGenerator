@@ -40,6 +40,8 @@ export default class MultipleOptionsQuestion {
         $btnEditOptions.className = "btn btn-primary ms-3";
         $btnEditOptions.dataset["bsToggle"] = "modal";
         $btnEditOptions.dataset["bsTarget"] = "#editOptionsModal";
+        //QuestionType defined for the database
+        $div.dataset["QuestionType"] = "4";
 
         $btnEditOptions.addEventListener("click", e => {
             document.getElementById("btn-save-options-changes").dataset["selectId"] = this.#selectId;

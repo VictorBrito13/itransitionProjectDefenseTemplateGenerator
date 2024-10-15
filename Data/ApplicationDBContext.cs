@@ -29,6 +29,14 @@ namespace ItransitionTemplates.Data
             //Comment
             modelBuilder.Entity<Comment>().HasKey(c => new { c.UserId, c.TemplateId });
 
+            //Entity Configurations
+            modelBuilder.Entity<Question>()
+            .Property(q => q.QuestionType)
+            .HasConversion(
+                q => q.ToString(),
+                q => (QuestionType) Enum.Parse(typeof(QuestionType), q)
+            );
+
             //----Relationships
             //Topic --> Template (One to Many)
             modelBuilder.Entity<Topic>()
@@ -57,13 +65,11 @@ namespace ItransitionTemplates.Data
                 .HasOne<Template>()
                 .WithMany()
                 .HasForeignKey("TemplateId")
-                .HasConstraintName("fk_Tag_has_templates_Template_TemplateId")
                 .OnDelete(DeleteBehavior.Cascade),
                 j => j
                 .HasOne<Tag>()
                 .WithMany()
                 .HasForeignKey("TagId")
-                .HasConstraintName("fk_Tag_has_templates_Tag_TagId")
                 .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
