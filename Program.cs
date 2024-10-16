@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using ItransitionTemplates.Data;
 using ItransitionTemplates.Services.Admin;
 using ItransitionTemplates.Services.Question;
+using ItransitionTemplates.Services.QuestionOption;
 using ItransitionTemplates.Services.Template;
 using ItransitionTemplates.Services.Topic;
 using ItransitionTemplates.Services.User;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<ITopic, ItransitionTemplates.Services.Topic.Topic>();
 builder.Services.AddScoped<ITemplate, ItransitionTemplates.Services.Template.Template>();
 builder.Services.AddScoped<IQuestion, ItransitionTemplates.Services.Question.Question>();
 builder.Services.AddScoped<IAdmin, ItransitionTemplates.Services.Admin.Admin>();
+builder.Services.AddScoped<IQuestionOption, ItransitionTemplates.Services.QuestionOption.QuestionOption>();
 
 builder.Services.AddSession();
 

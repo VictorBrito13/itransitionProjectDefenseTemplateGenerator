@@ -87,27 +87,43 @@ $btnCreateTemplate.addEventListener("click", e => {
     .then(res => res.json())
     //Save the questions and admins
     .then(json => {
-
         //Questions
         console.log(json);
         const questions = [];
 
         const $questions = Array.from($questionsContainer.children).splice(2);
+        const questionOptions = [];
 
         $questions.forEach($question => {
-            questions.push({
+            const ID = Math.round(Math.random() * 10_000);
+
+            const question = {
+                questionId: ID,
                 questionString: $question.querySelector("label").textContent,
                 templateId: json.templateId,
                 questionType: parseInt($question.dataset["QuestionType"])
-            });
+            }
+
+            //This means the question is of type multioption
+            if(parseInt($question.dataset["QuestionType"]) == 4) {
+                const $select = $question.querySelector("select");
+                const $options = $select.querySelectorAll("option");
+
+                $options.forEach($option => {
+                    questionOptions.push({ option: $option.value, QuestionId: ID });
+                });
+            }
+
+            questions.push(question);
         });        
 
+        console.log(questions, questionOptions)
         fetch(`${location.origin}/question/add`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(questions)
+            body: JSON.stringify({ questions,  questionOptions })
         })
         .then(res => res.json())
         .then(json => console.log(json))
