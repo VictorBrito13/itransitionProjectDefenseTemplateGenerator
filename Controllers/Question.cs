@@ -34,8 +34,12 @@ namespace ItransitionTemplates.Controllers {
             Models.Question[] saved = await _QuestionService.AddQuestions(questionAndOptions.questions);
             Models.QuestionOption[] optionsSaved = await _QuestionOptionService.AddOptions(questionAndOptions.questionOptions);
 
-            if(saved == null || optionsSaved == null) {
-                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "Whe could not add questions" }));
+            if(saved == null) {
+                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not add questions" }));
+            }
+
+            if(optionsSaved == null) {
+                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not add options to the questions" }));
             }
 
             return Ok(JsonSerializer.Serialize(new { data= "success" }));

@@ -19,13 +19,18 @@ public class TemplateController : Controller {
         Models.Topic[] topics = await _TopicService.GetTopics();
         Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession", false);
         TempData["topics"] = JsonSerializer.Serialize(topics);
-        TempData["userId"] = userSession.UserId.ToString();
         Console.WriteLine(userSession.UserId);
         return View("CreateTemplate");
     }
 
+    //Create a template
     [HttpPost("/template/create")]
     public async Task<ActionResult<Models.Template>> createTemplate([FromBody] Models.Template template) {
+
+        if(template.TopicId <= 0) {
+            TempData["errorMsg"] = "Define a topic for this template";
+            return View("CreateTemplate");
+        }
 
         Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession", true);
 
@@ -36,8 +41,6 @@ public class TemplateController : Controller {
         if(template == null) {
             return BadRequest(JsonSerializer.Serialize(new { errorMsg = "The tamplate is null" }));
         }
-
-        Console.WriteLine(template.Questions);
 
         Models.Template saved = await _TemplateService.AddTemplate(template);
         Models.Admin admin = new Models.Admin();
@@ -50,5 +53,26 @@ public class TemplateController : Controller {
         }
 
         return Ok(saved);
+    }
+
+    //Get all the templates
+    [HttpGet("/template/templates")]
+    public async Task<string> GetTemplatesAndAdmins([FromQuery] int page, [FromQuery] int limit = 10) {
+        Models.Template[] templates = await _TemplateService.GetLatestTemplatesWithAdmins(page, limit);
+        return JsonSerializer.Serialize(new { data = templates});
+    }
+
+    //Get templates by the user Id
+    [HttpGet("/template/template/user")]
+    public async Task<string> GetTemplatesByUserId([FromQuery] int page, [FromQuery] int limit, [FromQuery] ulong userId) {
+        Console.WriteLine(userId);
+        Models.Template[] templates = await _TemplateService.GetTemplatesByUserId(page, limit, userId);
+        return JsonSerializer.Serialize(new { data = templates});
+    }
+
+    //Get templates by Id
+    [HttpGet("/template/template")]
+    public IActionResult GetTemplateView([FromQuery] ulong templateId) {
+        return View("TemplateView");
     }
 }

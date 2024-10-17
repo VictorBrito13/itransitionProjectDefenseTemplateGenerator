@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItransitionTemplates.Models
@@ -8,6 +9,7 @@ namespace ItransitionTemplates.Models
         public ulong TopicId { get; set; }
         public string Name { get; set; }
         [Required]
+        [JsonIgnore]
         public ICollection<Template> Templates { get; set; }
     }
 }

@@ -41,7 +41,9 @@ namespace ItransitionTemplates.Data
             //Topic --> Template (One to Many)
             modelBuilder.Entity<Topic>()
             .HasMany(t => t.Templates)
-            .WithOne(t => t.Topic);
+            .WithOne(t => t.Topic)
+            .HasForeignKey(t => t.TopicId)
+            .HasPrincipalKey(t => t.TopicId);
 
             //Tempalte --> Like (One to Many)
             modelBuilder.Entity<Template>()

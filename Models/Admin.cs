@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ItransitionTemplates.Models {
     public class Admin {
@@ -8,6 +9,7 @@ namespace ItransitionTemplates.Models {
         [ForeignKey("Template")]
         public ulong TemplateId { get; set; }
         public User User { get; set; }
+        [JsonIgnore]
         public Template Template { get; set; }
     }
 }

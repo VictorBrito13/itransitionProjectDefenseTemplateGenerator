@@ -7,7 +7,7 @@
     if(username != null) {
         <p class="container">Welcome back @username</p>
     } else {
-        <a href="/user/log-in" class="btn btn-primary">Log in</a>
+        <a href="/user/log-in" class="btn btn-primary mb-3 rounded-pill">Log in</a>
     }
 }
 
@@ -16,7 +16,11 @@
         <input type="search" class="w-100 rounded-pill border border-primary p-2 border-1">
     </div>
 
-    <a href="/template/create" class="btn btn-success">Create a Template</a>
+    @{
+        if(username != null) {
+            <a href="/template/create" class="btn btn-success">Create a Template</a>
+        }
+    }
 
     <div class="d-flex content-container mt-5">
         @* Tags container *@
@@ -33,42 +37,19 @@
         @* Latest / Your templates *@
         <div class="border w-50">
             <div class="d-flex justify-content-evenly my-3">
-                <h2>Latest tempaltes</h2>
-                <button type="button" class="btn btn-primary rounder-3">Your Templates</button>
+                <h2 id="templates-header">Latest Templates</h2>
+                @{
+                    if(username != null) {
+                        string? userId = (string) TempData["userId"];
+                        <input type="hidden" value="@userId" id="userId">
+                        <input type="hidden" value="@username" id="username">
+                        <button type="button" class="btn btn-primary rounder-3" id="btn-toggle-templates">Your Templates</button>
+                    }
+                }
             </div>
 
             @* Latest / Your templates container *@
-            <div class="d-flex flex-wrap justify-content-evenly w-100">
-                <figure class="text-center">
-                    <img src=""  alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src=""  alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-            </div>
+            <div class="d-flex flex-wrap justify-content-evenly w-100" id="latest-templates-container"></div>
         </div>
         @* Top 5 famous templates *@
         <div class="border w-25">
@@ -102,4 +83,6 @@
             </div>
         </div>
     </div>
+
+    <script src="~/js/index/index.js"></script>
 </div>
