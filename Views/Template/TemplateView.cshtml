@@ -1,3 +1,32 @@
 @{
     ViewData["Title"] = "Template";
 }
+
+<div>
+
+    @{
+        string errorMsg = (string) TempData["errorMsg"];
+        if(errorMsg != null) {
+            <p class="danger p-3 text-light">@errorMsg</p>
+        } else {
+            <div id="form-header">
+                <h1 id="form-title" class="text-center"></h1>
+            </div>
+            
+            <p id="form-description"></p>
+
+            <form id="form-questions">
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" disabled>
+                </div>
+                <div class="mt-4">
+                    <label for="date">Date</label>
+                    <input type="datetime-local" class="form-control" name="date" id="date" disabled>
+                </div>
+            </form>
+        }
+    }
+
+    <script src="~/js/templateView/templateView.js" type="module"></script>
+</div>

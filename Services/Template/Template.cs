@@ -38,5 +38,17 @@ namespace ItransitionTemplates.Services.Template
             .Take(limit).ToArrayAsync();
             return templates;
         }
+
+        //Get a template by its Id
+        public async Task<Models.Template> GetTemplateById(ulong templateId) {
+
+            Models.Template? template = await _context.Templates
+            .Include(t => t.Questions)
+            .ThenInclude(q => q.QuestionOptions)
+            .Where(t => t.TemplateId == templateId)
+            .FirstOrDefaultAsync();
+
+            return template;
+        }
     }
 }

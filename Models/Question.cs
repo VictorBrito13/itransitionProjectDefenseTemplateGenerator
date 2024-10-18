@@ -17,5 +17,10 @@ namespace ItransitionTemplates.Models
         public QuestionType QuestionType { get; set; }
         public ICollection<QuestionOption>? QuestionOptions { get; set; }
         public Response? Response { get; set; }
+
+        public override string ToString()
+        {
+            return $"{{ QuestionId: {QuestionId}, QuestionString: {QuestionString}, TemplateId: {TemplateId}, QuestionType: {QuestionType}, QuestionOptions: {QuestionOptions} }}";
+        }
     }
 }

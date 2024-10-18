@@ -70,9 +70,23 @@ public class TemplateController : Controller {
         return JsonSerializer.Serialize(new { data = templates});
     }
 
-    //Get templates by Id
+    //Get templates by Id this view is going to be for the forms (answers)
     [HttpGet("/template/template")]
-    public IActionResult GetTemplateView([FromQuery] ulong templateId) {
+    public IActionResult GetTemplateView() {
         return View("TemplateView");
     }
+
+    [HttpGet("/template/get-template")]
+    public async Task<string> GetTemplate([FromQuery] ulong templateId) {
+        Models.Template template = await _TemplateService.GetTemplateById(templateId);
+
+        if(template == null) {
+            return JsonSerializer.Serialize(new { errorMsg = "Resource not found"});
+        } else {
+            string templateString = JsonSerializer.Serialize(template);
+            return templateString;
+        }
+    }
+
+
 }

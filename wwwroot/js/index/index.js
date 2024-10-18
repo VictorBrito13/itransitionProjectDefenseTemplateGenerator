@@ -25,10 +25,12 @@ async function printLatestTemplates() {
         templates.data.forEach(template => {
             content +=
             `
-            <figure class="text-center col-4">
-                <img src="${template.Image_url}"  alt="${template.Title}" width="150" height="150">
-                <figcaption>Template name By <b>${template.Admins[0].User.Username}</b></figcaption>
-            </figure>
+            <a href="/template/template?templateId=${template.TemplateId}" class="col-4">
+                <figure class="text-center">
+                    <img src="${template.Image_url}"  alt="${template.Title}" width="150" height="150">
+                    <figcaption>Template name By <b>${template.Admins[0].User.Username}</b></figcaption>
+                </figure>
+            </a>
             `;
         });
         $templatesContainer.innerHTML += content
@@ -65,8 +67,8 @@ async function printUserTemplates() {
         templates.data.forEach(template => {
             content +=
             `
-            <a href="/template/template">
-                <figure class="text-center col-4">
+            <a href="/template/create?templateId=${template.TemplateId}" class="col-4">
+                <figure class="text-center">
                     <img src="${template.Image_url}" alt="${template.Title}" width="150" height="150">
                     <figcaption>Template name By <b>${username}</b></figcaption>
                 </figure>
