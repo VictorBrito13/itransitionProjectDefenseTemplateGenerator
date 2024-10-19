@@ -29,9 +29,9 @@ export default class CheckboxQuestion {
             $btnDeleteQuestion.className = "btn btn-danger ms-3";
             $btnDeleteQuestion.textContent = "delete the question";
             deleteElementOnClick($btnDeleteQuestion, $div);
-            $div.appendChild($input);
+            $div.appendChild($btnDeleteQuestion);
         }
-        $div.appendChild($btnDeleteQuestion);
+        $div.appendChild($input);
 
         return $div;
     }

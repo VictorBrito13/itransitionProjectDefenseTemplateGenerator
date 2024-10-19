@@ -3,7 +3,6 @@ import MultilineQuestion from "./Multiline-question.js";
 import PositiveIntegerQuestion from "./Positive-integer-question.js";
 import CheckboxQuestion from "./Checkbox-question.js";
 import MultipleOptionsQuestion from "./Multiple-options-question.js";
-// import { URL_BASE } from "../site.js";
 
 //Questions container
 const $questionsContainer = document.getElementById("template-questions");
@@ -36,13 +35,14 @@ const $btnCloseOptionsChanges = document.getElementById("btn-close-options-chang
 const $optionsList = document.getElementById("options-list");
 const $textAreaAddOpts = document.getElementById("textAreaAddOpts");
 
+
 $btnSaveOptionsChanges.addEventListener("click", e => {
     const $select = document.getElementById($btnSaveOptionsChanges.dataset["selectId"]);
     $select.innerHTML = "";
 
     //This variable contains all the h4 in the option list element, dont mix it up with 'option' html element
     const $previousOptions = $optionsList.querySelectorAll(".option");
-    const newOpts = $textAreaAddOpts.value.split("\n").filter(opt => opt);//this filter ensure that there is no null options
+    const newOpts = $textAreaAddOpts.value.split("\n").filter(opt => opt);//this filter ensure that there are not null options
     const prevOpts = Array.from($previousOptions).map($el => $el.textContent);
     const opts = [...prevOpts, ...newOpts]
 
@@ -66,7 +66,7 @@ $btnCloseOptionsChanges.addEventListener("click", e => {
 //Questions for the database
 const $btnCreateTemplate = document.getElementById("btn-create-template");
 
-$btnCreateTemplate.addEventListener("click", e => {
+$btnCreateTemplate.addEventListener("click", async e => {
 
     //Template creation
     const templateConfig = {
@@ -76,56 +76,58 @@ $btnCreateTemplate.addEventListener("click", e => {
         topicId: document.getElementById("setting-template-topic").value.trim()
     };
 
-    //Save the template
-    fetch(`${location.origin}/template/create`, {
+    //Petition to save the template
+    const isTemplateSaved = await fetch(`${location.origin}/template/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(templateConfig)
-    })
-    .then(res => res.json())
-    //Save the questions and admins
-    .then(json => {
-        //Questions
-        console.log(json);
-        const questions = [];
-
-        const $questions = Array.from($questionsContainer.children).splice(2);
-        const questionOptions = [];
-
-        $questions.forEach($question => {
-            const ID = Math.round(Math.random() * 10_000);
-
-            const question = {
-                questionId: ID,
-                questionString: $question.querySelector("label").textContent,
-                templateId: json.templateId,
-                questionType: parseInt($question.dataset["QuestionType"])
-            }
-
-            //This means the question is of type multioption
-            if(parseInt($question.dataset["QuestionType"]) == 4) {
-                const $select = $question.querySelector("select");
-                const $options = $select.querySelectorAll("option");
-
-                $options.forEach($option => {
-                    questionOptions.push({ option: $option.value, QuestionId: ID });
-                });
-            }
-
-            questions.push(question);
-        });        
-
-        console.log(questions, questionOptions)
-        fetch(`${location.origin}/question/add`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ questions,  questionOptions })
-        })
-        .then(res => res.json())
-        .then(json => console.log(json))
     });
+    const isTemplateSavedJSON = await isTemplateSaved.json();
+    
+    //Petition to save the questions
+    console.log(isTemplateSavedJSON);
+    
+    const questions = [];
+    const $questions = Array.from($questionsContainer.children).splice(2);
+    const questionOptions = [];
+
+    //Create the questions based on the html elements
+    //Create the options for questions if is necessary
+    $questions.forEach($question => {
+        const ID = Math.round(Math.random() * 10_000);
+
+        const question = {
+            questionId: ID,
+            questionString: $question.querySelector("label").textContent,
+            templateId: isTemplateSavedJSON.templateId,
+            questionType: parseInt($question.dataset["QuestionType"])
+        }
+
+        //This means the question is of type multioption
+        if(parseInt($question.dataset["QuestionType"]) == 4) {
+            const $select = $question.querySelector("select");
+            const $options = $select.querySelectorAll("option");
+
+            $options.forEach($option => {
+                questionOptions.push({ option: $option.value, QuestionId: ID });
+            });
+        }
+
+        questions.push(question);
+    }); 
+
+    //Petition to save the data
+    console.log(questions, questionOptions)
+    const isQuestionSaved = await fetch(`${location.origin}/question/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ questions,  questionOptions })
+    })
+    
+    const isQuestionSavedJSON = await isQuestionSaved.json()
+    console.log(isQuestionSavedJSON);
 });
