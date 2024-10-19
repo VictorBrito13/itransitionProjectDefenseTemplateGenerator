@@ -3,6 +3,7 @@ import MultilineQuestion from "./Multiline-question.js";
 import PositiveIntegerQuestion from "./Positive-integer-question.js";
 import CheckboxQuestion from "./Checkbox-question.js";
 import MultipleOptionsQuestion from "./Multiple-options-question.js";
+import updateTemplateHTML from "../UpdateTemplate/UpdateTemplate.js";
 
 //Questions container
 const $questionsContainer = document.getElementById("template-questions");
@@ -63,47 +64,26 @@ $btnCloseOptionsChanges.addEventListener("click", e => {
     $optionsList.innerHTML = null;
 })
 
+//---------------------------------------------------Update template functions
+const urlParamsSearcher = new URLSearchParams(location.search);
+
+if(urlParamsSearcher.get("templateId")) {
+    updateTemplateHTML()
+}
+
 //Questions for the database
 const $btnCreateTemplate = document.getElementById("btn-create-template");
 
 $btnCreateTemplate.addEventListener("click", async e => {
 
-    //Template creation
-    const templateConfig = {
-        title: document.getElementById("setting-template-title").textContent.trim(),
-        description: document.getElementById("setting-template-description").textContent.trim(),
-        image_url: document.getElementById("setting-template-image").value.trim() || "default.png",
-        topicId: document.getElementById("setting-template-topic").value.trim()
-    };
-
-    //Petition to save the template
-    const isTemplateSaved = await fetch(`${location.origin}/template/create`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(templateConfig)
-    });
-    const isTemplateSavedJSON = await isTemplateSaved.json();
-    
-    //Petition to save the questions
-    console.log(isTemplateSavedJSON);
-    
     const questions = [];
     const $questions = Array.from($questionsContainer.children).splice(2);
-    const questionOptions = [];
+    let questionOptions = [];
 
     //Create the questions based on the html elements
     //Create the options for questions if is necessary
     $questions.forEach($question => {
-        const ID = Math.round(Math.random() * 10_000);
-
-        const question = {
-            questionId: ID,
-            questionString: $question.querySelector("label").textContent,
-            templateId: isTemplateSavedJSON.templateId,
-            questionType: parseInt($question.dataset["QuestionType"])
-        }
+        // const ID = Math.round(Math.random() * 10_000);
 
         //This means the question is of type multioption
         if(parseInt($question.dataset["QuestionType"]) == 4) {
@@ -111,23 +91,62 @@ $btnCreateTemplate.addEventListener("click", async e => {
             const $options = $select.querySelectorAll("option");
 
             $options.forEach($option => {
-                questionOptions.push({ option: $option.value, QuestionId: ID });
+                questionOptions.push({ option: $option.value });
             });
         }
 
+        const question = {
+            //questionId: ID,
+            questionString: $question.querySelector("label").textContent,
+            // templateId: isTemplateSavedJSON.templateId,
+            questionType: parseInt($question.dataset["QuestionType"]),
+            questionOptions: [...questionOptions]
+        }
+        console.log(question);
+        
+        questionOptions = [];
+        console.log(questionOptions);
+        
         questions.push(question);
     }); 
 
-    //Petition to save the data
-    console.log(questions, questionOptions)
-    const isQuestionSaved = await fetch(`${location.origin}/question/add`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ questions,  questionOptions })
-    })
-    
-    const isQuestionSavedJSON = await isQuestionSaved.json()
-    console.log(isQuestionSavedJSON);
+    //Template creation
+    const templateConfig = {
+        title: document.getElementById("setting-template-title").textContent.trim(),
+        description: document.getElementById("setting-template-description").textContent.trim(),
+        image_url: document.getElementById("setting-template-image").value.trim() || "default.png",
+        topicId: document.getElementById("setting-template-topic").value.trim(),
+        isPublic: parseInt(document.getElementById("template-visibility").value) === 1,
+        questions
+    };
+
+    //Create or update a new teplate
+    if(urlParamsSearcher.get("templateId")) {
+        //Petition to update a template
+        const isTemplateUpdated = await fetch(`${location.origin}/template/update?templateId=${urlParamsSearcher.get("templateId")}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(templateConfig)
+        });
+        const isTemplateUpdatedJSON = await isTemplateUpdated.json();
+        console.log("Trying to update a template.....");
+        console.log(isTemplateUpdatedJSON);
+
+    } else {
+        //Petition to save the template
+        const isTemplateSaved = await fetch(`${location.origin}/template/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(templateConfig)
+        });
+        const isTemplateSavedJSON = await isTemplateSaved.json();
+        
+        console.log("Trying to create a template.....");
+        
+        console.log(isTemplateSavedJSON);
+    }
 });

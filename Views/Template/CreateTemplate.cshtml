@@ -51,6 +51,29 @@
         <hr>
     </div>
 
+    @* ---------------------- Modals------------------------- *@
+
+    <!-- Modal to add users to admins or allow users to answer the tempalte -->
+    <div class="modal fade" id="admin_allowed-users" data-bs-backdrop="static" tabindex="-1" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Add a new users to </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <input type="search" id="form-control-search-user">
+            </div>
+            <div class="modal-body">
+                <h3>Users: </h3>
+                <div id="users-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <!--Modal to edit the selection question options-->
     <div class="modal fade" id="editOptionsModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog">
@@ -82,6 +105,23 @@
         <!--Basic settings for the template-->
         <div>
             <h2 id="setting-template-title" contenteditable>Template title</h2>
+            <div>
+                <label for="template-visibility">Template visibility</label>
+                <div>
+                    @* Select to change the template visibility *@
+                    <select id="template-visibility" class="form-select">
+                        <option value="1">Public</option>
+                        <option value="0">Private</option>
+                    </select>
+                    @* Button to add a new admin *@
+                    <button type="button" class="btn btn-primary" id="btn-add-admin" data-bs-toggle="modal" data-bs-target="#admin_allowed-users">
+                        Add an admin
+                    </button>
+                    <button type="button" class="btn btn-info" id="btn-allow-user" data-bs-toggle="modal" data-bs-target="#admin_allowed-users">
+                        Allow users to answer this tempalte
+                    </button>
+                </div>
+            </div>
             <p id="setting-template-description" contenteditable>
                 Template Description
             </p>

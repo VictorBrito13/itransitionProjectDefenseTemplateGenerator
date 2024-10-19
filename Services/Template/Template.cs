@@ -50,5 +50,28 @@ namespace ItransitionTemplates.Services.Template
 
             return template;
         }
+
+        //Update the template
+        public async Task<int> UpdateTemplate(ulong templateId, Models.Template template) {
+            Models.Template found = await GetTemplateById(templateId);
+
+            if(found == null) return 404;
+
+            //Properties updates
+            found.Title = template.Title;
+            found.Description = template.Description;
+            found.TopicId = template.TopicId;
+            // found.Admins = template.Admins;
+            found.Questions = template.Questions;
+            found.Image_url = template.Image_url;
+
+            int n = _context.SaveChanges();
+
+            if(n >= 1) {
+                return 200;
+            }
+
+            return 500;
+        }
     }
 }

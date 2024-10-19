@@ -26,6 +26,7 @@ public class TemplateController : Controller {
     //Create a template
     [HttpPost("/template/create")]
     public async Task<ActionResult<Models.Template>> createTemplate([FromBody] Models.Template template) {
+        Console.WriteLine(template);
 
         if(template.TopicId <= 0) {
             TempData["errorMsg"] = "Define a topic for this template";
@@ -48,14 +49,14 @@ public class TemplateController : Controller {
         admin.TemplateId = saved.TemplateId;
         Models.Admin adminSaved = await _AdminService.AddAdmin(admin);
 
-        if(saved == null) {
+        if(saved == null || adminSaved == null) {
             return BadRequest(JsonSerializer.Serialize(new { errorMsg = "An error has ocurred, try again" }));
         }
 
         return Ok(saved);
     }
 
-    //Get all the templates
+    //Get all the templates (from the newest to the oldest ones)
     [HttpGet("/template/templates")]
     public async Task<string> GetTemplatesAndAdmins([FromQuery] int page, [FromQuery] int limit = 10) {
         Models.Template[] templates = await _TemplateService.GetLatestTemplatesWithAdmins(page, limit);
@@ -70,12 +71,13 @@ public class TemplateController : Controller {
         return JsonSerializer.Serialize(new { data = templates});
     }
 
-    //Get templates by Id this view is going to be for the forms (answers)
+    //Get template by Id (just the view), this view is going to be for the forms (answers)
     [HttpGet("/template/template")]
     public IActionResult GetTemplateView() {
         return View("TemplateView");
     }
 
+    //Get template by ID
     [HttpGet("/template/get-template")]
     public async Task<string> GetTemplate([FromQuery] ulong templateId) {
         Models.Template template = await _TemplateService.GetTemplateById(templateId);
@@ -86,6 +88,20 @@ public class TemplateController : Controller {
             string templateString = JsonSerializer.Serialize(template);
             return templateString;
         }
+    }
+
+    //Update a template
+    [HttpPut("/template/update")]
+    public async Task<ActionResult> UpdateTemplate([FromQuery] ulong templateId, [FromBody] Models.Template template) {
+        int result = await _TemplateService.UpdateTemplate(templateId, template);
+
+        if(result == 404) {
+            return NotFound(JsonSerializer.Serialize(new {errorMsg = "The tamplate was not found"}));
+        } else if(result == 500) {
+            return BadRequest(JsonSerializer.Serialize(new {errorMsg = "This template could not be updated"}));
+        }
+
+        return Ok(JsonSerializer.Serialize(new {data = "Template updated successfully"}));
     }
 
 
