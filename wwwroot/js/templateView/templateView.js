@@ -1,10 +1,12 @@
-import { buildForm } from "../utils/buildForm.js";
+import { buildForm, getTemplate } from "../utils/buildForm.js";
 
 const $form = document.getElementById("form-questions");
 const $formTitle = document.getElementById("form-title");
 const $formDescription = document.getElementById("form-description");
 
-buildForm($form, (json) => {
-    $formTitle.textContent = json.Title;
-    $formDescription.textContent = json.Description;
-}, false);
+const template = await getTemplate();
+
+buildForm($form, template, false);
+
+$formTitle.textContent = template.Title;
+$formDescription.textContent = template.Description;

@@ -53,4 +53,20 @@ public class UserController : Controller {
             return View("SignUpView");
         }
     }
+
+    [HttpGet("/user/get-by-username")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string username) {
+        try {
+            Models.User user = await _UserService.GetUserByUsername(username);
+            Console.WriteLine(user.Email);
+
+            if(user != null) {
+                return Ok(JsonSerializer.Serialize(new { user = user }));
+            }
+
+            return NotFound(JsonSerializer.Serialize(new { errorMsg = "User not found" }));
+        } catch (Exception err) {
+            return NotFound(JsonSerializer.Serialize(new { errorMsg = "User not found" }));
+        }
+    }
 }

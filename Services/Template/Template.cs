@@ -45,6 +45,9 @@ namespace ItransitionTemplates.Services.Template
             Models.Template? template = await _context.Templates
             .Include(t => t.Questions)
             .ThenInclude(q => q.QuestionOptions)
+            .Include(t => t.Admins)
+            .ThenInclude(a => a.User)
+            .Include(t => t.usersAllowedToAnswer)
             .Where(t => t.TemplateId == templateId)
             .FirstOrDefaultAsync();
 
@@ -61,7 +64,7 @@ namespace ItransitionTemplates.Services.Template
             found.Title = template.Title;
             found.Description = template.Description;
             found.TopicId = template.TopicId;
-            // found.Admins = template.Admins;
+            found.Admins = template.Admins;
             found.Questions = template.Questions;
             found.Image_url = template.Image_url;
 

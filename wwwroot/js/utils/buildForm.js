@@ -13,18 +13,13 @@ async function getTemplate() {
     return template;
 }
 
-async function buildForm($parentElement, cb, editionMode = false) {
-    const json = await getTemplate();
-
-    if(cb) cb(json);
+async function buildForm($parentElement, json, editionMode = false) {
 
     if(json.errorMsg) {
         $parentElement.innerHTML = "<h1>This form does not exists</h1>";
     } else {
         //Print the questions
         const questions = json.Questions;
-        console.log(editionMode);
-
         questions.forEach(question => {
             let formControl = null;
 

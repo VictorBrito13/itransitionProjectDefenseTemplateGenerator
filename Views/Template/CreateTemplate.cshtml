@@ -54,21 +54,24 @@
     @* ---------------------- Modals------------------------- *@
 
     <!-- Modal to add users to admins or allow users to answer the tempalte -->
-    <div class="modal fade" id="admin_allowed-users" data-bs-backdrop="static" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="admin_allowed-users" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Add a new users to </h1>
+                <h1 class="modal-title fs-3" id="modal-admins-users-allowed-title">Add a new users to </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <input type="search" id="form-control-search-user">
+                <div class="d-flex flex-column gap-3">
+                    <input type="search" class="form-control" id="form-control-search-user">
+                    <div id="search-result"></div>
+                </div>
             </div>
             <div class="modal-body">
-                <h3>Users: </h3>
+                <h3 class="fs-5">Users: </h3>
                 <div id="users-container"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="btn-save-user">Save changes</button>
             </div>
             </div>
         </div>
@@ -100,7 +103,7 @@
         </div>
     </div>
 
-    <!--Editable template-->
+    <!---------------------------------------------------------------Editable template-->
     <div class="template">
         <!--Basic settings for the template-->
         <div>
@@ -109,15 +112,15 @@
                 <label for="template-visibility">Template visibility</label>
                 <div>
                     @* Select to change the template visibility *@
-                    <select id="template-visibility" class="form-select">
+                    <select id="template-visibility-switch" class="form-select">
                         <option value="1">Public</option>
                         <option value="0">Private</option>
                     </select>
                     @* Button to add a new admin *@
-                    <button type="button" class="btn btn-primary" id="btn-add-admin" data-bs-toggle="modal" data-bs-target="#admin_allowed-users">
+                    <button type="button" class="btn btn-primary" id="btn-add-admin" data-bs-toggle="modal" data-bs-target="#admin_allowed-users" data-bs-title="Add an admin">
                         Add an admin
                     </button>
-                    <button type="button" class="btn btn-info" id="btn-allow-user" data-bs-toggle="modal" data-bs-target="#admin_allowed-users">
+                    <button type="button" style="display: none;" class="btn btn-info" id="btn-add-allowed-users" data-bs-toggle="modal" data-bs-target="#admin_allowed-users" data-bs-title="Allow users to answer the form">
                         Allow users to answer this tempalte
                     </button>
                 </div>
@@ -127,7 +130,7 @@
             </p>
         </div>
 
-        <!--Questions for the template-->
+        <!-------------------------------------------------------------Questions for the template-->
         <form id="template-questions">
             <div>
                 <label for="email">Email</label>

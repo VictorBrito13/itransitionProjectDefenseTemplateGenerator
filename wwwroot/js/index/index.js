@@ -83,7 +83,7 @@ async function printUserTemplates() {
     }
 }
 
-//Button to toggle the templates
+//Button to toggle the templates between latest templates and the user's templates
 try {
     $btnToggleTemplates.addEventListener("click", e => {
         $templatesContainer.innerHTML = null;

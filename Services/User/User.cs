@@ -52,5 +52,20 @@ namespace ItransitionTemplates.Services.User
                 throw new DBException($"Unknown Error", DBExceptionType.UnknownException);
             }
         }
+
+        public async Task<Models.User> GetUserByUsername(string username) {
+            try {
+                Models.User user = await _context.Users.FromSqlRaw("SELECT userId, username, email, password FROM users WHERE MATCH(username, email) AGAINST ({0} IN NATURAL LANGUAGE MODE)", username)
+                .FirstAsync();
+
+                if(user == null) return user;
+
+                return user;
+            } catch(Exception err) {
+                Console.WriteLine(err);
+                return null;
+            }
+
+        }
     }
 }
