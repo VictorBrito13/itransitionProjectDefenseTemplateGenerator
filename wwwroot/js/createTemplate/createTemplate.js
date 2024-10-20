@@ -14,10 +14,11 @@ let usersAllowedToAnswer = []
 
 if(urlParamsSearcher.get("templateId")) {
     const template = await getTemplate();
+    console.log(template);
+    
     admins = template.Admins || [];
     usersAllowedToAnswer = template.usersAllowedToAnswer || [];
     const $btnSaveUser = document.getElementById("btn-save-user");
-    console.log(template);
 
     const $pageTitle = document.getElementById("page-title");
     const $btnCreateTemplate = document.getElementById("btn-create-template");
@@ -25,21 +26,6 @@ if(urlParamsSearcher.get("templateId")) {
     $btnCreateTemplate.textContent = "Edit template";
     const $formTemplate = document.getElementById("template-questions");
     const $usersContainer = document.getElementById("users-container");
-
-    $btnSaveUser.addEventListener("click", e => {
-        const $users = $usersContainer.querySelectorAll("p");
-
-        admins = []
-        $users.forEach($user => {
-            admins.push(
-            {
-                UserId: $user.dataset["userid"],
-                TemplateId : template.TemplateId,
-            });
-        });
-
-        console.log(admins);
-    });
 
     buildForm($formTemplate, template, true);
 
@@ -61,6 +47,48 @@ if(urlParamsSearcher.get("templateId")) {
     //Change the modal's title for add admins or users that are able to answer the form
     const $modal_Add_Admins_Or_Users_Allowed_To_Answer = document.getElementById("admin_allowed-users");
 
+    $btnSaveUser.addEventListener("click", e => {
+        const $users = $usersContainer.querySelectorAll("p");
+
+        if($modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] === "admin") {
+            admins = []
+            $users.forEach($user => {
+                admins.push(
+                {
+                    UserId: parseInt($user.dataset["userid"]),
+                    TemplateId : template.TemplateId,
+                    //This property is removed before the template get sended
+                    User: {
+                        UserId: $user.dataset["userid"],
+                        Username: $user.dataset["username"],
+                        Password: $user.dataset["passw"]
+                    }
+                });
+            });
+    
+            console.log("Admins");
+            console.log(admins);
+        } else if($modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] === "allowUser") {
+            usersAllowedToAnswer = []
+            $users.forEach($user => {
+                usersAllowedToAnswer.push(
+                {
+                    UserId: parseInt($user.dataset["userid"]),
+                    TemplateId : template.TemplateId,
+                    //This property is removed before the template get sended
+                    User: {
+                        UserId: $user.dataset["userid"],
+                        Username: $user.dataset["username"],
+                        Password: $user.dataset["passw"]
+                    }
+                });
+            });
+
+            console.log("Users allowed to answer");
+            console.log(usersAllowedToAnswer);
+        }
+    });
+
     $modal_Add_Admins_Or_Users_Allowed_To_Answer.addEventListener("show.bs.modal", e => {
         $usersContainer.innerHTML = null;
         const $trigger = e.relatedTarget;
@@ -68,23 +96,21 @@ if(urlParamsSearcher.get("templateId")) {
 
         //Insert the admins or user allowed to answer the form
         if($trigger.id === "btn-add-admin") {
-            console.log("admin");
+            $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "admin";
             let adminsHmtl = ``;
             admins.forEach(admin => {
                 const { User } = admin;
-                adminsHmtl += `<p data-userid="${User.UserId}">${User.Email}</p>`;
-                console.log(User);
+                adminsHmtl += `<p data-userid="${User.UserId}" data-passw="${User.Password}" data-username="${User.Username}">${User.Email}</p>`;
             });
             $usersContainer.innerHTML = adminsHmtl;
         } else if($trigger.id === "btn-add-allowed-users") {
-            console.log("users");
-            let adminsHmtl = ``;
+            $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "allowUser";
+            let usersAllowedHmtl = ``;
             usersAllowedToAnswer.forEach(userAllowedToAnswer => {
                 const { User } = userAllowedToAnswer;
-                adminsHmtl += `<p data-userid="${User.UserId}">${User.Email}</p>`;
-                console.log(User);
+                usersAllowedHmtl += `<p data-userid="${User.UserId}" data-passw="${User.Password}" data-username="${User.Username}">${User.Email}</p>`;
             });
-            $usersContainer.innerHTML = adminsHmtl;
+            $usersContainer.innerHTML = usersAllowedHmtl;
         }
 
         document.getElementById("modal-admins-users-allowed-title").textContent = title
@@ -105,7 +131,6 @@ if(urlParamsSearcher.get("templateId")) {
             $p.textContent = json.errorMsg;
             $searchResult.appendChild($p);
         } else {
-            console.log(json);
             const $btn = document.createElement("button");
             $btn.textContent = json.user.Email;
             $btn.className = "btn btn-primary";
@@ -123,7 +148,6 @@ if(urlParamsSearcher.get("templateId")) {
     const throttleFunc = throttle(getUserByEmail, 200);
 
     $formControlSearchUser.addEventListener("input", e => {
-        console.log($formControlSearchUser.value);
         throttleFunc($formControlSearchUser.value);
     });
 }
@@ -169,9 +193,11 @@ $btnCreateTemplate.addEventListener("click", async e => {
         topicId: document.getElementById("setting-template-topic").value.trim(),
         isPublic: parseInt(document.getElementById("template-visibility-switch").value) === 1,
         questions,
-        admins,
-        usersAllowedToAnswer
+        admins: admins.map(a => { return { UserId: a.UserId, TemplateId: a.TemplateId} }),
+        usersAllowedToAnswer: usersAllowedToAnswer.map(a => { return { UserId: a.UserId, TemplateId: a.TemplateId} })
     };
+
+    console.log(templateConfig);
 
     //Create or update a new teplate
     if(urlParamsSearcher.get("templateId")) {
@@ -185,7 +211,6 @@ $btnCreateTemplate.addEventListener("click", async e => {
         });
         const isTemplateUpdatedJSON = await isTemplateUpdated.json();
         console.log(isTemplateUpdatedJSON);
-        
 
     } else {
         //Petition to save the template

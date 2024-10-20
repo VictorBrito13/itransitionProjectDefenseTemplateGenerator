@@ -48,6 +48,7 @@ namespace ItransitionTemplates.Services.Template
             .Include(t => t.Admins)
             .ThenInclude(a => a.User)
             .Include(t => t.usersAllowedToAnswer)
+            .ThenInclude(ua => ua.User)
             .Where(t => t.TemplateId == templateId)
             .FirstOrDefaultAsync();
 
@@ -65,6 +66,8 @@ namespace ItransitionTemplates.Services.Template
             found.Description = template.Description;
             found.TopicId = template.TopicId;
             found.Admins = template.Admins;
+            found.usersAllowedToAnswer = template.usersAllowedToAnswer;
+            found.IsPublic = template.IsPublic;
             found.Questions = template.Questions;
             found.Image_url = template.Image_url;
 
