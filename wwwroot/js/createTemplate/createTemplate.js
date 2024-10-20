@@ -3,6 +3,8 @@ import { getTemplate } from "../utils/buildForm.js";
 import { buildForm } from "../utils/buildForm.js";
 import insertQuestions from "../utils/createTemplate/insertQuestions.js";
 import saveSelectOptions from "../utils/createTemplate/saveSelectOptions.js";
+import toggleVisibilityTemplate from "../utils/createTemplate/visibilitySwitcher.js";
+import deleteElementOnClick from "../utils/deleteElement.js";
 
 insertQuestions();
 saveSelectOptions();
@@ -13,11 +15,13 @@ let admins = [];
 let usersAllowedToAnswer = []
 
 if(urlParamsSearcher.get("templateId")) {
+    //Make a petition to get the template
     const template = await getTemplate();
     console.log(template);
     
     admins = template.Admins || [];
     usersAllowedToAnswer = template.usersAllowedToAnswer || [];
+    //When it gets clicked it save the admins or users allowed to answer in the respective array
     const $btnSaveUser = document.getElementById("btn-save-user");
 
     const $pageTitle = document.getElementById("page-title");
@@ -27,22 +31,11 @@ if(urlParamsSearcher.get("templateId")) {
     const $formTemplate = document.getElementById("template-questions");
     const $usersContainer = document.getElementById("users-container");
 
+    //Print all the users in the form
     buildForm($formTemplate, template, true);
 
-    //template's visibility switcher
-    const $visbilitySelect = document.getElementById("template-visibility-switch");
-    const $btnAddAllowedUsers = document.getElementById("btn-add-allowed-users");
-
-    $visbilitySelect.addEventListener("change", e => {
-        const currentState = parseInt($visbilitySelect.value);
-
-        //It means it is public
-        if(currentState === 1) {
-            $btnAddAllowedUsers.style.display = "none";        
-        } else {
-            $btnAddAllowedUsers.style.display = "inline-block";
-        }
-    });
+    //template's visibility switcher    
+    toggleVisibilityTemplate(template.IsPublic);
 
     //Change the modal's title for add admins or users that are able to answer the form
     const $modal_Add_Admins_Or_Users_Allowed_To_Answer = document.getElementById("admin_allowed-users");
@@ -60,14 +53,12 @@ if(urlParamsSearcher.get("templateId")) {
                     //This property is removed before the template get sended
                     User: {
                         UserId: $user.dataset["userid"],
-                        Username: $user.dataset["username"],
-                        Password: $user.dataset["passw"]
+                        Username: $user.dataset["username"]
                     }
                 });
             });
-    
-            console.log("Admins");
             console.log(admins);
+            
         } else if($modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] === "allowUser") {
             usersAllowedToAnswer = []
             $users.forEach($user => {
@@ -78,16 +69,31 @@ if(urlParamsSearcher.get("templateId")) {
                     //This property is removed before the template get sended
                     User: {
                         UserId: $user.dataset["userid"],
-                        Username: $user.dataset["username"],
-                        Password: $user.dataset["passw"]
+                        Username: $user.dataset["username"]
                     }
                 });
             });
-
-            console.log("Users allowed to answer");
             console.log(usersAllowedToAnswer);
+            
         }
     });
+
+    function generateUserHmtl(user) {
+        const $p = document.createElement("p");
+        $p.textContent = user.Email;
+        $p.dataset["userid"] = user.UserId;
+        $p.dataset["username"] = user.Username;
+        const $btnDelete = document.createElement("button");
+        $btnDelete.type = "button";
+        $btnDelete.textContent = "Delete"
+        $btnDelete.className = "btn btn-danger";
+
+        deleteElementOnClick($btnDelete, $p);
+
+        $p.appendChild($btnDelete);
+
+        return $p;
+    }
 
     $modal_Add_Admins_Or_Users_Allowed_To_Answer.addEventListener("show.bs.modal", e => {
         $usersContainer.innerHTML = null;
@@ -97,20 +103,16 @@ if(urlParamsSearcher.get("templateId")) {
         //Insert the admins or user allowed to answer the form
         if($trigger.id === "btn-add-admin") {
             $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "admin";
-            let adminsHmtl = ``;
             admins.forEach(admin => {
                 const { User } = admin;
-                adminsHmtl += `<p data-userid="${User.UserId}" data-passw="${User.Password}" data-username="${User.Username}">${User.Email}</p>`;
+                $usersContainer.appendChild(generateUserHmtl(User));
             });
-            $usersContainer.innerHTML = adminsHmtl;
         } else if($trigger.id === "btn-add-allowed-users") {
             $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "allowUser";
-            let usersAllowedHmtl = ``;
             usersAllowedToAnswer.forEach(userAllowedToAnswer => {
                 const { User } = userAllowedToAnswer;
-                usersAllowedHmtl += `<p data-userid="${User.UserId}" data-passw="${User.Password}" data-username="${User.Username}">${User.Email}</p>`;
+                $usersContainer.appendChild(generateUserHmtl(User));
             });
-            $usersContainer.innerHTML = usersAllowedHmtl;
         }
 
         document.getElementById("modal-admins-users-allowed-title").textContent = title

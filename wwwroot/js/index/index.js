@@ -28,7 +28,7 @@ async function printLatestTemplates() {
             <a href="/template/template?templateId=${template.TemplateId}" class="col-4">
                 <figure class="text-center">
                     <img src="${template.Image_url}"  alt="${template.Title}" width="150" height="150">
-                    <figcaption>Template name By <b>${template.Admins[0].User.Username}</b></figcaption>
+                    <figcaption>Template name By <b>${template.Admins[0]?.User.Username}</b></figcaption>
                 </figure>
             </a>
             `;
