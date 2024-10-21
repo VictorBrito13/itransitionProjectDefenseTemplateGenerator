@@ -216,15 +216,30 @@ $btnCreateTemplate.addEventListener("click", async e => {
 
     } else {
         //Petition to save the template
-        const isTemplateSaved = await fetch(`${location.origin}/template/create`, {
+        const templateSaved = await fetch(`${location.origin}/template/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(templateConfig)
         });
-        const isTemplateSavedJSON = await isTemplateSaved.json();
+        const templateSavedJSON = await templateSaved.json();
         
-        console.log(isTemplateSavedJSON);
+        console.log(templateSavedJSON);
+
+        const $serverMsgs = document.getElementById("server-responses");
+        const $p = document.createElement("p");
+
+        if(templateSavedJSON.errorMsg) {
+            $p.className = "bg-danger text-light p-3";
+            $p.textContent = templateSavedJSON.errorMsg;
+        } else {
+            $p.className = "bg-success text-light p-3";
+            $p.innerHTML =
+            `Your template has been saved succesfully you can update your template
+            <a class="btn btn-light" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">Here</a>`;
+        }
+
+        $serverMsgs.appendChild($p);
     }
 });

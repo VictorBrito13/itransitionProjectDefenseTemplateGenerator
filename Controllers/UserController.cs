@@ -55,7 +55,7 @@ public class UserController : Controller {
     }
 
     [HttpGet("/user/get-by-username")]
-    public async Task<IActionResult> GetUserByEmail([FromQuery] string username) {
+    public async Task<IActionResult> GetUserByUsername([FromQuery] string username) {
         try {
             Models.User user = await _UserService.GetUserByUsername(username);
             Console.WriteLine(user.Email);
@@ -68,5 +68,11 @@ public class UserController : Controller {
         } catch (Exception err) {
             return NotFound(JsonSerializer.Serialize(new { errorMsg = "User not found" }));
         }
+    }
+
+    [HttpGet("/user/log-out")]
+    public IActionResult LogOut() {
+        Session.Clear(HttpContext);
+        return RedirectToAction("LogInView");
     }
 }

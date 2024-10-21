@@ -5,7 +5,11 @@
 @{
     string username = (string) TempData["username"];
     if(username != null) {
-        <p class="container">Welcome back @username</p>
+        <div class="d-flex justify-content-evenly mb-3">
+            <p class="container col-8">Welcome back <b>@username</b></p>
+            <a href="/user/log-out" class="btn btn-primary col-3">Log out</a>
+        </div>
+        
     } else {
         <a href="/user/log-in" class="btn btn-primary mb-3 rounded-pill">Log in</a>
     }

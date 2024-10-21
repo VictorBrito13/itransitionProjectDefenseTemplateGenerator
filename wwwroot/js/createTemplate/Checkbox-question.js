@@ -1,9 +1,10 @@
 import deleteElementOnClick from "../utils/deleteElement.js";
 
 export default class CheckboxQuestion {
-    constructor(label, editionMode) {
+    constructor(label, editionMode, questionId) {
         this.label = label ?? "Add a label";
         this.editionMode = editionMode ?? true;
+        this.questionId = questionId;
     }
 
     getQuestionHTML() {
@@ -14,6 +15,7 @@ export default class CheckboxQuestion {
         
         $div.className = "mt-4 d-flex gap-3 align-items-center";
         $input.type = "checkbox";
+        $input.dataset["questionId"] = this.questionId;
         $input.className = "form-check-input";
         $label.className = "form-check-label";
         $label.textContent = this.label;

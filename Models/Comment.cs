@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ItransitionTemplates.Models
 {
@@ -8,6 +9,10 @@ namespace ItransitionTemplates.Models
         [ForeignKey("Template")]
         public ulong TemplateId { get; set; }
 
+        public string CommentString { get; set; }
+
         public User User { get; set; }
+        [JsonIgnore]
+        public Template Template { get; set; }
     }
 }

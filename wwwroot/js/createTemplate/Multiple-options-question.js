@@ -3,11 +3,12 @@ import deleteElementOnClick from "../utils/deleteElement.js";
 export default class MultipleOptionsQuestion {
     #selectId;
 
-    constructor(label, opts, editionMode) {
+    constructor(label, opts, editionMode, questionId) {
         this.label = label ?? "Add a label";
         this.opts = opts ?? [];
         this.editionMode = editionMode ?? true;
         this.#selectId = crypto.randomUUID();
+        this.questionId = questionId;
     }
 
     getId() {
@@ -30,6 +31,7 @@ export default class MultipleOptionsQuestion {
 
         $div.className = "mt-4";
         $select.className = "form-select";
+        $select.dataset["questionId"] = this.questionId;
         $select.id = this.#selectId;
         //label configuration
         $label.textContent = this.label;

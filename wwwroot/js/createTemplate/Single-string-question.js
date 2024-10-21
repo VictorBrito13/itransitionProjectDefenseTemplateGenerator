@@ -1,9 +1,10 @@
 import deleteElementOnClick from "../utils/deleteElement.js";
 
 export default class SingleLineQuestion {
-    constructor(label, editionMode) {
+    constructor(label, editionMode, questionId) {
         this.label = label || "Add a label";
         this.editionMode = editionMode ?? true
+        this.questionId = questionId;
     }
 
     getQuestionHTML() {
@@ -14,6 +15,7 @@ export default class SingleLineQuestion {
 
         $div.className = "mt-4";
         $input.className = "form-control";
+        $input.dataset["questionId"] = this.questionId;
         $label.textContent = this.label;
 
         //QuestionType defined for the database

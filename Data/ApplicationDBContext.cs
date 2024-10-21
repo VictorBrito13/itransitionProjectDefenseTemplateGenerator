@@ -28,6 +28,8 @@ namespace ItransitionTemplates.Data
             modelBuilder.Entity<UserAllowedToAnswer>().HasKey(u => new { u.UserId, u.TemplateId });
             //Comment
             modelBuilder.Entity<Comment>().HasKey(c => new { c.UserId, c.TemplateId });
+            // //Response
+            // modelBuilder.Entity<Response>().HasKey(r => new { r.UserId, r.QuestionId });
 
             //Entity Configurations
             modelBuilder.Entity<Question>()

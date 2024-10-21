@@ -22,5 +22,9 @@ namespace ItransitionTemplates.Utils
             Console.WriteLine(o);
             return o;
         }
+
+        public static void Clear(HttpContext context) {
+            context.Session.Clear();
+        }
     }
 }

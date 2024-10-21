@@ -1,9 +1,10 @@
 import deleteElementOnClick from "../utils/deleteElement.js";
 
 export default class PositiveIntegerQuestion {
-    constructor(label, editionMode) {
+    constructor(label, editionMode, questionId) {
         this.label = label ?? "Add a label";
         this.editionMode = editionMode ?? true;
+        this.questionId = questionId;
     }
 
     getQuestionHTML() {
@@ -14,7 +15,8 @@ export default class PositiveIntegerQuestion {
 
         $div.className = "mt-4";
         $input.className = "form-control";
-        $input.type = "number"
+        $input.type = "number";
+        $input.dataset["questionId"] = this.questionId;
         $input.min = 0;
         $label.textContent = this.label;
 

@@ -25,7 +25,7 @@ public class TemplateController : Controller {
 
     //Create a template
     [HttpPost("/template/create")]
-    public async Task<ActionResult<Models.Template>> createTemplate([FromBody] Models.Template template) {
+    public async Task<ActionResult<Models.Template>> CreateTemplate([FromBody] Models.Template template) {
         Console.WriteLine(template);
 
         if(template.TopicId <= 0) {
@@ -74,6 +74,9 @@ public class TemplateController : Controller {
     //Get template by Id (just the view), this view is going to be for the forms (answers)
     [HttpGet("/template/template")]
     public IActionResult GetTemplateView() {
+        Models.User user = Session.GetObject<Models.User>(HttpContext, "userSession", false);
+        TempData["userEmail"] = user.Email;
+        TempData["userId"] = user.UserId;
         return View("TemplateView");
     }
 

@@ -3,6 +3,7 @@ using ItransitionTemplates.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItransitionTemplates.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241020231705_comment_table_update")]
+    partial class comment_table_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Comment", b =>
@@ -52,7 +55,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Like", b =>
@@ -67,7 +70,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Question", b =>
@@ -93,7 +96,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.QuestionOption", b =>
@@ -115,7 +118,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionOptions", (string)null);
+                    b.ToTable("QuestionOptions");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Response", b =>
@@ -147,7 +150,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Responses", (string)null);
+                    b.ToTable("Responses");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Tag", b =>
@@ -165,7 +168,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasKey("TagId");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>
@@ -198,7 +201,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Templates", (string)null);
+                    b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Topic", b =>
@@ -218,7 +221,7 @@ namespace ItransitionTemplates.Migrations
                     b.HasIndex("TopicId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Topics", (string)null);
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.User", b =>
@@ -249,7 +252,7 @@ namespace ItransitionTemplates.Migrations
                     b.HasIndex(new[] { "Email" }, "IDX_User_Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.UserAllowedToAnswer", b =>
@@ -264,7 +267,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasIndex("TemplateId");
 
-                    b.ToTable("UserAllowedToAnswers", (string)null);
+                    b.ToTable("UserAllowedToAnswers");
                 });
 
             modelBuilder.Entity("Tag_has_templates", b =>

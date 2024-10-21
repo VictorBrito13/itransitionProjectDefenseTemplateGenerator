@@ -10,3 +10,12 @@ buildForm($form, template, false);
 
 $formTitle.textContent = template.Title;
 $formDescription.textContent = template.Description;
+
+//Default value for the date intput
+const $formControlDate = document.getElementById("form-date");
+const now = new Date();
+console.log(now.toISOString().slice(0, 19));
+
+const formattedDateTime = now.toISOString().slice(0, 19);
+
+$formControlDate.value = formattedDateTime;
