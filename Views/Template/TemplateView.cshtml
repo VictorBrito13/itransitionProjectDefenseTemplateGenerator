@@ -3,7 +3,6 @@
 }
 
 <div>
-
     @{
         string errorMsg = (string) TempData["errorMsg"];
         string userEmail = (string) TempData["userEmail"];
@@ -11,11 +10,28 @@
         if(errorMsg != null) {
             <p class="danger p-3 text-light">@errorMsg</p>
         } else {
-            <div id="form-header">
-                <h1 id="form-title" class="text-center"></h1>
+            <div class="d-flex" id="form-header">
+                <div class="col-8">
+                    <h1 id="form-title" class="text-center"></h1>
+                    <p id="form-description"></p>
+                </div>
+                <div class="col-3" id="likes-container">
+                    @{
+                        if(userId != null) {
+                            <button class="btn btn-primary" id="btn-like-template" data-like-action="like">
+                                @* Just in case the user has not liked the template *@
+                                <i class="bi bi-star" id="icon-star"></i>
+                                @* Just in case the user has liked the template *@
+                                <i class="bi bi-star-fill" id="icon-star-fill" style="display: none;"></i>
+                            </button>
+                            <span id="likes-number"></span>
+                        } else {
+                            <span id="btn-log-out-container"></span>
+                        }
+                    }
+                </div>
             </div>
             
-            <p id="form-description"></p>
 
             <form id="form-questions">
                 <div>

@@ -1,9 +1,17 @@
+import insertLogOutButton from "../../UI/components/btnLogOut.js";
+
 let pageForTemplates = 0;
 let limit = 10;
 
 const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
 const $templatesHeader = document.getElementById("templates-header");
 const $templatesContainer = document.getElementById("latest-templates-container");
+
+try {
+    insertLogOutButton();
+} catch(e) {
+    console.error(e);
+}
 
 //Get all the templates
 async function getLatestTemplates() {

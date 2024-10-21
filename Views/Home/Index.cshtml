@@ -7,7 +7,7 @@
     if(username != null) {
         <div class="d-flex justify-content-evenly mb-3">
             <p class="container col-8">Welcome back <b>@username</b></p>
-            <a href="/user/log-out" class="btn btn-primary col-3">Log out</a>
+            <span class="col-3" id="btn-log-out-container"></span>
         </div>
         
     } else {
@@ -88,5 +88,5 @@
         </div>
     </div>
 
-    <script src="~/js/index/index.js"></script>
+    <script src="~/js/index/index.js" type="module"></script>
 </div>

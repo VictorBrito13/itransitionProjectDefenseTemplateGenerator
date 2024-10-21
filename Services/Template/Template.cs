@@ -49,6 +49,7 @@ namespace ItransitionTemplates.Services.Template
             .ThenInclude(a => a.User)
             .Include(t => t.usersAllowedToAnswer)
             .ThenInclude(ua => ua.User)
+            .Include(t => t.Likes)
             .Where(t => t.TemplateId == templateId)
             .FirstOrDefaultAsync();
 
@@ -78,6 +79,29 @@ namespace ItransitionTemplates.Services.Template
             }
 
             return 500;
+        }
+
+        //Give a like to a template or unlike the template
+        public async Task<bool> LikeAction(ulong userId, ulong templateId, string action) {
+            Models.Like like = new Models.Like();
+            like.UserId = userId;
+            like.TemplateId = templateId;
+
+            Console.WriteLine(like.UserId);
+            Console.WriteLine(like.TemplateId);
+
+            if(action == "like") {
+                await _context.Likes.AddAsync(like);
+            } else {
+                _context.Likes.Remove(like);
+            }
+
+            int n = _context.SaveChanges();
+
+            if(n >= 1) return true;
+
+            return false;
+
         }
     }
 }

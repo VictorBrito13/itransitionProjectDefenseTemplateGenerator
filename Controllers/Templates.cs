@@ -107,5 +107,24 @@ public class TemplateController : Controller {
         return Ok(JsonSerializer.Serialize(new {data = "Template updated successfully"}));
     }
 
+    [HttpGet("/template/like")]
+    public async Task<IActionResult> LikeAction([FromQuery] ulong userId, [FromQuery] ulong templateId, [FromQuery] string action) {
+        bool actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
+
+        if(action == "like") {
+            if(actionCompleted == true) {
+                return Ok(JsonSerializer.Serialize(new { data = "Like added" }));
+            } else {
+                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
+            }
+        } else {
+            if(actionCompleted == true) {
+                return Ok(JsonSerializer.Serialize(new { data = "Like removed" }));
+            } else {
+                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
+            }
+        }
+    }
+
 
 }
