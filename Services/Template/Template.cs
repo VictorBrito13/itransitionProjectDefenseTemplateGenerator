@@ -102,7 +102,19 @@ namespace ItransitionTemplates.Services.Template
             if(n >= 1) return await _context.Likes.Where(l => l.TemplateId == like.TemplateId).ToArrayAsync();
 
             return null;
+        }
 
+        public async Task<int> DeleteTemplate(ulong templateId) {
+            Models.Template found = await GetTemplateById(templateId);
+            _context.Templates.Remove(found);
+
+            int n = await _context.SaveChangesAsync();
+
+            if(n >= 1) {
+                return 200;
+            }
+
+            return 400;
         }
     }
 }

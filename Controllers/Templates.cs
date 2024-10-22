@@ -145,5 +145,20 @@ public class TemplateController : Controller {
         return NotFound(JsonSerializer.Serialize( new { errorMsg = "The template does not exists" }));
     }
 
+    [HttpDelete("/template/delete")]
+    public async Task<IActionResult> DeleteTemplate([FromQuery] ulong templateId) {
+        try {
+            int n = await _TemplateService.DeleteTemplate(templateId);
+
+            if(n == 200) {
+                return Ok(JsonSerializer.Serialize(new { data = "Template deleted successfully" }));
+            } else {
+                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "This action could not be done" }));
+            }
+        } catch(Exception err) {
+            Console.WriteLine(err);
+            return BadRequest(JsonSerializer.Serialize(new { errorMsg = "This action could not be done" }));
+        }
+    }
 
 }

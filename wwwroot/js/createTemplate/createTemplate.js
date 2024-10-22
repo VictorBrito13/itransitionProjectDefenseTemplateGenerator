@@ -5,6 +5,7 @@ import insertQuestions from "../utils/createTemplate/insertQuestions.js";
 import saveSelectOptions from "../utils/createTemplate/saveSelectOptions.js";
 import toggleVisibilityTemplate from "../utils/createTemplate/visibilitySwitcher.js";
 import deleteElementOnClick from "../utils/deleteElement.js";
+import deleteTemplate from "../utils/createTemplate/deleteTemplate.js";
 
 insertQuestions();
 saveSelectOptions();
@@ -13,11 +14,29 @@ saveSelectOptions();
 const urlParamsSearcher = new URLSearchParams(location.search);
 let admins = [];
 let usersAllowedToAnswer = []
+//Hide the admin's button
+document.getElementById("btn-add-admin").style.display = "none";
+//Hide the danger zone
+document.getElementById("danger-zone-container").style.display = "none";
+
+const $serverMsgs = document.getElementById("server-responses");
 
 if(urlParamsSearcher.get("templateId")) {
+    //show the admin's button
+    document.getElementById("btn-add-admin").style.display = "inline-block";
+    //Show the danger zone
+    document.getElementById("danger-zone-container").style.display = "block";
+
+    const $templateTitle = document.getElementById("setting-template-title");
+    const $tempalteDescription = document.getElementById("setting-template-description");
     //Make a petition to get the template
     const template = await getTemplate();
+    $tempalteDescription.textContent = template.Description;
+    $templateTitle.textContent = template.Title;
     console.log(template);
+
+    //button to delete the template
+    deleteTemplate(template.TemplateId);
     
     admins = template.Admins || [];
     usersAllowedToAnswer = template.usersAllowedToAnswer || [];
@@ -214,6 +233,21 @@ $btnCreateTemplate.addEventListener("click", async e => {
         const isTemplateUpdatedJSON = await isTemplateUpdated.json();
         console.log(isTemplateUpdatedJSON);
 
+        const $p = document.createElement("p");
+        if(isTemplateUpdatedJSON.errorMsg) {
+            $p.textContent = isTemplateUpdatedJSON.errorMsg;
+            $p.className = "p-3 rounded text-light bg-danger";
+        } else if(isTemplateUpdatedJSON.data) {
+            $p.textContent = isTemplateUpdatedJSON.data;
+            $p.className = "p-3 rounded text-light bg-success";
+        }
+
+        $serverMsgs.appendChild($p);
+
+        setTimeout(() => {
+            $serverMsgs.innerHTML = null;
+        }, 3000);
+
     } else {
         //Petition to save the template
         const templateSaved = await fetch(`${location.origin}/template/create`, {
@@ -226,20 +260,22 @@ $btnCreateTemplate.addEventListener("click", async e => {
         const templateSavedJSON = await templateSaved.json();
         
         console.log(templateSavedJSON);
-
-        const $serverMsgs = document.getElementById("server-responses");
         const $p = document.createElement("p");
 
         if(templateSavedJSON.errorMsg) {
-            $p.className = "bg-danger text-light p-3";
+            $p.className = "bg-danger rounded text-light p-3";
             $p.textContent = templateSavedJSON.errorMsg;
         } else {
-            $p.className = "bg-success text-light p-3";
+            $p.className = "bg-success rounded text-light p-3";
             $p.innerHTML =
             `Your template has been saved succesfully you can update your template
             <a class="btn btn-light" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">Here</a>`;
         }
 
         $serverMsgs.appendChild($p);
+
+        setTimeout(() => {
+            $serverMsgs.innerHTML = null;
+        }, 3000);
     }
 });
