@@ -33,8 +33,7 @@ templateLikes.forEach(templateLike => {
         $iconStar.style.display = "none";
         $btnLikeTemplate.dataset["likeAction"] = "unlike";
     }
-})
-
+});
 
 $btnLikeTemplate.addEventListener("click", async e => {
     //Petition to give a like to this template
@@ -61,9 +60,22 @@ $btnLikeTemplate.addEventListener("click", async e => {
             $iconStar.style.display = "block";
             $btnLikeTemplate.dataset["likeAction"] = "like";
             $likesNumber.textContent = unlikedRes.data;
+            console.log(unlikedRes)
         }
     }
 });
+
+//Request to get the template's likes
+setInterval( async () => {
+    const likes = await (await fetch(`${location.origin}/template/likes?templateId=${template.TemplateId}`)).json();
+
+    if(likes.data) {
+        $likesNumber.textContent = likes.data.length;
+    }
+
+    console.log(likes.data);
+    
+}, 3000);
 
 buildForm($form, template, false);
 

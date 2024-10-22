@@ -91,18 +91,15 @@ namespace ItransitionTemplates.Services.Template
             like.UserId = userId;
             like.TemplateId = templateId;
 
-            Console.WriteLine(like.UserId);
-            Console.WriteLine(like.TemplateId);
-
             if(action == "like") {
-                template.Likes.Add(like);
+                await _context.Likes.AddAsync(like);
             } else {
                 _context.Likes.Remove(like);
             }
 
-            int n = _context.SaveChanges();
+            int n = await _context.SaveChangesAsync();
 
-            if(n >= 1) return template.Likes.ToArray();
+            if(n >= 1) return await _context.Likes.Where(l => l.TemplateId == like.TemplateId).ToArrayAsync();
 
             return null;
 

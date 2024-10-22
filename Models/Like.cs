@@ -6,6 +6,7 @@ namespace ItransitionTemplates.Models {
         public ulong TemplateId { get; set; }
         public ulong UserId { get; set; }
 
+        [JsonIgnore]
         public User User { get; set; }
         [JsonIgnore]
         public Template Template { get; set; }

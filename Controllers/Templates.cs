@@ -108,9 +108,13 @@ public class TemplateController : Controller {
         return Ok(JsonSerializer.Serialize(new {data = "Template updated successfully"}));
     }
 
+    //It is used to give a like to certain template
     [HttpGet("/template/like")]
     public async Task<IActionResult> LikeAction([FromQuery] ulong userId, [FromQuery] ulong templateId, [FromQuery] string action) {
         Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
+
+        Console.WriteLine("Accion completada");
+        Console.WriteLine(actionCompleted.Length);
 
         if(action == "like") {
             if(actionCompleted != null) {
@@ -125,6 +129,20 @@ public class TemplateController : Controller {
                 return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
             }
         }
+    }
+
+    //It return the number of likes of a given template
+    [HttpGet("/template/likes")]
+    public async Task<IActionResult> GetTemplateLikes([FromQuery] ulong templateId) {
+        Console.WriteLine(templateId);
+        Models.Template template = await _TemplateService.GetTemplateById(templateId);
+
+        //Exists the tempalte
+        if(template != null) {
+            return Ok(JsonSerializer.Serialize(new { data = template.Likes }));
+        }
+
+        return NotFound(JsonSerializer.Serialize( new { errorMsg = "The template does not exists" }));
     }
 
 
