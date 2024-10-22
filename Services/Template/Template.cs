@@ -1,4 +1,5 @@
 using ItransitionTemplates.Data;
+using ItransitionTemplates.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -82,7 +83,10 @@ namespace ItransitionTemplates.Services.Template
         }
 
         //Give a like to a template or unlike the template
-        public async Task<bool> LikeAction(ulong userId, ulong templateId, string action) {
+        public async Task<Like[]> LikeAction(ulong userId, ulong templateId, string action) {
+            var template = await _context.Templates.Where(t => t.TemplateId == templateId).FirstAsync();
+
+
             Models.Like like = new Models.Like();
             like.UserId = userId;
             like.TemplateId = templateId;
@@ -91,16 +95,16 @@ namespace ItransitionTemplates.Services.Template
             Console.WriteLine(like.TemplateId);
 
             if(action == "like") {
-                await _context.Likes.AddAsync(like);
+                template.Likes.Add(like);
             } else {
                 _context.Likes.Remove(like);
             }
 
             int n = _context.SaveChanges();
 
-            if(n >= 1) return true;
+            if(n >= 1) return template.Likes.ToArray();
 
-            return false;
+            return null;
 
         }
     }

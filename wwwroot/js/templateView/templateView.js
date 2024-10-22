@@ -40,22 +40,27 @@ $btnLikeTemplate.addEventListener("click", async e => {
     //Petition to give a like to this template
     console.log(userId);
     console.log(template.TemplateId);
-    if($btnLikeTemplate.dataset["likeAction"] === "like") {       
-        
-        const liked = await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=like`)
 
-        if(liked) {
+    if($btnLikeTemplate.dataset["likeAction"] === "like") {
+        
+        const likedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=like`)).json();
+        console.log(likedRes);
+        
+        if(likedRes) {
             $iconStarFill.style.display = "block";
             $iconStar.style.display = "none";
             $btnLikeTemplate.dataset["likeAction"] = "unlike";
+            $likesNumber.textContent = likedRes.data;
         }
     } else if($btnLikeTemplate.dataset["likeAction"] === "unlike") {
-        const unliked = await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)
+        const unlikedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)).json();
+        console.log(unlikedRes);
 
-        if(unliked) {
+        if(unlikedRes) {
             $iconStarFill.style.display = "none";
             $iconStar.style.display = "block";
             $btnLikeTemplate.dataset["likeAction"] = "like";
+            $likesNumber.textContent = unlikedRes.data;
         }
     }
 });

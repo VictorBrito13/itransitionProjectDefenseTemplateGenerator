@@ -1,4 +1,5 @@
 using System.Text.Json;
+using ItransitionTemplates.Models;
 using ItransitionTemplates.Utils;
 using Microsoft.AspNetCore.Mvc;
 
@@ -109,17 +110,17 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/like")]
     public async Task<IActionResult> LikeAction([FromQuery] ulong userId, [FromQuery] ulong templateId, [FromQuery] string action) {
-        bool actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
+        Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
 
         if(action == "like") {
-            if(actionCompleted == true) {
-                return Ok(JsonSerializer.Serialize(new { data = "Like added" }));
+            if(actionCompleted != null) {
+                return Ok(JsonSerializer.Serialize(new { data = actionCompleted.Length }));
             } else {
                 return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
             }
         } else {
-            if(actionCompleted == true) {
-                return Ok(JsonSerializer.Serialize(new { data = "Like removed" }));
+            if(actionCompleted != null) {
+                return Ok(JsonSerializer.Serialize(new { data = actionCompleted.Length }));
             } else {
                 return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
             }
