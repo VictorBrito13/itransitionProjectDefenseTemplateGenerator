@@ -230,15 +230,19 @@ $btnCreateTemplate.addEventListener("click", async e => {
             },
             body: JSON.stringify(templateConfig)
         });
-        const isTemplateUpdatedJSON = await isTemplateUpdated.json();
-        console.log(isTemplateUpdatedJSON);
+        const templateUpdatedJSON = await isTemplateUpdated.json();
+        console.log(templateUpdatedJSON);
+
+        if(templateUpdatedJSON.status === 401) {
+            location.assign(`${location.origin}/user/log-in`);
+        }
 
         const $p = document.createElement("p");
-        if(isTemplateUpdatedJSON.errorMsg) {
-            $p.textContent = isTemplateUpdatedJSON.errorMsg;
+        if(templateUpdatedJSON.errorMsg) {
+            $p.textContent = templateUpdatedJSON.errorMsg;
             $p.className = "p-3 rounded text-light bg-danger";
-        } else if(isTemplateUpdatedJSON.data) {
-            $p.textContent = isTemplateUpdatedJSON.data;
+        } else if(templateUpdatedJSON.data) {
+            $p.textContent = templateUpdatedJSON.data;
             $p.className = "p-3 rounded text-light bg-success";
         }
 
@@ -258,6 +262,10 @@ $btnCreateTemplate.addEventListener("click", async e => {
             body: JSON.stringify(templateConfig)
         });
         const templateSavedJSON = await templateSaved.json();
+
+        if(templateSavedJSON.status === 401) {
+            location.assign(`${location.origin}/user/log-in`);
+        }
         
         console.log(templateSavedJSON);
         const $p = document.createElement("p");

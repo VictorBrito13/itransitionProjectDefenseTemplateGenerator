@@ -19,7 +19,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        ItransitionTemplates.Models.User user = Session.GetObject<ItransitionTemplates.Models.User>(HttpContext, "userSession", false);
+        ItransitionTemplates.Models.User user = Session.GetObject<ItransitionTemplates.Models.User>(HttpContext, "userSession");
         TempData["username"] = user.Username;
         TempData["userId"] = user.UserId.ToString();
         return View();

@@ -10,6 +10,10 @@ export default function deleteTemplate(templateId) {
 
         const deleteJSON = await deleteRes.json();
 
+        if(deleteJSON.status === 401) {
+            location.assign(`${location.origin}/user/log-in`);
+        }
+
         //The template was deleted
         if(deleteJSON.data) {
             location.assign(`${location.origin}/`);

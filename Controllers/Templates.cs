@@ -18,7 +18,7 @@ public class TemplateController : Controller {
     [HttpGet("/template/create")]
     public async Task<IActionResult> CreateTemplateView() {
         Models.Topic[] topics = await _TopicService.GetTopics();
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession", false);
+        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
         TempData["topics"] = JsonSerializer.Serialize(topics);
         Console.WriteLine(userSession.UserId);
         return View("CreateTemplate");
@@ -34,10 +34,11 @@ public class TemplateController : Controller {
             return View("CreateTemplate");
         }
 
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession", true);
+        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
 
-        if(userSession == null) {
-            HttpContext.Response.Redirect("/user/log-in");
+        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
+            Console.WriteLine("Session invalida");
+            return Json(new { errorMsg = "Login to complete this action", status = 401 });
         }
 
         if(template == null) {
@@ -75,7 +76,7 @@ public class TemplateController : Controller {
     //Get template by Id (just the view), this view is going to be for the forms (answers)
     [HttpGet("/template/template")]
     public IActionResult GetTemplateView() {
-        Models.User user = Session.GetObject<Models.User>(HttpContext, "userSession", false);
+        Models.User user = Session.GetObject<Models.User>(HttpContext, "userSession");
         TempData["userEmail"] = user.Email;
         TempData["userId"] = user.UserId;
         return View("TemplateView");
@@ -97,6 +98,13 @@ public class TemplateController : Controller {
     //Update a template
     [HttpPut("/template/update")]
     public async Task<ActionResult> UpdateTemplate([FromQuery] ulong templateId, [FromBody] Models.Template template) {
+        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+
+        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
+            Console.WriteLine("Session invalida");
+            return Json(new { errorMsg = "Login to complete this action", status =  401 });
+        }
+
         int result = await _TemplateService.UpdateTemplate(templateId, template);
 
         if(result == 404) {
@@ -109,8 +117,18 @@ public class TemplateController : Controller {
     }
 
     //It is used to give a like to certain template
+    //**** It requires Authentication
     [HttpGet("/template/like")]
     public async Task<IActionResult> LikeAction([FromQuery] ulong userId, [FromQuery] ulong templateId, [FromQuery] string action) {
+
+        //Ensure the user has a session
+        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+
+        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
+            Console.WriteLine("Session invalida");
+            return Json(new { errorMsg = "Login to complete this action", status = 401 });
+        }
+
         Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
 
         Console.WriteLine("Accion completada");
@@ -148,6 +166,13 @@ public class TemplateController : Controller {
     [HttpDelete("/template/delete")]
     public async Task<IActionResult> DeleteTemplate([FromQuery] ulong templateId) {
         try {
+            Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+
+            if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
+                Console.WriteLine("Session invalida");
+                return Json(new { errorMsg = "Login to complete this action", status =  401 });
+            }
+
             int n = await _TemplateService.DeleteTemplate(templateId);
 
             if(n == 200) {

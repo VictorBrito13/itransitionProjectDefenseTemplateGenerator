@@ -9,6 +9,7 @@ const $iconStar = document.getElementById("icon-star");
 const $iconStarFill = document.getElementById("icon-star-fill");
 const userId = document.getElementById("form-user-email").dataset["userid"];
 const $likesNumber = document.getElementById("likes-number");
+const $serverMsgs = document.getElementById("server-msgs");
 
 const template = await getTemplate();
 
@@ -43,6 +44,12 @@ $btnLikeTemplate.addEventListener("click", async e => {
     if($btnLikeTemplate.dataset["likeAction"] === "like") {
         
         const likedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=like`)).json();
+
+        if(likedRes.errorMsg) {
+            $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${likedRes.errorMsg}</p>`;
+            return
+        }
+
         console.log(likedRes);
         
         if(likedRes) {
@@ -54,6 +61,11 @@ $btnLikeTemplate.addEventListener("click", async e => {
     } else if($btnLikeTemplate.dataset["likeAction"] === "unlike") {
         const unlikedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)).json();
         console.log(unlikedRes);
+
+        if(unlikedRes.errorMsg) {
+            $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${likedRes.errorMsg}</p>`;
+            return
+        }
 
         if(unlikedRes) {
             $iconStarFill.style.display = "none";

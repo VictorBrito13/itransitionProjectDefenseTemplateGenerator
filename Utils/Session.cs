@@ -11,12 +11,8 @@ namespace ItransitionTemplates.Utils
         }
 
         //Get an object in the session
-        public static T GetObject<T>(HttpContext context, string key, bool redirect) {
+        public static T GetObject<T>(HttpContext context, string key) {
             string? s = context.Session.GetString(key);
-
-            // if((s == null || s.Length == 0) && redirect) {
-            //     context.Response.Redirect("/user/log-in", true);
-            // }
 
             T? o = JsonSerializer.Deserialize<T>(s??"{}");
             Console.WriteLine(o);
