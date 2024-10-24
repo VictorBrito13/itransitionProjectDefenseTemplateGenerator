@@ -105,12 +105,18 @@ public class TemplateController : Controller {
             return Json(new { errorMsg = "Login to complete this action", status =  401 });
         }
 
-        int result = await _TemplateService.UpdateTemplate(templateId, template);
-
-        if(result == 404) {
-            return NotFound(JsonSerializer.Serialize(new {errorMsg = "The tamplate was not found"}));
-        } else if(result == 500) {
-            return BadRequest(JsonSerializer.Serialize(new {errorMsg = "This template could not be updated"}));
+        try {
+            int result = await _TemplateService.UpdateTemplate(templateId, template);
+            if(result == 404) {
+                return NotFound(JsonSerializer.Serialize(new {errorMsg = "The tamplate was not found"}));
+            } else if(result == 500) {
+                return BadRequest(JsonSerializer.Serialize(new {errorMsg = "This template could not be updated"}));
+            }
+        } catch (Exception err) {
+            Console.WriteLine(err);
+            if(err.ToString().Contains("cannot be tracked because another instance with the key value")) {
+                return BadRequest(JsonSerializer.Serialize(new {errorMsg = "There is a entity with this value"}));
+            }
         }
 
         return Ok(JsonSerializer.Serialize(new {data = "Template updated successfully"}));

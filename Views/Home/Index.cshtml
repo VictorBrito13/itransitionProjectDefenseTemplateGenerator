@@ -4,21 +4,18 @@
 
 @{
     string username = (string) TempData["username"];
+    @* Evaluate if there is a session *@
     if(username != null) {
         <div class="d-flex justify-content-evenly mb-3">
             <p class="container col-8">Welcome back <b>@username</b></p>
             <span class="col-3" id="btn-log-out-container"></span>
         </div>
-        
     } else {
         <a href="/user/log-in" class="btn btn-primary mb-3 rounded-pill">Log in</a>
     }
 }
 
 <div>
-    <div class="col-12 mb-3" id="searcher-bar-contianer">
-        <input type="search" class="w-100 rounded-pill border border-primary p-2 border-1">
-    </div>
 
     @{
         if(username != null) {
@@ -27,21 +24,11 @@
     }
 
     <div class="d-flex content-container mt-5">
-        @* Tags container *@
-        <div class="border w-25">
-            <h2 class="my-3">Tags</h2>
-            <div class="p-3">
-                <span class="badge bg-primary">Education</span>
-                <span class="badge bg-primary">Education</span>
-                <span class="badge bg-primary">Education</span>
-                <span class="badge bg-primary">Education</span>
-                <span class="badge bg-primary">Education</span>
-            </div>
-        </div>
         @* Latest / Your templates *@
-        <div class="border w-50">
+        <div class="border">
             <div class="d-flex justify-content-evenly my-3">
                 <h2 id="templates-header">Latest Templates</h2>
+                @* User's templates *@
                 @{
                     if(username != null) {
                         string? userId = (string) TempData["userId"];
@@ -53,37 +40,8 @@
             </div>
 
             @* Latest / Your templates container *@
-            <div class="d-flex flex-wrap justify-content-evenly w-100" id="latest-templates-container"></div>
-        </div>
-        @* Top 5 famous templates *@
-        <div class="border w-25">
-            <h2 class="my-3">Most Famous Templates</h2>
-
-            <div class="d-flex flex-column">
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src=""  alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
-
-                <figure class="text-center">
-                    <img src="" alt="" width="150" height="150">
-                    <figcaption>Template name By <b>Author</b></figcaption>
-                </figure>
+            <div>
+                <div class="d-flex gap-3 flex-wrap justify-content-evenly w-100 p-3" id="latest-templates-container"></div>
             </div>
         </div>
     </div>

@@ -63,7 +63,7 @@ $btnLikeTemplate.addEventListener("click", async e => {
         console.log(unlikedRes);
 
         if(unlikedRes.errorMsg) {
-            $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${likedRes.errorMsg}</p>`;
+            $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${unlikedRes.errorMsg}</p>`;
             return
         }
 

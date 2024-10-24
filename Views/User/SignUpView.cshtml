@@ -29,8 +29,9 @@
         <label for="confirm-password">Confirm password</label>
         <input type="password" id="confirm-password" class="form-control">
     </div>
-    <div>
-        <input type="submit" id="btn-create-account" value="Create account">
+    <div class="mt-5 d-flex flex-column align-items-center">
+        <input type="submit" id="btn-create-account" class="btn btn-primary" value="Create account">
+        <a href="/user/log-in">I have an account</a>
     </div>
 </form>
 
@@ -38,7 +39,5 @@
 <div class="container mt-5">
     <p class="text-light bg-danger p-3 rounded-3" style="display: none;" id="errors"></p>
 </div>
-
-<a href="/user/log-in">I have an account</a>
 
 <script src="~/js/signUp/signUp.js"></script>

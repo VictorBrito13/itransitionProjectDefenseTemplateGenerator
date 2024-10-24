@@ -40,6 +40,8 @@ if(urlParamsSearcher.get("templateId")) {
     
     admins = template.Admins || [];
     usersAllowedToAnswer = template.usersAllowedToAnswer || [];
+
+
     //When it gets clicked it save the admins or users allowed to answer in the respective array
     const $btnSaveUser = document.getElementById("btn-save-user");
 
@@ -99,6 +101,7 @@ if(urlParamsSearcher.get("templateId")) {
 
     function generateUserHmtl(user) {
         const $p = document.createElement("p");
+        console.log(user.Email)
         $p.textContent = user.Email;
         $p.dataset["userid"] = user.UserId;
         $p.dataset["username"] = user.Username;

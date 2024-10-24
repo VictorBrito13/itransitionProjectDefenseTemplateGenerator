@@ -48,7 +48,8 @@ export default class MultipleOptionsQuestion {
             //edit select options button configuration
             $btnEditOptions.textContent = "Edit options";
             $btnEditOptions.type = "button";
-            $btnEditOptions.className = "btn btn-primary ms-3";
+            $label.className = "me-3";
+            $btnEditOptions.className = "btn btn-primary";
             $btnEditOptions.dataset["bsToggle"] = "modal";
             $btnEditOptions.dataset["bsTarget"] = "#editOptionsModal";
 
@@ -77,7 +78,7 @@ export default class MultipleOptionsQuestion {
             });
 
                 //button to delete the question configuration
-            $btnDeleteQuestion.className = "btn btn-danger ms-3";
+            $btnDeleteQuestion.className = "btn btn-danger";
             $btnDeleteQuestion.textContent = "delete the question";
             deleteElementOnClick($btnDeleteQuestion, $div);
 

@@ -28,7 +28,8 @@ export default class CheckboxQuestion {
         if(this.editionMode) {
             const $btnDeleteQuestion = document.createElement("button");
             $label.contentEditable =  true;
-            $btnDeleteQuestion.className = "btn btn-danger ms-3";
+            $label.className = "me-3";
+            $btnDeleteQuestion.className = "btn btn-danger";
             $btnDeleteQuestion.textContent = "delete the question";
             deleteElementOnClick($btnDeleteQuestion, $div);
             $div.appendChild($btnDeleteQuestion);

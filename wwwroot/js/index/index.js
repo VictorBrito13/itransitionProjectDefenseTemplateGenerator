@@ -13,7 +13,7 @@ try {
     console.error(e);
 }
 
-//Get all the templates
+//Get the latest templates
 async function getLatestTemplates() {
     const res = await fetch(`${location.origin}/template/templates?page=${pageForTemplates}&limit=${limit}`);
     const json = await res.json();
@@ -33,11 +33,13 @@ async function printLatestTemplates() {
         templates.data.forEach(template => {
             content +=
             `
-            <a href="/template/template?templateId=${template.TemplateId}" class="col-4">
-                <figure class="text-center">
-                    <img src="${template.Image_url}"  alt="${template.Title}" width="150" height="150">
-                    <figcaption>Template name By <b>${template.Admins[0]?.User.Username}</b></figcaption>
-                </figure>
+            <a href="/template/template?templateId=${template.TemplateId}" class="col-12">
+                <div class="card">
+                    <img src="${template.Image_url}" class="card-image-top" alt="${template.Title}" width="150" height="150">
+                    <div class"card-body">
+                        <card-text>Template name By <b>${template.Admins[0]?.User.Username}</b></card-text>
+                    </div>
+                </div>
             </a>
             `;
         });
@@ -51,6 +53,8 @@ async function printLatestTemplates() {
 }
 
 printLatestTemplates()
+
+
 
 //Get user's templates
 let pageForTemplatesByUser = 0;
@@ -75,11 +79,13 @@ async function printUserTemplates() {
         templates.data.forEach(template => {
             content +=
             `
-            <a href="/template/create?templateId=${template.TemplateId}" class="col-4">
-                <figure class="text-center">
-                    <img src="${template.Image_url}" alt="${template.Title}" width="150" height="150">
-                    <figcaption>Template name By <b>${username}</b></figcaption>
-                </figure>
+            <a href="/template/create?templateId=${template.TemplateId}" class="col-12">
+                <div class="card">
+                    <img src="${template.Image_url}" class="card-image-top" alt="${template.Title}" width="150" height="150">
+                    <div class"card-body">
+                        <card-text>Template name By <b>${username}</b></card-text>
+                    </div>
+                </div>
             </a>
             `;
         });
@@ -112,3 +118,16 @@ try {
 } catch(e) {
     console.error(e);
 }
+
+//Paginations buttons
+const $btnPaginationPrev = document.getElementById("pagination-prev");
+const $btnPaginationNext = document.getElementById("pagination-next");
+
+$btnPaginationPrev.addEventListener("click", e => {
+
+});
+
+$btnPaginationNext.addEventListener("click", e => {
+
+});
+

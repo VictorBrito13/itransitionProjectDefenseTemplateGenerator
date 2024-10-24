@@ -7,14 +7,16 @@
         
     </div>
 
-    <div class="header">
+    <div class="container">
         <div class="row align-items-center">
-            <h1 class="col-4" id="page-title">Create a new template</h1>
+            <div class="row">
+                <h1 class="col" id="page-title">Create a new template</h1>
+            </div>
 
             @{
                 string? topicsString = (string) TempData["topics"];
                 ItransitionTemplates.Models.Topic[]? topics = JsonSerializer.Deserialize<ItransitionTemplates.Models.Topic[]>(topicsString??"[]");
-                <div class="col-2">
+                <div class="col">
                     <label for="">Select a topic</label>
                     <select class="form-select" id="setting-template-topic">
                         @{
@@ -30,26 +32,25 @@
                 </div>
             }
 
-            <div class="col-2">
-                <label for="">Uplad an image</label>
-                <input type="file" accept="image/*" class="form-control" id="setting-template-image">
-            </div>
-
             <button type="button" class="btn btn-success col-4" id="btn-create-template">Create Template</button>
         </div>
         <div id="tool-bar">
             <h3>Add questions</h3>
             <div class="d-flex gap-5">
-                <!--q-sl means "question single-line"-->
-                <button type="button" id="q-sl" class="btn btn-secondary">Single-line string question</button>
-                <!--q-ml means "question multiline string"-->
-                <button type="button" id="q-ml" class="btn btn-secondary">Multiline string question</button>
-                <!--q-pi means "question positive integer"-->
-                <button type="button" id="q-pi" class="btn btn-secondary">Positive integer question</button>
-                <!--q-cb means "question checkbox"-->
-                <button type="button" id="q-cb" class="btn btn-secondary">Checkbox question</button>
-                <!--q-cb means "multiple options"-->
-                <button type="button" id="q-mo" class="btn btn-secondary">Multiple options question</button>
+                <div class="row d-flex flex-column gap-3">
+                    <!--q-sl means "question single-line"-->
+                    <button type="button" id="q-sl" class="btn btn-secondary">Single-line string question</button>
+                    <!--q-ml means "question multiline string"-->
+                    <button type="button" id="q-ml" class="btn btn-secondary">Multiline string question</button>
+                    <!--q-pi means "question positive integer"-->
+                    <button type="button" id="q-pi" class="btn btn-secondary">Positive integer question</button>
+                </div>
+                <div class="row d-flex flex-column gap-3">
+                    <!--q-cb means "question checkbox"-->
+                    <button type="button" id="q-cb" class="btn btn-secondary">Checkbox question</button>
+                    <!--q-cb means "multiple options"-->
+                    <button type="button" id="q-mo" class="btn btn-secondary">Multiple options question</button>
+                </div>
             </div>
         </div>
         <hr>
@@ -151,7 +152,7 @@
     <div id="danger-zone-container">
         <h2>Danger Zone</h2>
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">
-            Launch demo modal
+            Delete Template
         </button>
     </div>
 

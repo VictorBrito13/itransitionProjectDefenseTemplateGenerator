@@ -16,16 +16,17 @@
                     <h1 id="form-title" class="text-center"></h1>
                     <p id="form-description"></p>
                 </div>
-                <div class="col-3" id="likes-container">
+                <div class="col-3 d-flex flex-column gap-3" id="likes-container">
                     @{
                         if(userId != null) {
+                            <span id="likes-number"></span>
+                            @* Buttons to manage the like or dislike action *@
                             <button class="btn btn-primary" id="btn-like-template" data-like-action="like">
                                 @* Just in case the user has not liked the template *@
                                 <i class="bi bi-star" id="icon-star"></i>
                                 @* Just in case the user has liked the template *@
                                 <i class="bi bi-star-fill" id="icon-star-fill" style="display: none;"></i>
                             </button>
-                            <span id="likes-number"></span>
                         } else {
                             <span id="btn-log-out-container"></span>
                         }
