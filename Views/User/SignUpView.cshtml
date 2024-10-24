@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+@* For errors from the server *@
+@{
+    string errorMsg = (string) TempData["errorMsg"];
+    if(errorMsg != null) {
+        <div class="container mt-5">
+            <p class="text-light bg-danger p-3 rounded-3">@errorMsg</p>
+        </div>
+    }
+}
+
+<form action="/user/sign-up" method="post" id="signUpForm">
+    <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+    <div>
+        <label for="username">username</label>
+        <input type="text" name="username" id="username" class="form-control" required>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <div>
+        <label for="confirm-password">Confirm password</label>
+        <input type="password" id="confirm-password" class="form-control">
+    </div>
+    <div class="mt-5 d-flex flex-column align-items-center">
+        <input type="submit" id="btn-create-account" class="btn btn-primary" value="Create account">
+        <a href="/user/log-in">I have an account</a>
+    </div>
+</form>
+
+@* For form errors *@
+<div class="container mt-5">
+    <p class="text-light bg-danger p-3 rounded-3" style="display: none;" id="errors"></p>
+</div>
+
+<script src="~/js/signUp/signUp.js"></script>

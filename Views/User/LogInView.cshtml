@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div>
+    @{
+        string errorMsg = (string) TempData["errorMsg"];
+        Console.WriteLine(errorMsg);
+
+        if(errorMsg != null) {
+            <p class="bg-danger p-4 text-light">@errorMsg</p>
+        }
+    }
+</div>
+
+<form action="/user/log-in" method="post">
+    <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+
+    <div class="text-center d-flex flex-column align-items-center mt-5">
+        <input type="submit" class="btn btn-primary w-25" value="Login">
+        <a href="/user/sign-up" class="text-center">Create an account now</a>
+    </div>
+</form>

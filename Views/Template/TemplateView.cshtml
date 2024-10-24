@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Template";
+}
+
+<div>
+    <div id="server-msgs"></div>
+    @{
+        string errorMsg = (string) TempData["errorMsg"];
+        string userEmail = (string) TempData["userEmail"];
+        string userId = TempData["userId"].ToString();
+        if(errorMsg != null) {
+            <p class="danger p-3 text-light">@errorMsg</p>
+        } else {
+            <div class="d-flex" id="form-header">
+                <div class="col-8">
+                    <h1 id="form-title" class="text-center"></h1>
+                    <p id="form-description"></p>
+                </div>
+                <div class="col-3 d-flex flex-column gap-3" id="likes-container">
+                    @{
+                        if(userId != null) {
+                            <span id="likes-number"></span>
+                            @* Buttons to manage the like or dislike action *@
+                            <button class="btn btn-primary" id="btn-like-template" data-like-action="like">
+                                @* Just in case the user has not liked the template *@
+                                <i class="bi bi-star" id="icon-star"></i>
+                                @* Just in case the user has liked the template *@
+                                <i class="bi bi-star-fill" id="icon-star-fill" style="display: none;"></i>
+                            </button>
+                        } else {
+                            <span id="btn-log-out-container"></span>
+                        }
+                    }
+                </div>
+            </div>
+            
+
+            <form id="form-questions">
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="form-user-email" data-userid="@userId" value="@userEmail" disabled>
+                </div>
+                <div class="mt-4">
+                    <label for="date">Date</label>
+                    <input type="datetime-local" class="form-control" name="date" id="form-date" disabled>
+                </div>
+            </form>
+        }
+    }
+
+    <script src="~/js/templateView/templateView.js" type="module"></script>
+</div>
