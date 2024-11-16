@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ItransitionTemplates.Models
 {
+    [Table("UserAllowedToAnswers")]
     public class UserAllowedToAnswer {
         [ForeignKey("User")]
         public ulong UserId { get; set; }

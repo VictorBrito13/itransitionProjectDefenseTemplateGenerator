@@ -213,7 +213,6 @@ $btnCreateTemplate.addEventListener("click", async e => {
     const templateConfig = {
         title: document.getElementById("setting-template-title").textContent.trim(),
         description: document.getElementById("setting-template-description").textContent.trim(),
-        image_url: document.getElementById("setting-template-image").value.trim() || "default.png",
         topicId: document.getElementById("setting-template-topic").value.trim(),
         isPublic: parseInt(document.getElementById("template-visibility-switch").value) === 1,
         questions,

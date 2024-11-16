@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItransitionTemplates.Models
 {
+    [Table("Users")]
     [Index(nameof(Email), IsUnique = true, Name = "IDX_User_Email")]
     public class User {
         public ulong UserId { get; set; }

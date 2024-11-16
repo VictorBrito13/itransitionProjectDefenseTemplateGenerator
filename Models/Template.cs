@@ -4,12 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ItransitionTemplates.Models
 {
+    [Table("Templates")]
     public class Template {
 
         public ulong TemplateId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Image_url { get; set; }
+        public string Image_url { get; set; } = "default.png";
         public bool IsPublic { get; set; } = true;
         [ForeignKey("Topic")]
         public ulong TopicId { get; set; }

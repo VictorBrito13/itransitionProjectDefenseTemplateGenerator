@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ItransitionTemplates.Models
 {
+    [Table("QuestionOptions")]
     public class QuestionOption {
         public ulong QuestionOptionId { get; set; }
         public string Option { get; set; }

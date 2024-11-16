@@ -9,6 +9,7 @@ namespace ItransitionTemplates.Models
         checkBox,
         multipleOptions
     }
+    [Table("Questions")]
     public class Question {
         public ulong QuestionId { get; set; }
         public string QuestionString { get; set; }

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ItransitionTemplates.Models
 {
+    [Table("Responses")]
     public class Response {
         public ulong ResponseId { get; set; }
         public DateTime Date { get; set; }

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace ItransitionTemplates.Models {
+    [Table("Admins")]
     public class Admin {
         [ForeignKey("User")]
         public ulong UserId { get; set; }

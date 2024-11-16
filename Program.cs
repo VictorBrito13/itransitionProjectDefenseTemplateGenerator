@@ -15,7 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-string dbConnection = "Server=localhost;Database=itransition_template_manager;User=root;Password=root";
+
+string dbConnectionTest = "Server=localhost;Database=itransition_template_manager;User=root;Password=root";
+string dbConnection = "Server=template-manager.mysql.database.azure.com;Database=itransition_template_manager;User=user;Password=$Us3r$13";
 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8,0,38));
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseMySql(dbConnection, serverVersion).EnableSensitiveDataLogging());
 
