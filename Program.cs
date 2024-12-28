@@ -19,7 +19,7 @@ builder.Services.AddControllersWithViews();
 string dbConnectionTest = "Server=localhost;Database=itransition_template_manager;User=root;Password=root";
 string dbConnection = "Server=template-manager.mysql.database.azure.com;Database=itransition_template_manager;User=user;Password=$Us3r$13";
 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8,0,38));
-builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseMySql(dbConnection, serverVersion).EnableSensitiveDataLogging());
+builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseMySql(dbConnectionTest, serverVersion).EnableSensitiveDataLogging());
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

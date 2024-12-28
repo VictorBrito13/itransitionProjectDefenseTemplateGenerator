@@ -33,11 +33,16 @@ async function printLatestTemplates() {
         templates.data.forEach(template => {
             content +=
             `
-            <a href="/template/template?templateId=${template.TemplateId}" class="col-12">
-                <div class="card">
-                    <img src="${template.Image_url}" class="card-image-top" alt="${template.Title}" width="150" height="150">
-                    <div class"card-body">
-                        <card-text>Template name By <b>${template.Admins[0]?.User.Username}</b></card-text>
+            <a href="/template/template?templateId=${template.TemplateId}" class="col-12 text-dark">
+                <div class="card d-flex justify-content-center background-image-conainer">
+                    <img
+                        src="/images/${template.Image_url}"
+                        class="card-image-top background-image"
+                        alt="${template.Title}"
+                        width="150" height="150">
+                    <div class="bg-light bg-opacity-50 rounded-3 p-3 text-center">
+                        <p class="card-text">${template.Title} By <b>${template.Admins[0]?.User.Username}</b></p>
+                        <p class="card-text">${template.Description}</p>
                     </div>
                 </div>
             </a>

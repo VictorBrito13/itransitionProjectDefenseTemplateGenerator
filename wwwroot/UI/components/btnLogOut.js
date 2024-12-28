@@ -4,7 +4,7 @@ export default function insertLogOutButton() {
 
     const $a = document.createElement("a");
     
-    $a.className = "btn btn-primary";
+    $a.className = "btn btn-danger";
     $a.href = "/user/log-out";
     $a.textContent = "Log out";
 
