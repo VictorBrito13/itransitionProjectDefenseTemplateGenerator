@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ItransitionTemplates")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7d1a9fa43271eb042ae793719b99ddf9eab18ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+023f951e02824f7a411fbab51ca1f4cfdd97c78a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ItransitionTemplates")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ItransitionTemplates")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

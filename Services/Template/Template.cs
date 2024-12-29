@@ -24,9 +24,9 @@ namespace ItransitionTemplates.Services.Template
             return null;
         }
 
-        //Get All templates
+        //Get all templates
         public async Task<Models.Template[]> GetLatestTemplatesWithAdmins(int page, int limit) {
-            Models.Template[] templates = await _context.Templates.OrderByDescending(t => t.TemplateId).Include(t => t.Admins).ThenInclude(a => a.User)
+            Models.Template[] templates = await _context.Templates.Where(t => t.IsPublic == true).OrderByDescending(t => t.TemplateId).Include(t => t.Admins).ThenInclude(a => a.User)
             .Skip(page * limit)
             .Take(limit).ToArrayAsync();
             return templates;

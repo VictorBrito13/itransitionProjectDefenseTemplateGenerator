@@ -1,9 +1,7 @@
 import insertLogOutButton from "../../UI/components/btnLogOut.js";
-import makeRequest from "../utils/http/makeRequest.js";
+import { getLatestTemplates, resetPagesForLatestTemplates } from "../utils/templates/getLatestTemplates.js";
+import { getTemplatesByUserId, resetPagesForUserTemplates } from "../utils/templates/getTemplatesByUserId.js";
 import printTemplates from "../utils/templates/printTemplates.js";
-
-let pageForTemplates = 0;
-let limit = 10;
 
 const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
 const $templatesHeader = document.getElementById("templates-header");
@@ -15,47 +13,32 @@ try {
     console.error(e);
 }
 
-//Get the latest templates
-async function getLatestTemplates() {
-    const json = makeRequest(`template/templates?page=${pageForTemplates}&limit=${limit}`);
-    ++pageForTemplates;
-    
-    return json;
-}
+const latestTemplates = await getLatestTemplates();
+console.log(latestTemplates);
 
-const templates = await getLatestTemplates();
-
-printTemplates(templates.data, $templatesContainer);
-
-//Get user's templates
-let pageForTemplatesByUser = 0;
-async function getTemplatesByUserId() {
-    const userId = document.getElementById("userId").value;
-    const json = makeRequest(`template/template/user?page=${pageForTemplatesByUser}&limit=${limit}&userId=${userId}`);
-    ++pageForTemplatesByUser;
-    
-    return json;
-}
+printTemplates(latestTemplates.data, $templatesContainer, "latest");
 
 //Button to toggle the templates between latest templates and the user's templates
 try {
     $btnToggleTemplates.addEventListener("click", async e => {
         $templatesContainer.innerHTML = null;
-        pageForTemplates = 0;
-        pageForTemplatesByUser = 0;
     
         if($btnToggleTemplates.textContent === "Your Templates") {
             $btnToggleTemplates.textContent = "See the latest templates";
             $templatesHeader.textContent = "Your Templates";
             const userTemplates = await getTemplatesByUserId();
-            printTemplates(userTemplates.data, $templatesContainer);
+            resetPagesForLatestTemplates();
+            printTemplates(userTemplates.data, $templatesContainer, "user");
         } else {
             $btnToggleTemplates.textContent = "Your Templates";
             $templatesHeader.textContent = "Latest Templates";
-            const templates = await getTemplatesByUserId();
-            printTemplates(templates.data, $templatesContainer);
+            const latestTemplates = await getLatestTemplates();
+            resetPagesForUserTemplates();
+            printTemplates(latestTemplates.data, $templatesContainer, "latest");
         }
     });
 } catch(e) {
     console.error(e);
 }
+
+export { getLatestTemplates, getTemplatesByUserId }
