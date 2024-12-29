@@ -6,7 +6,7 @@ export default function insertLogOutButton() {
     
     $a.className = "btn btn-danger";
     $a.href = "/user/log-out";
-    $a.textContent = "Log out";
+    $a.innerHTML = `Log out <i class="bi bi-box-arrow-right"></i>`;
 
     $btnLogOutContainer.appendChild($a);
 }

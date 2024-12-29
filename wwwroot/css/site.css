@@ -38,3 +38,14 @@ a {
   height: 100%;
   object-fit: cover;
 }
+
+/* Lates templates */
+#latest-templates-container {
+  overflow: auto;
+  height: 100vh;
+}
+
+.self-center {
+  width: 80%;
+  margin: 0px auto;
+}

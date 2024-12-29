@@ -1,4 +1,6 @@
 import insertLogOutButton from "../../UI/components/btnLogOut.js";
+import makeRequest from "../utils/http/makeRequest.js";
+import printTemplates from "../utils/templates/printTemplates.js";
 
 let pageForTemplates = 0;
 let limit = 10;
@@ -15,124 +17,45 @@ try {
 
 //Get the latest templates
 async function getLatestTemplates() {
-    const res = await fetch(`${location.origin}/template/templates?page=${pageForTemplates}&limit=${limit}`);
-    const json = await res.json();
+    const json = makeRequest(`template/templates?page=${pageForTemplates}&limit=${limit}`);
     ++pageForTemplates;
     
     return json;
 }
 
-async function printLatestTemplates() {
-    const templates = await getLatestTemplates();
-    console.log("Lates templates");
-    console.log(templates);
-    
+const templates = await getLatestTemplates();
 
-    if(templates.data) {
-        let content = "";
-        templates.data.forEach(template => {
-            content +=
-            `
-            <a href="/template/template?templateId=${template.TemplateId}" class="col-12 text-dark">
-                <div class="card d-flex justify-content-center background-image-conainer">
-                    <img
-                        src="/images/${template.Image_url}"
-                        class="card-image-top background-image"
-                        alt="${template.Title}"
-                        width="150" height="150">
-                    <div class="bg-light bg-opacity-50 rounded-3 p-3 text-center">
-                        <p class="card-text">${template.Title} By <b>${template.Admins[0]?.User.Username}</b></p>
-                        <p class="card-text">${template.Description}</p>
-                    </div>
-                </div>
-            </a>
-            `;
-        });
-        $templatesContainer.innerHTML += content
-    } else if(templates === null || templates.data.length === 0) {
-        const $p = document.createElement("p");
-        $p.textContent = "There is no templates here";
-        $templatesContainer.appendChild($p);
-    }
-
-}
-
-printLatestTemplates()
-
-
+printTemplates(templates.data, $templatesContainer);
 
 //Get user's templates
 let pageForTemplatesByUser = 0;
 async function getTemplatesByUserId() {
     const userId = document.getElementById("userId").value;
-    const res = await fetch(`${location.origin}/template/template/user?page=${pageForTemplatesByUser}&limit=${limit}&userId=${userId}`);
-    const json = await res.json();
+    const json = makeRequest(`template/template/user?page=${pageForTemplatesByUser}&limit=${limit}&userId=${userId}`);
     ++pageForTemplatesByUser;
     
     return json;
 }
 
-async function printUserTemplates() {
-    const templates = await getTemplatesByUserId();
-    console.log(templates);
-    
-    
-    const username = document.getElementById("username").value;
-
-    if(templates.data) {
-        let content = "";
-        templates.data.forEach(template => {
-            content +=
-            `
-            <a href="/template/create?templateId=${template.TemplateId}" class="col-12">
-                <div class="card">
-                    <img src="${template.Image_url}" class="card-image-top" alt="${template.Title}" width="150" height="150">
-                    <div class"card-body">
-                        <card-text>Template name By <b>${username}</b></card-text>
-                    </div>
-                </div>
-            </a>
-            `;
-        });
-        $templatesContainer.innerHTML += content
-    } else if(templates === null || templates.data.length === 0) {
-        const $p = document.createElement("p");
-        $p.textContent = "There is no templates here";
-        $templatesContainer.appendChild($p);
-    }
-}
-
 //Button to toggle the templates between latest templates and the user's templates
 try {
-    $btnToggleTemplates.addEventListener("click", e => {
+    $btnToggleTemplates.addEventListener("click", async e => {
         $templatesContainer.innerHTML = null;
         pageForTemplates = 0;
         pageForTemplatesByUser = 0;
-        console.log($btnToggleTemplates.textContent)
     
         if($btnToggleTemplates.textContent === "Your Templates") {
             $btnToggleTemplates.textContent = "See the latest templates";
             $templatesHeader.textContent = "Your Templates";
-            printUserTemplates();            
+            const userTemplates = await getTemplatesByUserId();
+            printTemplates(userTemplates.data, $templatesContainer);
         } else {
             $btnToggleTemplates.textContent = "Your Templates";
             $templatesHeader.textContent = "Latest Templates";
-            printLatestTemplates();
+            const templates = await getTemplatesByUserId();
+            printTemplates(templates.data, $templatesContainer);
         }
     });
 } catch(e) {
     console.error(e);
 }
-
-//Paginations buttons
-const $btnPaginationPrev = document.getElementById("pagination-prev");
-const $btnPaginationNext = document.getElementById("pagination-next");
-
-$btnPaginationPrev.addEventListener("click", e => {
-
-});
-
-$btnPaginationNext.addEventListener("click", e => {
-
-});
-
