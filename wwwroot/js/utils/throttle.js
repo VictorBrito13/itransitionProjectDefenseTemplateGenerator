@@ -4,12 +4,13 @@ export default function throttle(func, delay) {
 
     return (...args) => {
         if(timerFlag === null) {
-            //Function Execution
-            func(...args);
             //This prevent the function gets executed again until the time is completed
             timerFlag = setTimeout(() => {
                 timerFlag = null;
             }, delay);
+
+            //Function Execution
+            return func(...args);
         }
     };
 }

@@ -192,4 +192,15 @@ public class TemplateController : Controller {
         }
     }
 
+    [HttpGet("/template/get-by-query")]
+    public async Task<IActionResult> GetTemplatesByQuery([FromQuery] string text) {
+        Models.Template[] templates = await _TemplateService.GetTemplatesByQuery(text);
+
+        if(templates.Length == 0) {
+            return NotFound(JsonSerializer.Serialize( new { data = "No templates were found try other terms" } ));
+        }
+
+        return Ok(JsonSerializer.Serialize( new { data = templates } ));
+    }
+
 }

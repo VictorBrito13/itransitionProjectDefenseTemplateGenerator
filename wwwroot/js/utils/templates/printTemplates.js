@@ -2,8 +2,6 @@ import { getLatestTemplates } from "./getLatestTemplates.js";
 import { getTemplatesByUserId } from "./getTemplatesByUserId.js";
 
 export default async function printTemplates(templates, $templatesContainer, templatesMode) {
-    console.log(templates);
-
     if(!templates || templates.length === 0) {
         throw new Error("There is no templates");
     }

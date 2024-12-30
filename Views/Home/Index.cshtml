@@ -21,6 +21,13 @@
 
 <div>
 
+    <div class="position-relative d-flex justify-content-center">
+        <form class="mb-3">
+            <label for="search-template-control">Search for a template</label>
+            <input type="search" class="form-control" id="search-template-control">
+        </form>
+        <div id="search-result-contianer" class="element-hidden bg-light rounded-3 shadow-lg p-4"></div>
+    </div>
     @{
         if(username != null) {
             <a href="/template/create" class="btn btn-success">
@@ -30,6 +37,7 @@
         }
     }
 
+    @* Contains: latest templates, top 5 most popular, tag cloud *@
     <div class="d-flex content-container mt-5">
         @* Latest / Your templates *@
         <div class="border w-100">

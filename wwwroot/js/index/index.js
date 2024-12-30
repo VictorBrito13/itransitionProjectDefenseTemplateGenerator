@@ -1,11 +1,52 @@
 import insertLogOutButton from "../../UI/components/btnLogOut.js";
 import { getLatestTemplates, resetPagesForLatestTemplates } from "../utils/templates/getLatestTemplates.js";
+import getTemplatesByQuery from "../utils/templates/getTemplateByQuery.js";
 import { getTemplatesByUserId, resetPagesForUserTemplates } from "../utils/templates/getTemplatesByUserId.js";
 import printTemplates from "../utils/templates/printTemplates.js";
+import throttle from "../utils/throttle.js";
 
 const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
 const $templatesHeader = document.getElementById("templates-header");
 const $templatesContainer = document.getElementById("latest-templates-container");
+const $inputSearchTemplatesByQuery = document.getElementById("search-template-control");
+const $searchResultsContainer = document.getElementById("search-result-contianer");
+
+const throttleGetTemplatesByQuery = throttle(getTemplatesByQuery, 200);
+
+$inputSearchTemplatesByQuery.addEventListener("focus", e => {
+    $searchResultsContainer.classList.add("element-visible");
+    $searchResultsContainer.classList.remove("element-hidden");
+});
+
+$inputSearchTemplatesByQuery.addEventListener("focusout", e => {
+    $searchResultsContainer.classList.add("element-hidden");
+    $searchResultsContainer.classList.remove("element-visible");
+});
+
+$inputSearchTemplatesByQuery.addEventListener("input", async () => {    
+    const templates = await throttleGetTemplatesByQuery($inputSearchTemplatesByQuery.value);
+    const { data } = templates;
+    
+    if(!data || !(data instanceof Object)) {
+        $searchResultsContainer.innerHTML = `<p class="bg-danger text-light p-3 rounded-3">${data}</p>`;
+    } else {
+        let content = "";
+        data.forEach(template => {
+            content +=
+            `
+            <a class="icon-link link-secondary icon-link-hover" href="/template/template?templateId=${template.TemplateId}">
+                <div>
+                    <h3>${template.Title}</h3>
+                    <hr>
+                    <p>${template.Description}</p>
+                    <hr class="border border-primary">
+                </div>
+            </a>
+            `;
+        });
+        $searchResultsContainer.innerHTML = content;
+    }
+});
 
 try {
     insertLogOutButton();
@@ -14,7 +55,6 @@ try {
 }
 
 const latestTemplates = await getLatestTemplates();
-console.log(latestTemplates);
 
 printTemplates(latestTemplates.data, $templatesContainer, "latest");
 

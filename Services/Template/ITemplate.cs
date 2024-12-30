@@ -10,5 +10,6 @@ namespace ItransitionTemplates.Services.Template
         Task<int> UpdateTemplate(ulong templateId, Models.Template template);
         Task<Like[]> LikeAction(ulong userId, ulong templateId, string action);
         Task<int> DeleteTemplate(ulong templateId);
+        Task<Models.Template[]> GetTemplatesByQuery(string text);
     }
 }

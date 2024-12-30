@@ -116,5 +116,12 @@ namespace ItransitionTemplates.Services.Template
 
             return 400;
         }
+
+        public async Task<Models.Template[]> GetTemplatesByQuery(string text) {
+            string query = "SELECT TemplateId, Title, Description, Image_url, TopicId, IsPublic FROM templates WHERE MATCH(title, description) AGAINST ({0} WITH QUERY EXPANSION) LIMIT 10;";
+            Models.Template[] templates = await _context.Templates.FromSqlRaw(query, text).ToArrayAsync();
+
+            return templates;
+        }
     }
 }

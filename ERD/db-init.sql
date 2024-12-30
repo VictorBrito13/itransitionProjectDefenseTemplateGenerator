@@ -20,3 +20,4 @@ INSERT INTO users (username, email, password) VALUES
 -- =========================== Full text indexes
 -- Tempalte
 CREATE FULLTEXT INDEX idx_fulltext ON users(Username, Email);
+CREATE FULLTEXT INDEX idx_fulltext_title_description ON templates(title, description);
