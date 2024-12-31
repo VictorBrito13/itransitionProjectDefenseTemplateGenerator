@@ -16,6 +16,7 @@ export default class SingleLineQuestion {
         $div.className = "mt-4";
         $input.className = "form-control";
         $input.dataset["questionId"] = this.questionId;
+        $input.required = true;
         $label.textContent = this.label;
 
         //QuestionType defined for the database

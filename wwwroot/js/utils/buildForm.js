@@ -3,6 +3,7 @@ import MultilineQuestion from "../createTemplate/Multiline-question.js";
 import MultipleOptionsQuestion from "../createTemplate/Multiple-options-question.js";
 import PositiveIntegerQuestion from "../createTemplate/Positive-integer-question.js";
 import SingleLineQuestion from "../createTemplate/Single-string-question.js";
+import makeRequest from "./http/makeRequest.js";
 
 
 async function getTemplate() {
@@ -52,7 +53,7 @@ async function buildForm($parentElement, json, editionMode = false) {
             $btnSubmit.className = "btn btn-success"
             $btnSubmit.textContent = "Send";
 
-            $btnSubmit.addEventListener("click", async e => {
+            $parentElement.addEventListener("submit", async e => {
                 e.preventDefault();
                 const date = document.getElementById("form-date").value;
                 const userId = document.getElementById("form-user-email").dataset["userid"];
@@ -73,26 +74,24 @@ async function buildForm($parentElement, json, editionMode = false) {
                     $question.querySelector("textarea")?.dataset["questionId"] ||
                     $question.querySelector("select")?.dataset["questionId"] || "";
                     
-                    // 
-                    // date.replace("T", " ").replaceAll("-", "/")
                     responses.push({
-                        // Date: "25/12/2015 12:00:00 a. m.",
                         ResponseString: responseString,
                         UserId: parseInt(userId),
                         QuestionId: parseInt(questionId)
                     });
                 });
 
-                console.log(responses);
-
-                const responsesRes = await fetch(`${location.origin}/response/add`, {
+                const json = await makeRequest("response/add", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(responses)
+                    body: responses
                 });
-                console.log(responsesRes);
+                console.log(json);
+
+                const { data } = json;
+
+                if(!data) {
+
+                }
             });
             $parentElement.appendChild($btnSubmit);
         }

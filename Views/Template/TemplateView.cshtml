@@ -8,7 +8,6 @@
         string errorMsg = (string) TempData["errorMsg"];
         string userEmail = (string) TempData["userEmail"];
         string userId = TempData["userId"].ToString();
-        Console.WriteLine(DateTime.Now);
         if(errorMsg != null) {
             <p class="danger p-3 text-light">@errorMsg</p>
         } else {
@@ -17,11 +16,11 @@
                     <h1 id="form-title" class="text-center"></h1>
                     <p id="form-description"></p>
                 </div>
-                <div class="col-3 d-flex flex-column gap-3" id="likes-container">
+                <div class="col-3 d-flex flex-column gap-3 ps-4" id="likes-container">
                     @{
                         if(userId != null) {
                             <span id="btn-log-out-container"></span>
-                            <span id="likes-number"></span>
+                            <span id="likes-number" class="text-center"></span>
                             @* Buttons to manage the like or dislike action *@
                             <button class="btn btn-primary" id="btn-like-template" data-like-action="like">
                                 @* Just in case the user has not liked the template *@

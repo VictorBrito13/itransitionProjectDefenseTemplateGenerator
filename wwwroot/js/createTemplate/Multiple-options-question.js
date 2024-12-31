@@ -23,6 +23,8 @@ export default class MultipleOptionsQuestion {
         const $btnEditOptions = document.createElement("button");
         const $select = document.createElement("select");
 
+        $select.required = true;
+
         this.opts.forEach(opt => {
             const $option = document.createElement("option");
             $option.textContent = opt;

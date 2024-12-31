@@ -13,6 +13,8 @@ export default class MultilineQuestion {
         const $label = document.createElement("label");
         const $textarea = document.createElement("textarea");
 
+        $textarea.required = true;
+
         $div.className = "mt-4";
         $textarea.classList.add("form-control");
         $textarea.dataset["questionId"] = this.questionId;

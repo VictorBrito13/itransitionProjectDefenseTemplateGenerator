@@ -12,6 +12,8 @@ export default class CheckboxQuestion {
         const $div = document.createElement("div");
         const $label = document.createElement("label");
         const $input = document.createElement("input");
+
+        $input.required = true
         
         $div.className = "mt-4 d-flex gap-3 align-items-center";
         $input.type = "checkbox";

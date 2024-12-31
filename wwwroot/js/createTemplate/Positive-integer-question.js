@@ -18,6 +18,7 @@ export default class PositiveIntegerQuestion {
         $input.type = "number";
         $input.dataset["questionId"] = this.questionId;
         $input.min = 0;
+        $input.required = true;
         $label.textContent = this.label;
 
         //QuestionType defined for the database
