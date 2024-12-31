@@ -142,8 +142,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasKey("ResponseId");
 
-                    b.HasIndex("QuestionId")
-                        .IsUnique();
+                    b.HasIndex("QuestionId");
 
                     b.HasIndex("UserId");
 
@@ -360,8 +359,8 @@ namespace ItransitionTemplates.Migrations
             modelBuilder.Entity("ItransitionTemplates.Models.Response", b =>
                 {
                     b.HasOne("ItransitionTemplates.Models.Question", "Question")
-                        .WithOne("Response")
-                        .HasForeignKey("ItransitionTemplates.Models.Response", "QuestionId")
+                        .WithMany("Responses")
+                        .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -425,7 +424,7 @@ namespace ItransitionTemplates.Migrations
                 {
                     b.Navigation("QuestionOptions");
 
-                    b.Navigation("Response");
+                    b.Navigation("Responses");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>

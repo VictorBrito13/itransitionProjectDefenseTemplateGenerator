@@ -25,8 +25,6 @@ console.log(template);
 const templateLikes = template.Likes;
 $likesNumber.textContent = templateLikes.length;
 
-console.log(templateLikes);
-
 templateLikes.forEach(templateLike => {
     //It means the user have given a like to this tempalte
     if(templateLike.UserId == userId) {
@@ -38,8 +36,6 @@ templateLikes.forEach(templateLike => {
 
 $btnLikeTemplate.addEventListener("click", async e => {
     //Petition to give a like to this template
-    console.log(userId);
-    console.log(template.TemplateId);
 
     if($btnLikeTemplate.dataset["likeAction"] === "like") {
         
@@ -47,10 +43,8 @@ $btnLikeTemplate.addEventListener("click", async e => {
 
         if(likedRes.errorMsg) {
             $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${likedRes.errorMsg}</p>`;
-            return
+            return;
         }
-
-        console.log(likedRes);
         
         if(likedRes) {
             $iconStarFill.style.display = "block";
@@ -60,11 +54,10 @@ $btnLikeTemplate.addEventListener("click", async e => {
         }
     } else if($btnLikeTemplate.dataset["likeAction"] === "unlike") {
         const unlikedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)).json();
-        console.log(unlikedRes);
 
         if(unlikedRes.errorMsg) {
             $serverMsgs.innerHTML = `<p class="p-3 text-light rounded bg-danger">${unlikedRes.errorMsg}</p>`;
-            return
+            return;
         }
 
         if(unlikedRes) {
@@ -72,7 +65,6 @@ $btnLikeTemplate.addEventListener("click", async e => {
             $iconStar.style.display = "block";
             $btnLikeTemplate.dataset["likeAction"] = "like";
             $likesNumber.textContent = unlikedRes.data;
-            console.log(unlikedRes)
         }
     }
 });
@@ -84,8 +76,6 @@ setInterval( async () => {
     if(likes.data) {
         $likesNumber.textContent = likes.data.length;
     }
-
-    console.log(likes.data);
     
 }, 3000);
 
@@ -100,5 +90,9 @@ const now = new Date();
 console.log(now.toISOString().slice(0, 19));
 
 const formattedDateTime = now.toISOString().slice(0, 19);
+// formattedDateTime
 
-$formControlDate.value = formattedDateTime;
+console.log(formattedDateTime);
+
+// 
+// $formControlDate.value = ;

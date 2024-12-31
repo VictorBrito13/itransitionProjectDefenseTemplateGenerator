@@ -5,7 +5,7 @@ namespace ItransitionTemplates.Models
     [Table("Responses")]
     public class Response {
         public ulong ResponseId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
         public string ResponseString { get; set; }
         [ForeignKey("User")]
         public ulong UserId { get; set; }

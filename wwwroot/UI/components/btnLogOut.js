@@ -1,6 +1,6 @@
 export default function insertLogOutButton() {
     const $btnLogOutContainer = document.getElementById("btn-log-out-container");
-    $btnLogOutContainer.className = "col-3";
+    // $btnLogOutContainer.className = "col-3";
 
     const $a = document.createElement("a");
     

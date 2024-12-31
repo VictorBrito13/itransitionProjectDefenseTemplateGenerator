@@ -8,6 +8,7 @@
         string errorMsg = (string) TempData["errorMsg"];
         string userEmail = (string) TempData["userEmail"];
         string userId = TempData["userId"].ToString();
+        Console.WriteLine(DateTime.Now);
         if(errorMsg != null) {
             <p class="danger p-3 text-light">@errorMsg</p>
         } else {
@@ -19,6 +20,7 @@
                 <div class="col-3 d-flex flex-column gap-3" id="likes-container">
                     @{
                         if(userId != null) {
+                            <span id="btn-log-out-container"></span>
                             <span id="likes-number"></span>
                             @* Buttons to manage the like or dislike action *@
                             <button class="btn btn-primary" id="btn-like-template" data-like-action="like">
@@ -27,8 +29,6 @@
                                 @* Just in case the user has liked the template *@
                                 <i class="bi bi-star-fill" id="icon-star-fill" style="display: none;"></i>
                             </button>
-                        } else {
-                            <span id="btn-log-out-container"></span>
                         }
                     }
                 </div>

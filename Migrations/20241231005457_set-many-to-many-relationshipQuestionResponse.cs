@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ItransitionTemplates.Migrations
 {
     /// <inheritdoc />
-    public partial class db_schema : Migration
+    public partial class setmanytomanyrelationshipQuestionResponse : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -322,8 +322,7 @@ namespace ItransitionTemplates.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Responses_QuestionId",
                 table: "Responses",
-                column: "QuestionId",
-                unique: true);
+                column: "QuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Responses_UserId",

@@ -17,7 +17,7 @@ namespace ItransitionTemplates.Models
         public ulong TemplateId { get; set; }
         public QuestionType QuestionType { get; set; }
         public ICollection<QuestionOption>? QuestionOptions { get; set; }
-        public Response? Response { get; set; }
+        public Response[]? Responses { get; set; }
 
         public override string ToString()
         {

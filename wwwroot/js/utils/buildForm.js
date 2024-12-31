@@ -59,10 +59,7 @@ async function buildForm($parentElement, json, editionMode = false) {
                 //Build responses objects
                 const responses = [];
 
-                const $questions = Array.from($parentElement.querySelectorAll("div")).slice(2) || [];
-
-                console.log($questions);
-                
+                const $questions = Array.from($parentElement.querySelectorAll("div")).slice(2) || [];                
 
                 $questions.forEach($question => {   
                     
@@ -76,11 +73,13 @@ async function buildForm($parentElement, json, editionMode = false) {
                     $question.querySelector("textarea")?.dataset["questionId"] ||
                     $question.querySelector("select")?.dataset["questionId"] || "";
                     
+                    // 
+                    // date.replace("T", " ").replaceAll("-", "/")
                     responses.push({
-                        Date: date.replace("T", " "),
+                        // Date: "25/12/2015 12:00:00 a. m.",
                         ResponseString: responseString,
-                        UserId: userId,
-                        QuestionId: questionId,
+                        UserId: parseInt(userId),
+                        QuestionId: parseInt(questionId)
                     });
                 });
 

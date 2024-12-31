@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ItransitionTemplates.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241024114233_default_value_for_template_image")]
-    partial class default_value_for_template_image
+    [Migration("20241231005457_set-many-to-many-relationshipQuestionResponse")]
+    partial class setmanytomanyrelationshipQuestionResponse
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -145,8 +145,7 @@ namespace ItransitionTemplates.Migrations
 
                     b.HasKey("ResponseId");
 
-                    b.HasIndex("QuestionId")
-                        .IsUnique();
+                    b.HasIndex("QuestionId");
 
                     b.HasIndex("UserId");
 
@@ -363,8 +362,8 @@ namespace ItransitionTemplates.Migrations
             modelBuilder.Entity("ItransitionTemplates.Models.Response", b =>
                 {
                     b.HasOne("ItransitionTemplates.Models.Question", "Question")
-                        .WithOne("Response")
-                        .HasForeignKey("ItransitionTemplates.Models.Response", "QuestionId")
+                        .WithMany("Responses")
+                        .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -428,7 +427,7 @@ namespace ItransitionTemplates.Migrations
                 {
                     b.Navigation("QuestionOptions");
 
-                    b.Navigation("Response");
+                    b.Navigation("Responses");
                 });
 
             modelBuilder.Entity("ItransitionTemplates.Models.Template", b =>
