@@ -6,60 +6,175 @@
     string username = (string) TempData["username"];
     @* Evaluate if there is a session *@
     if(username != null) {
-        <div class="d-flex justify-content-evenly mb-3">
-            <p class="container col-8">Welcome back <b>@username</b></p>
-            <span class="col-3" id="btn-log-out-container"></span>
+        @* User Greeting — authenticated users *@
+        string userId = (string) TempData["userId"];
+        <div class="bg-white rounded-2xl shadow-soft p-6 mb-8">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-semibold">
+                        @username.Substring(0, 1).ToUpper()
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Welcome back, <span class="text-primary">@username</span></h1>
+                        <p class="text-gray-500 text-sm mt-1">Ready to create something great?</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Create Template
+                    </a>
+                </div>
+            </div>
+            <input type="hidden" value="@userId" id="userId">
+            <input type="hidden" value="@username" id="username">
         </div>
     } else {
-        <div class="d-flex justify-content-end">
-            <a
-            href="/user/log-in"
-            class="btn btn-primary mb-3 rounded-pill p-3">Log in <i class="bi bi-box-arrow-in-right"></i></a>
+        @* Hero Section — guests *@
+        <div class="bg-gradient-to-r from-primary to-blue-700 text-white py-16 px-8 rounded-2xl mb-8">
+            <div class="max-w-2xl">
+                <h1 class="text-4xl font-bold mb-4">Create and Share Templates</h1>
+                <p class="text-xl text-blue-100 mb-8">Build custom forms, surveys, and questionnaires in minutes</p>
+                <a href="/user/sign-up" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
+                    Get Started
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </a>
+            </div>
         </div>
     }
 }
 
-<div>
-
-    <div class="position-relative d-flex justify-content-center">
-        <form class="mb-3">
-            <label for="search-template-control">Search for a template</label>
-            <input type="search" class="form-control" id="search-template-control">
-        </form>
-        <div id="search-result-contianer" class="element-hidden bg-light rounded-3 shadow-lg p-4"></div>
+@* Search Section *@
+<div class="relative max-w-2xl mx-auto mb-8">
+    <div class="relative">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input
+            type="search"
+            id="search-template-control"
+            placeholder="Search for templates..."
+            class="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-xl shadow-soft focus:ring-2 focus:ring-primary focus:border-transparent text-lg outline-none transition-all"
+        />
     </div>
-    @{
-        if(username != null) {
-            <a href="/template/create" class="btn btn-success">
-                Create a Template
-                <i class="bi bi-file-earmark-plus-fill"></i>
-            </a>
+    <div id="search-result-contianer" class="absolute w-full bg-white border border-gray-200 rounded-xl shadow-lg mt-2 max-h-96 overflow-y-auto z-50 hidden"></div>
+</div>
+
+@* Templates Section *@
+<div>
+    <div class="flex items-center justify-between mb-6">
+        <h2 id="templates-header" class="text-2xl font-bold text-gray-900">Latest Templates</h2>
+        @{
+            if(username != null) {
+                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-primary transition-colors" id="btn-toggle-templates">
+                    Your Templates
+                </button>
+            }
         }
-    }
+    </div>
 
-    @* Contains: latest templates, top 5 most popular, tag cloud *@
-    <div class="d-flex content-container mt-5">
-        @* Latest / Your templates *@
-        <div class="border w-100">
-            <div class="d-flex justify-content-evenly my-3">
-                <h2 id="templates-header">Latest Templates</h2>
-                @* User's templates *@
-                @{
-                    if(username != null) {
-                        string? userId = (string) TempData["userId"];
-                        <input type="hidden" value="@userId" id="userId">
-                        <input type="hidden" value="@username" id="username">
-                        <button type="button" class="btn btn-primary rounder-3" id="btn-toggle-templates">Your Templates</button>
-                    }
-                }
+    @* Templates Grid — rendered by JS *@
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="latest-templates-container">
+        @* Skeleton Loading State *@
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
             </div>
-
-            @* Latest / Your templates container *@
-            <div>
-                <div class="d-flex gap-3 flex-wrap justify-content-evenly w-100 p-3" id="latest-templates-container"></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+            <div class="h-32 bg-gray-200 animate-pulse"></div>
+            <div class="p-6">
+                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                <div class="flex items-center gap-2">
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="~/js/index/index.js" type="module"></script>
+    @* Empty State — hidden by default, shown by JS when no templates *@
+    <div id="empty-state" class="text-center py-16 hidden">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">No templates yet</h3>
+        <p class="text-gray-500 mb-6">Be the first to create one!</p>
+        <a href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors">
+            Create Template
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+        </a>
+    </div>
+
+    @* Load More Button *@
+    <div id="load-more-container" class="text-center mt-8 hidden">
+        <button id="load-more-btn" class="px-8 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors shadow-sm">
+            Load More
+        </button>
+    </div>
 </div>
+
+<script src="~/js/index/index.js" type="module"></script>
