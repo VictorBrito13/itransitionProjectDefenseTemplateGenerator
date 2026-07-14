@@ -2,23 +2,21 @@
     ViewData["Title"] = "Create Template";
 }
 
-<div>
-    <div id="server-responses">
-        
-    </div>
+<div x-data="templateBuilder()" class="max-w-4xl mx-auto">
 
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="row">
-                <h1 class="col" id="page-title">Create a new template</h1>
-            </div>
+    <!-- Server response messages -->
+    <div id="server-responses"></div>
 
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900" id="page-title">Create a new template</h1>
+        <div class="flex items-center gap-4 mt-4">
             @{
                 string? topicsString = (string) TempData["topics"];
                 ItransitionTemplates.Models.Topic[]? topics = JsonSerializer.Deserialize<ItransitionTemplates.Models.Topic[]>(topicsString??"[]");
-                <div class="col">
-                    <label for="">Select a topic</label>
-                    <select class="form-select" id="setting-template-topic">
+                <div class="flex-1">
+                    <label class="text-sm font-medium text-gray-700 mb-1 block">Select a topic</label>
+                    <select id="setting-template-topic" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
                         @{
                             if(topics == null || topics.Length == 0) {
                                 <option>No topics here</option>
@@ -31,148 +29,304 @@
                     </select>
                 </div>
             }
-
-            <button type="button" class="btn btn-success col-4" id="btn-create-template">Create Template</button>
-        </div>
-        <div id="tool-bar">
-            <h3>Add questions</h3>
-            <div class="d-flex gap-5">
-                <div class="row d-flex flex-column gap-3">
-                    <!--q-sl means "question single-line"-->
-                    <button type="button" id="q-sl" class="btn btn-secondary">Single-line string question</button>
-                    <!--q-ml means "question multiline string"-->
-                    <button type="button" id="q-ml" class="btn btn-secondary">Multiline string question</button>
-                    <!--q-pi means "question positive integer"-->
-                    <button type="button" id="q-pi" class="btn btn-secondary">Positive integer question</button>
-                </div>
-                <div class="row d-flex flex-column gap-3">
-                    <!--q-cb means "question checkbox"-->
-                    <button type="button" id="q-cb" class="btn btn-secondary">Checkbox question</button>
-                    <!--q-cb means "multiple options"-->
-                    <button type="button" id="q-mo" class="btn btn-secondary">Multiple options question</button>
-                </div>
-            </div>
-        </div>
-        <hr>
-    </div>
-
-    @* ---------------------- Modals------------------------- *@
-
-    <!-- Modal to add users to admins or allow users to answer the tempalte -->
-    <div class="modal fade" id="admin_allowed-users" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-3" id="modal-admins-users-allowed-title">Add a new users to </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="d-flex flex-column gap-3">
-                    <input type="search" class="form-control" id="form-control-search-user">
-                    <div id="search-result"></div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <h3 class="fs-5">Users: </h3>
-                <div id="users-container"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btn-save-user">Save changes</button>
-            </div>
+            <div class="flex items-end">
+                <button type="button" class="px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-emerald-600 transition-colors" id="btn-create-template">Create Template</button>
             </div>
         </div>
     </div>
 
-    <!--Modal to edit the selection question options-->
-    <div class="modal fade" id="editOptionsModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Edit options</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="row">
-                <label for="addOpts">Add options</label>
-                <textarea style="height: 100px; resize: none;" id="textAreaAddOpts" placeholder="add options separate each option with a new line (enter or return)"></textarea>
+    <!-- Question Type Selector -->
+    <div class="bg-white rounded-2xl shadow-soft p-6 mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Add Questions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Single-line Text -->
+            <button type="button" id="q-sl" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
+                </svg>
+                <span class="font-medium text-gray-700">Single Line Text</span>
+            </button>
 
-                <hr>
-                <h3>Current options</h3>
-                <div id="options-list" class="border-1" style="height: 200px; overflow-y: auto;"></div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn-close-options-changes">Close</button>
-              <button type="button" class="btn btn-primary" id="btn-save-options-changes">Save changes</button>
-            </div>
-          </div>
+            <!-- Paragraph -->
+            <button type="button" id="q-ml" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h7"/>
+                </svg>
+                <span class="font-medium text-gray-700">Paragraph</span>
+            </button>
+
+            <!-- Number -->
+            <button type="button" id="q-pi" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                </svg>
+                <span class="font-medium text-gray-700">Number</span>
+            </button>
+
+            <!-- Checkboxes -->
+            <button type="button" id="q-cb" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="font-medium text-gray-700">Checkboxes</span>
+            </button>
+
+            <!-- Multiple Choice -->
+            <button type="button" id="q-mo" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 14a4 4 0 110-8 4 4 0 010 8z"/>
+                </svg>
+                <span class="font-medium text-gray-700">Multiple Choice</span>
+            </button>
         </div>
     </div>
 
-    <!---------------------------------------------------------------Editable template-->
-    <div class="template">
-        <!--Basic settings for the template-->
-        <div>
-            <h2 id="setting-template-title" contenteditable>Template title</h2>
-            <div>
-                <label for="template-visibility">Template visibility</label>
-                <div>
-                    @* Select to change the template visibility *@
-                    <select id="template-visibility-switch" class="form-select">
-                        <option value="1">Public</option>
-                        <option value="0">Private</option>
-                    </select>
-                    @* Button to add a new admin *@
-                    <button type="button" class="btn btn-primary" id="btn-add-admin" data-bs-toggle="modal" data-bs-target="#admin_allowed-users" data-bs-title="Add an admin">
-                        Add an admin
-                    </button>
-                    @* Button to allow users *@
-                    <button type="button" style="display: none;" class="btn btn-info" id="btn-add-allowed-users" data-bs-toggle="modal" data-bs-target="#admin_allowed-users" data-bs-title="Allow users to answer the form">
-                        Allow users to answer this tempalte
-                    </button>
-                </div>
-            </div>
-            <p id="setting-template-description" contenteditable>
-                Template Description
-            </p>
+    <!-- Template Editor Area -->
+    <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
+        <!-- Template title -->
+        <h2 id="setting-template-title" contenteditable="true" class="text-2xl font-bold text-gray-900 outline-none" data-placeholder="Template title">Template title</h2>
+
+        <!-- Template description -->
+        <p id="setting-template-description" contenteditable="true" class="text-gray-600 mt-2 outline-none" data-placeholder="Add a description...">Template Description</p>
+
+        <!-- Visibility toggle -->
+        <div class="flex items-center gap-3 mt-6">
+            <label class="text-sm text-gray-600">Visibility</label>
+            <button type="button" role="switch" id="visibility-toggle-btn"
+                    class="w-12 h-6 bg-gray-200 rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    x-bind:class="isPublic ? 'bg-secondary' : 'bg-gray-200'"
+                    x-on:click="isPublic = !isPublic; $refs.visibilitySelect.value = isPublic ? 1 : 0">
+                <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform shadow-sm"
+                      x-bind:style="isPublic ? 'transform: translateX(24px)' : ''"></span>
+            </button>
+            <span class="text-sm font-medium text-gray-700" x-text="isPublic ? 'Public' : 'Private'"></span>
+            <!-- Hidden select for backward compatibility with JS -->
+            <select id="template-visibility-switch" x-ref="visibilitySelect" class="hidden">
+                <option value="1">Public</option>
+                <option value="0">Private</option>
+            </select>
         </div>
 
-        <!-------------------------------------------------------------Questions for the template-->
+        <!-- Admin / Allowed Users buttons -->
+        <div class="flex items-center gap-3 mt-4">
+            <button type="button" class="hidden px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors" id="btn-add-admin"
+                    x-on:click="openAdminModal('admin', 'Add an admin')">
+                Add an admin
+            </button>
+            <button type="button" class="hidden px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors" id="btn-add-allowed-users"
+                    x-on:click="openAdminModal('allowUser', 'Allow users to answer this template')">
+                Allow users to answer
+            </button>
+        </div>
+    </div>
+
+    <!-- Template Questions Form -->
+    <div class="bg-white rounded-2xl shadow-soft p-8 mb-6">
         <form id="template-questions">
             <div>
-                <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email" disabled>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="email" id="email" disabled>
             </div>
             <div class="mt-4">
-                <label for="date">Date</label>
-                <input type="datetime-local" class="form-control" name="date" id="date" disabled>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                <input type="datetime-local" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="date" id="date" disabled>
             </div>
         </form>
     </div>
 
-    <div id="danger-zone-container">
-        <h2>Danger Zone</h2>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">
+    <!-- Danger Zone -->
+    <div id="danger-zone-container" class="hidden border-2 border-red-200 rounded-2xl p-6 mt-8">
+        <h2 class="text-red-600 font-semibold text-lg">Danger Zone</h2>
+        <p class="text-sm text-gray-500 mt-1">Permanently delete this template. This action cannot be undone.</p>
+        <button type="button" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                x-on:click="deleteModalOpen = true">
             Delete Template
         </button>
     </div>
 
-    @* Modal to confirm the elimination of the template *@
-    <!-- Modal -->
-    <div class="modal fade" id="deleteConfirmation" tabindex="-1" aria-labelledby="deleteConfirmation" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="deleteConfirmation">Are you sure you want to delete this temlpate?</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" id="delete-template" class="btn btn-danger">Delete Template</button>
-        </div>
+    <!-- ==================== Modals ==================== -->
+
+    <!-- Admin / Allowed Users Modal -->
+    <div x-show="adminModalOpen" x-cloak
+         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-on:click.self="adminModalOpen = false">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 p-6"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900" id="modal-admins-users-allowed-title">Add a new user to</h3>
+                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        x-on:click="adminModalOpen = false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Search -->
+            <div class="mb-4">
+                <input type="search" id="form-control-search-user" placeholder="Search by username..."
+                       class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                <div id="search-result" class="mt-2"></div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="max-h-60 overflow-y-auto">
+                <h4 class="text-sm font-medium text-gray-700 mb-2">Users:</h4>
+                <div id="users-container" class="space-y-2"></div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        x-on:click="adminModalOpen = false">Cancel</button>
+                <button type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        id="btn-save-user">Save changes</button>
+            </div>
         </div>
     </div>
+
+    <!-- Edit Options Modal -->
+    <div x-show="optionsModalOpen" x-cloak
+         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-on:click.self="optionsModalOpen = false">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 p-6"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Edit options</h3>
+                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        x-on:click="optionsModalOpen = false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Add options</label>
+                    <textarea id="textAreaAddOpts" rows="4" placeholder="Add options — separate each option with a new line"
+                              class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary resize-none"></textarea>
+                </div>
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Current options</h4>
+                    <div id="options-list" class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3 space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        id="btn-close-options-changes" x-on:click="optionsModalOpen = false">Cancel</button>
+                <button type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        id="btn-save-options-changes">Save changes</button>
+            </div>
+        </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div x-show="deleteModalOpen" x-cloak
+         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-on:click.self="deleteModalOpen = false">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full mx-4 p-6"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-600">Delete Template</h3>
+                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                        x-on:click="deleteModalOpen = false; deleteConfirmText = ''">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
 
-    <script src="~/js/createTemplate/createTemplate.js" type="module"></script>
+            <!-- Modal Body -->
+            <div>
+                <p class="text-gray-600 mb-4">Are you sure you want to delete this template? This action cannot be undone.</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Type the template title to confirm:</label>
+                <input type="text" x-model="deleteConfirmText" placeholder="Enter template title"
+                       class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                        x-on:click="deleteModalOpen = false; deleteConfirmText = ''">Cancel</button>
+                <button type="button" id="delete-template"
+                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        x-bind:disabled="deleteConfirmText.trim() !== currentTemplateTitle">
+                    Delete Template
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+function templateBuilder() {
+    return {
+        isPublic: true,
+        adminModalOpen: false,
+        optionsModalOpen: false,
+        deleteModalOpen: false,
+        deleteConfirmText: '',
+        currentTemplateTitle: 'Template title',
+        openAdminModal(userType, title) {
+            document.getElementById('modal-admins-users-allowed-title').textContent = title;
+            this.adminModalOpen = true;
+            // Dispatch event for createTemplate.js to populate modal
+            window.dispatchEvent(new CustomEvent('open-admin-modal', { detail: { userType, title } }));
+        },
+        init() {
+            // Track template title for delete confirmation
+            const titleEl = document.getElementById('setting-template-title');
+            if (titleEl) {
+                const observer = new MutationObserver(() => {
+                    this.currentTemplateTitle = titleEl.textContent.trim();
+                });
+                observer.observe(titleEl, { childList: true, characterData: true, subtree: true });
+                this.currentTemplateTitle = titleEl.textContent.trim();
+            }
+        }
+    };
+}
+</script>
+
+<script src="~/js/createTemplate/createTemplate.js" type="module"></script>

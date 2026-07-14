@@ -58,7 +58,6 @@ if(urlParamsSearcher.get("templateId")) {
     //template's visibility switcher    
     toggleVisibilityTemplate(template.IsPublic);
 
-    //Change the modal's title for add admins or users that are able to answer the form
     const $modal_Add_Admins_Or_Users_Allowed_To_Answer = document.getElementById("admin_allowed-users");
 
     $btnSaveUser.addEventListener("click", e => {
@@ -105,10 +104,11 @@ if(urlParamsSearcher.get("templateId")) {
         $p.textContent = user.Email;
         $p.dataset["userid"] = user.UserId;
         $p.dataset["username"] = user.Username;
+        $p.className = "flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm text-gray-700";
         const $btnDelete = document.createElement("button");
         $btnDelete.type = "button";
         $btnDelete.textContent = "Delete"
-        $btnDelete.className = "btn btn-danger";
+        $btnDelete.className = "text-xs px-2 py-1 text-red-600 hover:bg-red-50 rounded transition-colors";
 
         deleteElementOnClick($btnDelete, $p);
 
@@ -117,27 +117,26 @@ if(urlParamsSearcher.get("templateId")) {
         return $p;
     }
 
-    $modal_Add_Admins_Or_Users_Allowed_To_Answer.addEventListener("show.bs.modal", e => {
+    // Listen for custom event from Alpine.js modal triggers (replaces Bootstrap show.bs.modal)
+    window.addEventListener("open-admin-modal", e => {
+        const { userType, title } = e.detail;
         $usersContainer.innerHTML = null;
-        const $trigger = e.relatedTarget;
-        const title = $trigger.dataset["bsTitle"];
+        $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = userType;
 
         //Insert the admins or user allowed to answer the form
-        if($trigger.id === "btn-add-admin") {
-            $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "admin";
+        if(userType === "admin") {
             admins.forEach(admin => {
                 const { User } = admin;
                 $usersContainer.appendChild(generateUserHmtl(User));
             });
-        } else if($trigger.id === "btn-add-allowed-users") {
-            $modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] = "allowUser";
+        } else if(userType === "allowUser") {
             usersAllowedToAnswer.forEach(userAllowedToAnswer => {
                 const { User } = userAllowedToAnswer;
                 $usersContainer.appendChild(generateUserHmtl(User));
             });
         }
 
-        document.getElementById("modal-admins-users-allowed-title").textContent = title
+        document.getElementById("modal-admins-users-allowed-title").textContent = title;
     });
 
     //Search a user by his username
@@ -153,16 +152,20 @@ if(urlParamsSearcher.get("templateId")) {
         if(json.errorMsg) {
             const $p = document.createElement("p");
             $p.textContent = json.errorMsg;
+            $p.className = "text-sm text-red-600";
             $searchResult.appendChild($p);
         } else {
             const $btn = document.createElement("button");
             $btn.textContent = json.user.Email;
-            $btn.className = "btn btn-primary";
+            $btn.type = "button";
+            $btn.className = "w-full text-left px-3 py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors";
 
             $btn.addEventListener("click", e => {
                 const $p = document.createElement("p");
                 $p.textContent = json.user.Email;
                 $p.dataset["userid"] = json.user.UserId;
+                $p.dataset["username"] = json.user.Username;
+                $p.className = "flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm text-gray-700";
                 $usersContainer.appendChild($p);
             });
             $searchResult.appendChild($btn);
@@ -242,10 +245,10 @@ $btnCreateTemplate.addEventListener("click", async e => {
         const $p = document.createElement("p");
         if(templateUpdatedJSON.errorMsg) {
             $p.textContent = templateUpdatedJSON.errorMsg;
-            $p.className = "p-3 rounded text-light bg-danger";
+            $p.className = "p-3 rounded text-white bg-red-500";
         } else if(templateUpdatedJSON.data) {
             $p.textContent = templateUpdatedJSON.data;
-            $p.className = "p-3 rounded text-light bg-success";
+            $p.className = "p-3 rounded text-white bg-secondary";
         }
 
         $serverMsgs.appendChild($p);
@@ -273,13 +276,13 @@ $btnCreateTemplate.addEventListener("click", async e => {
         const $p = document.createElement("p");
 
         if(templateSavedJSON.errorMsg) {
-            $p.className = "bg-danger rounded text-light p-3";
+            $p.className = "bg-red-500 rounded text-white p-3";
             $p.textContent = templateSavedJSON.errorMsg;
         } else {
-            $p.className = "bg-success rounded text-light p-3";
+            $p.className = "bg-secondary rounded text-white p-3";
             $p.innerHTML =
-            `Your template has been saved succesfully you can update your template
-            <a class="btn btn-light" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">Here</a>`;
+            `Your template has been saved successfully. You can update your template
+            <a class="underline font-medium hover:text-emerald-100" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">here</a>`;
         }
 
         $serverMsgs.appendChild($p);
