@@ -129,7 +129,7 @@
             showFieldError(emailInput, emailError, 'Email is required');
             return false;
         }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+        if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(emailInput.value)) {
             showFieldError(emailInput, emailError, 'Please enter a valid email');
             return false;
         }

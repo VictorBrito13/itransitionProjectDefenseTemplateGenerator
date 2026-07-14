@@ -232,10 +232,5 @@ $signUpForm.addEventListener("submit", function (e) {
     $btnSpinner.classList.remove("hidden");
 });
 
-// --- Show server error if present ---
-(function () {
-    const serverError = "@((string)TempData["errorMsg"])";
-    if (serverError && serverError !== "") {
-        showGlobalError(serverError);
-    }
-})();
+// --- Initial state ---
+// Server error is displayed via cshtml TempData block
