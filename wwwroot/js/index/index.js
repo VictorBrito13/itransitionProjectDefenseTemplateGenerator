@@ -1,84 +1,192 @@
-import insertLogOutButton from "../../UI/components/btnLogOut.js";
 import { getLatestTemplates, resetPagesForLatestTemplates } from "../utils/templates/getLatestTemplates.js";
 import getTemplatesByQuery from "../utils/templates/getTemplateByQuery.js";
 import { getTemplatesByUserId, resetPagesForUserTemplates } from "../utils/templates/getTemplatesByUserId.js";
-import printTemplates from "../utils/templates/printTemplates.js";
-import throttle from "../utils/throttle.js";
+import printTemplates, { createSkeletonCard } from "../utils/templates/printTemplates.js";
+import debounce from "../utils/debounce.js";
 
 const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
 const $templatesHeader = document.getElementById("templates-header");
 const $templatesContainer = document.getElementById("latest-templates-container");
 const $inputSearchTemplatesByQuery = document.getElementById("search-template-control");
 const $searchResultsContainer = document.getElementById("search-result-contianer");
+const $loadMoreContainer = document.getElementById("load-more-container");
 
-const throttleGetTemplatesByQuery = throttle(getTemplatesByQuery, 200);
+let currentMode = "latest";
 
-$inputSearchTemplatesByQuery.addEventListener("focus", e => {
-    $searchResultsContainer.classList.add("element-visible");
-    $searchResultsContainer.classList.remove("element-hidden");
-});
+// --- Skeleton Management ---
+function showSkeletons() {
+    $templatesContainer.innerHTML = "";
+    for (let i = 0; i < 6; i++) {
+        $templatesContainer.insertAdjacentHTML('beforeend', createSkeletonCard());
+    }
+    $templatesContainer.classList.remove('hidden');
+}
 
-$inputSearchTemplatesByQuery.addEventListener("focusout", e => {
-    $searchResultsContainer.classList.add("element-hidden");
-    $searchResultsContainer.classList.remove("element-visible");
-});
+function hideSkeletons() {
+    const skeletons = $templatesContainer.querySelectorAll('.skeleton-card');
+    skeletons.forEach(el => el.remove());
+}
 
-$inputSearchTemplatesByQuery.addEventListener("input", async () => {    
-    const templates = await throttleGetTemplatesByQuery($inputSearchTemplatesByQuery.value);
-    const { data } = templates;
-    
-    if(!data || !(data instanceof Object)) {
-        $searchResultsContainer.innerHTML = `<p class="bg-danger text-light p-3 rounded-3">${data}</p>`;
-    } else {
-        let content = "";
-        data.forEach(template => {
-            content +=
-            `
-            <a class="icon-link link-secondary icon-link-hover" href="/template/template?templateId=${template.TemplateId}">
-                <div>
-                    <h3>${template.Title}</h3>
-                    <hr>
-                    <p>${template.Description}</p>
-                    <hr class="border border-primary">
+// --- Template Loading ---
+async function loadTemplates() {
+    showSkeletons();
+    try {
+        const latestTemplates = await getLatestTemplates();
+        hideSkeletons();
+
+        if (latestTemplates && latestTemplates.data && latestTemplates.data.length > 0) {
+            $templatesContainer.classList.remove('hidden');
+            const $emptyState = document.getElementById('empty-state');
+            if ($emptyState) $emptyState.classList.add('hidden');
+            await printTemplates(latestTemplates.data, $templatesContainer, "latest");
+        } else {
+            $templatesContainer.classList.add('hidden');
+            const $emptyState = document.getElementById('empty-state');
+            if ($emptyState) $emptyState.classList.remove('hidden');
+        }
+    } catch (e) {
+        hideSkeletons();
+        console.error("Failed to load templates:", e);
+    }
+}
+
+// --- Search Functionality ---
+const debouncedSearch = debounce(async (query) => {
+    if (!query || query.trim().length === 0) {
+        $searchResultsContainer.classList.add('hidden');
+        $searchResultsContainer.innerHTML = "";
+        return;
+    }
+
+    try {
+        const result = await getTemplatesByQuery(query);
+        const { data } = result;
+
+        if (!data || !(data instanceof Object)) {
+            $searchResultsContainer.innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    <p>No templates found</p>
                 </div>
-            </a>
             `;
-        });
-        $searchResultsContainer.innerHTML = content;
+            $searchResultsContainer.classList.remove('hidden');
+        } else if (Array.isArray(data) && data.length === 0) {
+            $searchResultsContainer.innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    <p>No templates match your search</p>
+                </div>
+            `;
+            $searchResultsContainer.classList.remove('hidden');
+        } else if (Array.isArray(data)) {
+            let content = "";
+            data.forEach(template => {
+                const topicName = template.Topic?.Name || "Uncategorized";
+                const creatorName = template.Admins?.[0]?.User?.Username ?? "Unknown";
+                content += `
+                    <a href="/template/template?templateId=${template.TemplateId}" class="block px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-900">${template.Title}</h3>
+                                <p class="text-xs text-gray-500 mt-0.5">${topicName} &middot; by ${creatorName}</p>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                `;
+            });
+            $searchResultsContainer.innerHTML = content;
+            $searchResultsContainer.classList.remove('hidden');
+        } else {
+            // Handle case where data is a message string (from 404 response)
+            $searchResultsContainer.innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    <p>${data}</p>
+                </div>
+            `;
+            $searchResultsContainer.classList.remove('hidden');
+        }
+    } catch (e) {
+        console.error("Search error:", e);
+    }
+}, 300);
+
+$inputSearchTemplatesByQuery.addEventListener("input", (e) => {
+    debouncedSearch(e.target.value);
+});
+
+// Close search dropdown when clicking outside
+document.addEventListener("click", (e) => {
+    if (!$inputSearchTemplatesByQuery.contains(e.target) && !$searchResultsContainer.contains(e.target)) {
+        $searchResultsContainer.classList.add('hidden');
     }
 });
 
-try {
-    insertLogOutButton();
-} catch(e) {
-    console.error(e);
-}
+// Show dropdown when focusing search input
+$inputSearchTemplatesByQuery.addEventListener("focus", (e) => {
+    if (e.target.value && e.target.value.trim().length > 0) {
+        $searchResultsContainer.classList.remove('hidden');
+    }
+});
 
-const latestTemplates = await getLatestTemplates();
+// --- User Templates Toggle ---
+if ($btnToggleTemplates) {
+    $btnToggleTemplates.addEventListener("click", async () => {
+        showSkeletons();
 
-printTemplates(latestTemplates.data, $templatesContainer, "latest");
-
-//Button to toggle the templates between latest templates and the user's templates
-try {
-    $btnToggleTemplates.addEventListener("click", async e => {
-        $templatesContainer.innerHTML = null;
-    
-        if($btnToggleTemplates.textContent === "Your Templates") {
-            $btnToggleTemplates.textContent = "See the latest templates";
+        if (currentMode === "latest") {
+            currentMode = "user";
+            $btnToggleTemplates.textContent = "Latest Templates";
             $templatesHeader.textContent = "Your Templates";
-            const userTemplates = await getTemplatesByUserId();
             resetPagesForLatestTemplates();
-            printTemplates(userTemplates.data, $templatesContainer, "user");
+
+            try {
+                const userTemplates = await getTemplatesByUserId();
+                hideSkeletons();
+
+                if (userTemplates && userTemplates.data && userTemplates.data.length > 0) {
+                    $templatesContainer.classList.remove('hidden');
+                    const $emptyState = document.getElementById('empty-state');
+                    if ($emptyState) $emptyState.classList.add('hidden');
+                    await printTemplates(userTemplates.data, $templatesContainer, "user");
+                } else {
+                    $templatesContainer.classList.add('hidden');
+                    const $emptyState = document.getElementById('empty-state');
+                    if ($emptyState) $emptyState.classList.remove('hidden');
+                }
+            } catch (e) {
+                hideSkeletons();
+                console.error("Failed to load user templates:", e);
+            }
         } else {
+            currentMode = "latest";
             $btnToggleTemplates.textContent = "Your Templates";
             $templatesHeader.textContent = "Latest Templates";
-            const latestTemplates = await getLatestTemplates();
             resetPagesForUserTemplates();
-            printTemplates(latestTemplates.data, $templatesContainer, "latest");
+
+            try {
+                const latestTemplates = await getLatestTemplates();
+                hideSkeletons();
+
+                if (latestTemplates && latestTemplates.data && latestTemplates.data.length > 0) {
+                    $templatesContainer.classList.remove('hidden');
+                    const $emptyState = document.getElementById('empty-state');
+                    if ($emptyState) $emptyState.classList.add('hidden');
+                    await printTemplates(latestTemplates.data, $templatesContainer, "latest");
+                } else {
+                    $templatesContainer.classList.add('hidden');
+                    const $emptyState = document.getElementById('empty-state');
+                    if ($emptyState) $emptyState.classList.remove('hidden');
+                }
+            } catch (e) {
+                hideSkeletons();
+                console.error("Failed to load latest templates:", e);
+            }
         }
     });
-} catch(e) {
-    console.error(e);
 }
+
+// --- Initial Load ---
+await loadTemplates();
 
 export { getLatestTemplates, getTemplatesByUserId }
