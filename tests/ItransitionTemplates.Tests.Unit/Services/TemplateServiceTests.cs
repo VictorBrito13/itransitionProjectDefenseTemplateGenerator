@@ -159,7 +159,7 @@ namespace ItransitionTemplates.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task UpdateTemplate_ExistingTemplate_Returns200()
+        public async Task UpdateTemplate_ExistingTemplate_UpdatesSuccessfully()
         {
             // Arrange
             var topic = await SeedTopic();
@@ -172,39 +172,35 @@ namespace ItransitionTemplates.Tests.Unit.Services
             };
 
             // Act
-            var result = await _service.UpdateTemplate(template.TemplateId, updateData);
+            await _service.UpdateTemplate(template.TemplateId, updateData);
 
             // Assert
-            Assert.Equal(200, result);
             var updated = await _context.Templates.FindAsync(template.TemplateId);
             Assert.Equal("Updated Title", updated.Title);
         }
 
         [Fact]
-        public async Task UpdateTemplate_NonExistent_Returns404()
+        public async Task UpdateTemplate_NonExistent_ThrowsServiceException()
         {
             // Arrange
             var updateData = new ItransitionTemplates.Models.Template { Title = "Updated" };
 
-            // Act
-            var result = await _service.UpdateTemplate(99999, updateData);
-
-            // Assert
-            Assert.Equal(404, result);
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ServiceException>(() => _service.UpdateTemplate(99999, updateData));
+            Assert.Equal(ServiceErrorCode.NotFound, ex.ErrorCode);
         }
 
         [Fact]
-        public async Task DeleteTemplate_ExistingTemplate_Returns200()
+        public async Task DeleteTemplate_ExistingTemplate_DeletesSuccessfully()
         {
             // Arrange
             var topic = await SeedTopic();
             var template = await SeedTemplate(topic.TopicId);
 
             // Act
-            var result = await _service.DeleteTemplate(template.TemplateId);
+            await _service.DeleteTemplate(template.TemplateId);
 
             // Assert
-            Assert.Equal(200, result);
             var deleted = await _context.Templates.FindAsync(template.TemplateId);
             Assert.Null(deleted);
         }

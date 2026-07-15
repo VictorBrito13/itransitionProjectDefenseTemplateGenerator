@@ -67,9 +67,12 @@ namespace ItransitionTemplates.Tests.Unit.Utils
             var value = result.Value;
             Assert.NotNull(value);
             var valueType = value.GetType();
-            var errorMsgProp = valueType.GetProperty("errorMsg");
-            Assert.NotNull(errorMsgProp);
-            Assert.Equal("Validation failed", errorMsgProp.GetValue(value));
+            var errorProp = valueType.GetProperty("error");
+            Assert.NotNull(errorProp);
+            var errorObj = errorProp.GetValue(value);
+            var messageProp = errorObj.GetType().GetProperty("message");
+            Assert.NotNull(messageProp);
+            Assert.Equal("Validation failed", messageProp.GetValue(errorObj));
         }
 
         [Fact]
@@ -109,9 +112,12 @@ namespace ItransitionTemplates.Tests.Unit.Utils
             var value = result.Value;
             Assert.NotNull(value);
             var valueType = value.GetType();
-            var errorMsgProp = valueType.GetProperty("errorMsg");
-            Assert.NotNull(errorMsgProp);
-            Assert.Equal("Template not found", errorMsgProp.GetValue(value));
+            var errorProp = valueType.GetProperty("error");
+            Assert.NotNull(errorProp);
+            var errorObj = errorProp.GetValue(value);
+            var messageProp = errorObj.GetType().GetProperty("message");
+            Assert.NotNull(messageProp);
+            Assert.Equal("Template not found", messageProp.GetValue(errorObj));
         }
     }
 }

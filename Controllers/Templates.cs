@@ -100,17 +100,15 @@ public class TemplateController : Controller {
         }
 
         try {
-            int result = await _TemplateService.UpdateTemplate(templateId, template);
-            if(result == 404) {
-                return JsonResponse.NotFound("Template not found — it may have been deleted");
-            } else if(result == 500) {
-                return JsonResponse.Error("Failed to save changes — the template may have been modified by another user");
-            }
+            await _TemplateService.UpdateTemplate(templateId, template);
+        } catch (ServiceException ex) {
+            return JsonResponse.Error(ex.Message, ex.StatusCode);
         } catch (Exception err) {
             _logger.LogError(err, "Error updating template {TemplateId}", templateId);
             if(err.ToString().Contains("cannot be tracked because another instance with the key value")) {
                 return JsonResponse.Error("A template with this title already exists");
             }
+            throw;
         }
 
         return JsonResponse.Ok("Template updated successfully");
@@ -160,13 +158,11 @@ public class TemplateController : Controller {
                 return JsonResponse.Error("Please sign in to delete this template", 401);
             }
 
-            int n = await _TemplateService.DeleteTemplate(templateId);
+            await _TemplateService.DeleteTemplate(templateId);
 
-            if(n == 200) {
-                return JsonResponse.Ok("Template deleted successfully");
-            } else {
-                return JsonResponse.Error("Failed to delete template — you may not have permission");
-            }
+            return JsonResponse.Ok("Template deleted successfully");
+        } catch(ServiceException ex) {
+            return JsonResponse.Error(ex.Message, ex.StatusCode);
         } catch(Exception err) {
             _logger.LogError(err, "Error deleting template {TemplateId}", templateId);
             return JsonResponse.Error("Failed to delete template — please try again");

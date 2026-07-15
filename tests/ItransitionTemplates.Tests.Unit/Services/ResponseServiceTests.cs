@@ -63,7 +63,7 @@ namespace ItransitionTemplates.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task AddResponses_ValidResponses_Returns201()
+        public async Task AddResponses_ValidResponses_SavesSuccessfully()
         {
             // Arrange
             var (user, question) = await SeedUserAndQuestion();
@@ -78,23 +78,23 @@ namespace ItransitionTemplates.Tests.Unit.Services
             };
 
             // Act
-            var result = await _service.AddResponses(responses);
+            await _service.AddResponses(responses);
 
             // Assert
-            Assert.Equal(201, result);
+            var saved = await _context.Responses.FirstOrDefaultAsync(r => r.QuestionId == question.QuestionId);
+            Assert.NotNull(saved);
+            Assert.Equal("John", saved.ResponseString);
         }
 
         [Fact]
-        public async Task AddResponses_EmptyArray_Returns403()
+        public async Task AddResponses_EmptyArray_ThrowsServiceException()
         {
             // Arrange
             var responses = Array.Empty<ItransitionTemplates.Models.Response>();
 
-            // Act
-            var result = await _service.AddResponses(responses);
-
-            // Assert
-            Assert.Equal(403, result);
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<ServiceException>(() => _service.AddResponses(responses));
+            Assert.Equal(ServiceErrorCode.Database, ex.ErrorCode);
         }
     }
 }

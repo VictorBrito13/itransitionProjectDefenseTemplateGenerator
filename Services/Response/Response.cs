@@ -1,4 +1,5 @@
 using ItransitionTemplates.Data;
+using ItransitionTemplates.Models;
 
 namespace ItransitionTemplates.Services.Response
 {
@@ -9,16 +10,13 @@ namespace ItransitionTemplates.Services.Response
             _context = context;
         }
 
-        public async Task<int> AddResponses(Models.Response[] responses) {
+        public async Task AddResponses(Models.Response[] responses) {
             await _context.AddRangeAsync(responses);
 
             int n = _context.SaveChanges();
 
-            if(n >= 1) {
-                return 201;
-            }
-
-            return 403;
+            if(n < 1)
+                throw new ServiceException("Failed to save responses — please try again", ServiceErrorCode.Database);
         }
     }
 }

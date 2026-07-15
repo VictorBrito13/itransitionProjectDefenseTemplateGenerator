@@ -59,10 +59,11 @@ namespace ItransitionTemplates.Services.Template
         }
 
         //Update the template
-        public async Task<int> UpdateTemplate(ulong templateId, Models.Template template) {
+        public async Task UpdateTemplate(ulong templateId, Models.Template template) {
             Models.Template found = await GetTemplateById(templateId);
 
-            if(found == null) return 404;
+            if(found == null)
+                throw new ServiceException("Template not found — it may have been deleted", ServiceErrorCode.NotFound);
 
             //Properties updates
             found.Title = template.Title;
@@ -76,11 +77,8 @@ namespace ItransitionTemplates.Services.Template
 
             int n = _context.SaveChanges();
 
-            if(n >= 1) {
-                return 200;
-            }
-
-            return 500;
+            if(n < 1)
+                throw new ServiceException("Failed to save template changes", ServiceErrorCode.Database);
         }
 
         //Give a like to a template or unlike the template
@@ -105,17 +103,18 @@ namespace ItransitionTemplates.Services.Template
             return null;
         }
 
-        public async Task<int> DeleteTemplate(ulong templateId) {
+        public async Task DeleteTemplate(ulong templateId) {
             Models.Template found = await GetTemplateById(templateId);
+
+            if(found == null)
+                throw new ServiceException("Template not found — it may have already been deleted", ServiceErrorCode.NotFound);
+
             _context.Templates.Remove(found);
 
             int n = await _context.SaveChangesAsync();
 
-            if(n >= 1) {
-                return 200;
-            }
-
-            return 400;
+            if(n < 1)
+                throw new ServiceException("Failed to delete template", ServiceErrorCode.Database);
         }
 
         public async Task<Models.Template[]> GetTemplatesByQuery(string text) {
