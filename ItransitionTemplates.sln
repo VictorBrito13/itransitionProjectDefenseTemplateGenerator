@@ -5,6 +5,10 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItransitionTemplates", "ItransitionTemplates.csproj", "{071E1739-1BD8-4CFC-8FDF-8398320F2776}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{52FBB52C-4745-4588-B859-8D2B1385877E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItransitionTemplates.Tests.Unit", "tests\ItransitionTemplates.Tests.Unit\ItransitionTemplates.Tests.Unit.csproj", "{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +19,18 @@ Global
 		{071E1739-1BD8-4CFC-8FDF-8398320F2776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{071E1739-1BD8-4CFC-8FDF-8398320F2776}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{071E1739-1BD8-4CFC-8FDF-8398320F2776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90D19878-E85C-49D6-851A-468AE914DEC6}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1} = {52FBB52C-4745-4588-B859-8D2B1385877E}
 	EndGlobalSection
 EndGlobal
