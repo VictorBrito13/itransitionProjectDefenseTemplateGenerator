@@ -1,10 +1,9 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ItransitionTemplates.Utils
 {
     public class Session {
-        //Sotre in session
+        //Store in session
         public static void Store<T>(HttpContext context, string key, T o) {
             string s = JsonSerializer.Serialize(o);
             context.Session.SetString(key, s);
@@ -15,7 +14,6 @@ namespace ItransitionTemplates.Utils
             string? s = context.Session.GetString(key);
 
             T? o = JsonSerializer.Deserialize<T>(s??"{}");
-            Console.WriteLine(o);
             return o;
         }
 

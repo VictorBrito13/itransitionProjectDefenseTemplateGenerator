@@ -1,4 +1,3 @@
-using System.Text.Json;
 using ItransitionTemplates.Models;
 using ItransitionTemplates.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -18,31 +17,27 @@ public class TemplateController : Controller {
     [HttpGet("/template/create")]
     public async Task<IActionResult> CreateTemplateView() {
         Models.Topic[] topics = await _TopicService.GetTopics();
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
-        TempData["topics"] = JsonSerializer.Serialize(topics);
-        Console.WriteLine(userSession.UserId);
+        Models.User userSession = Auth.ValidateUserSession(HttpContext);
+        TempData["topics"] = System.Text.Json.JsonSerializer.Serialize(topics);
         return View("CreateTemplate");
     }
 
     //Create a template
     [HttpPost("/template/create")]
     public async Task<ActionResult<Models.Template>> CreateTemplate([FromBody] Models.Template template) {
-        Console.WriteLine(template);
-
         if(template.TopicId <= 0) {
             TempData["errorMsg"] = "Define a topic for this template";
             return View("CreateTemplate");
         }
 
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
 
-        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
-            Console.WriteLine("Session invalida");
-            return Json(new { errorMsg = "Login to complete this action", status = 401 });
+        if(userSession == null) {
+            return JsonResponse.Error("Login to complete this action", 401);
         }
 
         if(template == null) {
-            return BadRequest(JsonSerializer.Serialize(new { errorMsg = "The tamplate is null" }));
+            return JsonResponse.Error("The tamplate is null");
         }
 
         Models.Template saved = await _TemplateService.AddTemplate(template);
@@ -52,7 +47,7 @@ public class TemplateController : Controller {
         Models.Admin adminSaved = await _AdminService.AddAdmin(admin);
 
         if(saved == null || adminSaved == null) {
-            return BadRequest(JsonSerializer.Serialize(new { errorMsg = "An error has ocurred, try again" }));
+            return JsonResponse.Error("An error has ocurred, try again");
         }
 
         return Ok(saved);
@@ -60,23 +55,22 @@ public class TemplateController : Controller {
 
     //Get all the templates (from the newest to the oldest ones)
     [HttpGet("/template/templates")]
-    public async Task<string> GetTemplatesAndAdmins([FromQuery] int page, [FromQuery] int limit = 10) {
+    public async Task<IActionResult> GetTemplatesAndAdmins([FromQuery] int page, [FromQuery] int limit = 10) {
         Models.Template[] templates = await _TemplateService.GetLatestTemplatesWithAdmins(page, limit);
-        return JsonSerializer.Serialize(new { data = templates});
+        return JsonResponse.Ok(templates);
     }
 
     //Get templates by the user Id
     [HttpGet("/template/template/user")]
-    public async Task<string> GetTemplatesByUserId([FromQuery] int page, [FromQuery] int limit, [FromQuery] ulong userId) {
-        Console.WriteLine(userId);
+    public async Task<IActionResult> GetTemplatesByUserId([FromQuery] int page, [FromQuery] int limit, [FromQuery] ulong userId) {
         Models.Template[] templates = await _TemplateService.GetTemplatesByUserId(page, limit, userId);
-        return JsonSerializer.Serialize(new { data = templates});
+        return JsonResponse.Ok(templates);
     }
 
     //Get template by Id (just the view), this view is going to be for the forms (answers)
     [HttpGet("/template/template")]
     public IActionResult GetTemplateView() {
-        Models.User user = Session.GetObject<Models.User>(HttpContext, "userSession");
+        Models.User user = Auth.ValidateUserSession(HttpContext);
         TempData["userEmail"] = user.Email;
         TempData["userId"] = user.UserId;
         return View("TemplateView");
@@ -84,42 +78,39 @@ public class TemplateController : Controller {
 
     //Get template by ID
     [HttpGet("/template/get-template")]
-    public async Task<string> GetTemplate([FromQuery] ulong templateId) {
+    public async Task<IActionResult> GetTemplate([FromQuery] ulong templateId) {
         Models.Template template = await _TemplateService.GetTemplateById(templateId);
 
         if(template == null) {
-            return JsonSerializer.Serialize(new { errorMsg = "Resource not found"});
-        } else {
-            string templateString = JsonSerializer.Serialize(template);
-            return templateString;
+            return JsonResponse.NotFound("Resource not found");
         }
+
+        return Ok(template);
     }
 
     //Update a template
     [HttpPut("/template/update")]
     public async Task<ActionResult> UpdateTemplate([FromQuery] ulong templateId, [FromBody] Models.Template template) {
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
 
-        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
-            Console.WriteLine("Session invalida");
-            return Json(new { errorMsg = "Login to complete this action", status =  401 });
+        if(userSession == null) {
+            return JsonResponse.Error("Login to complete this action", 401);
         }
 
         try {
             int result = await _TemplateService.UpdateTemplate(templateId, template);
             if(result == 404) {
-                return NotFound(JsonSerializer.Serialize(new {errorMsg = "The tamplate was not found"}));
+                return JsonResponse.NotFound("The tamplate was not found");
             } else if(result == 500) {
-                return BadRequest(JsonSerializer.Serialize(new {errorMsg = "This template could not be updated"}));
+                return JsonResponse.Error("This template could not be updated");
             }
         } catch (Exception err) {
-            Console.WriteLine(err);
             if(err.ToString().Contains("cannot be tracked because another instance with the key value")) {
-                return BadRequest(JsonSerializer.Serialize(new {errorMsg = "There is a entity with this value"}));
+                return JsonResponse.Error("There is a entity with this value");
             }
         }
 
-        return Ok(JsonSerializer.Serialize(new {data = "Template updated successfully"}));
+        return JsonResponse.Ok("Template updated successfully");
     }
 
     //It is used to give a like to certain template
@@ -128,67 +119,51 @@ public class TemplateController : Controller {
     public async Task<IActionResult> LikeAction([FromQuery] ulong userId, [FromQuery] ulong templateId, [FromQuery] string action) {
 
         //Ensure the user has a session
-        Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
 
-        if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
-            Console.WriteLine("Session invalida");
-            return Json(new { errorMsg = "Login to complete this action", status = 401 });
+        if(userSession == null) {
+            return JsonResponse.Error("Login to complete this action", 401);
         }
 
         Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
 
-        Console.WriteLine("Accion completada");
-        Console.WriteLine(actionCompleted.Length);
-
-        if(action == "like") {
-            if(actionCompleted != null) {
-                return Ok(JsonSerializer.Serialize(new { data = actionCompleted.Length }));
-            } else {
-                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
-            }
-        } else {
-            if(actionCompleted != null) {
-                return Ok(JsonSerializer.Serialize(new { data = actionCompleted.Length }));
-            } else {
-                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "We could not complete this action" }));
-            }
+        if(actionCompleted != null) {
+            return JsonResponse.Ok(actionCompleted.Length);
         }
+
+        return JsonResponse.Error("We could not complete this action");
     }
 
     //It return the number of likes of a given template
     [HttpGet("/template/likes")]
     public async Task<IActionResult> GetTemplateLikes([FromQuery] ulong templateId) {
-        Console.WriteLine(templateId);
         Models.Template template = await _TemplateService.GetTemplateById(templateId);
 
-        //Exists the tempalte
         if(template != null) {
-            return Ok(JsonSerializer.Serialize(new { data = template.Likes }));
+            return JsonResponse.Ok(template.Likes);
         }
 
-        return NotFound(JsonSerializer.Serialize( new { errorMsg = "The template does not exists" }));
+        return JsonResponse.NotFound("The template does not exists");
     }
 
     [HttpDelete("/template/delete")]
     public async Task<IActionResult> DeleteTemplate([FromQuery] ulong templateId) {
         try {
-            Models.User userSession = Session.GetObject<Models.User>(HttpContext, "userSession");
+            Models.User? userSession = Auth.ValidateSession(HttpContext);
 
-            if(userSession == null || userSession.Email == null || userSession.UserId == 0 || userSession.Username == null) {
-                Console.WriteLine("Session invalida");
-                return Json(new { errorMsg = "Login to complete this action", status =  401 });
+            if(userSession == null) {
+                return JsonResponse.Error("Login to complete this action", 401);
             }
 
             int n = await _TemplateService.DeleteTemplate(templateId);
 
             if(n == 200) {
-                return Ok(JsonSerializer.Serialize(new { data = "Template deleted successfully" }));
+                return JsonResponse.Ok("Template deleted successfully");
             } else {
-                return BadRequest(JsonSerializer.Serialize(new { errorMsg = "This action could not be done" }));
+                return JsonResponse.Error("This action could not be done");
             }
         } catch(Exception err) {
-            Console.WriteLine(err);
-            return BadRequest(JsonSerializer.Serialize(new { errorMsg = "This action could not be done" }));
+            return JsonResponse.Error("This action could not be done");
         }
     }
 
@@ -197,10 +172,10 @@ public class TemplateController : Controller {
         Models.Template[] templates = await _TemplateService.GetTemplatesByQuery(text);
 
         if(templates.Length == 0) {
-            return NotFound(JsonSerializer.Serialize( new { data = "No templates were found try other terms" } ));
+            return JsonResponse.NotFound("No templates were found try other terms");
         }
 
-        return Ok(JsonSerializer.Serialize( new { data = templates } ));
+        return JsonResponse.Ok(templates);
     }
 
 }

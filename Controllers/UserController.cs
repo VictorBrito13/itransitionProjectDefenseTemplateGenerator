@@ -1,7 +1,6 @@
 using ItransitionTemplates.Models;
 using ItransitionTemplates.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace ItransitionTemplates.Controllers;
 
@@ -22,7 +21,6 @@ public class UserController : Controller {
         Models.User userFound = await _UserService.Login(user);
 
         if(userFound != null) {
-            Console.WriteLine(userFound.Email);
             //Store the user in the session
             Session.Store(HttpContext, "userSession", new { UserId=userFound.UserId, Username=userFound.Username, Email=userFound.Email});
             return RedirectToAction("Index", "Home");
@@ -48,7 +46,6 @@ public class UserController : Controller {
             TempData["ErrorMsg"] = err.Msg;
             return View("SignUpView");
         } catch (Exception err) {
-            Console.WriteLine(err);
             TempData["errorMsg"] = "An unknown error has occurred";
             return View("SignUpView");
         }
@@ -58,15 +55,14 @@ public class UserController : Controller {
     public async Task<IActionResult> GetUserByUsername([FromQuery] string username) {
         try {
             Models.User user = await _UserService.GetUserByUsername(username);
-            Console.WriteLine(user.Email);
 
             if(user != null) {
-                return Ok(JsonSerializer.Serialize(new { user = user }));
+                return JsonResponse.Ok(user);
             }
 
-            return NotFound(JsonSerializer.Serialize(new { errorMsg = "User not found" }));
+            return JsonResponse.NotFound("User not found");
         } catch (Exception err) {
-            return NotFound(JsonSerializer.Serialize(new { errorMsg = "User not found" }));
+            return JsonResponse.NotFound("User not found");
         }
     }
 

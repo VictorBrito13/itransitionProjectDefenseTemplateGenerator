@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ItransitionTemplates.Models;
 using ItransitionTemplates.Utils;
-using System.Text.Json;
 
 namespace ItransitionTemplates.Controllers;
 
@@ -20,8 +19,8 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         ItransitionTemplates.Models.User user = Session.GetObject<ItransitionTemplates.Models.User>(HttpContext, "userSession");
-        TempData["username"] = user.Username;
-        TempData["userId"] = user.UserId.ToString();
+        TempData["username"] = user?.Username;
+        TempData["userId"] = user?.UserId.ToString();
         return View();
     }
 
