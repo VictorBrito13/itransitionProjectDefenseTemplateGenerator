@@ -3,16 +3,16 @@ using ItransitionTemplates.Models;
 using ItransitionTemplates.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MySqlConnector;
 
 namespace ItransitionTemplates.Services.User
 {
     public class User : IUserService {
         private readonly ApplicationDBContext _context;
+        private readonly ILogger<User> _logger;
 
-        public User(ApplicationDBContext context) {
+        public User(ApplicationDBContext context, ILogger<User> logger) {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Models.User> Login(Models.User user) {
@@ -62,7 +62,7 @@ namespace ItransitionTemplates.Services.User
 
                 return user;
             } catch(Exception err) {
-                Console.WriteLine(err);
+                _logger.LogError(err, "Error getting user by username: {Username}", username);
                 return null;
             }
 

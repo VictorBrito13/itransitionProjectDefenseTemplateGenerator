@@ -3,7 +3,7 @@ using ItransitionTemplates.Data;
 namespace ItransitionTemplates.Services.Admin
 {
     public class Admin : IAdmin {
-        private ApplicationDBContext _context;
+        private readonly ApplicationDBContext _context;
 
         public Admin(ApplicationDBContext context) {
             _context = context;

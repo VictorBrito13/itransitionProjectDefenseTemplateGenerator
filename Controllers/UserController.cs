@@ -7,8 +7,10 @@ namespace ItransitionTemplates.Controllers;
 public class UserController : Controller {
 
     private Services.User.IUserService _UserService;
-    public UserController(Services.User.IUserService _userService) {
+    private readonly ILogger<UserController> _logger;
+    public UserController(Services.User.IUserService _userService, ILogger<UserController> logger) {
         _UserService = _userService;
+        _logger = logger;
     }
     
     [HttpGet("/user/log-in")]
@@ -46,6 +48,7 @@ public class UserController : Controller {
             TempData["ErrorMsg"] = err.Msg;
             return View("SignUpView");
         } catch (Exception err) {
+            _logger.LogError(err, "Unknown error during user sign-up");
             TempData["errorMsg"] = "An unknown error has occurred";
             return View("SignUpView");
         }
@@ -62,6 +65,7 @@ public class UserController : Controller {
 
             return JsonResponse.NotFound("User not found");
         } catch (Exception err) {
+            _logger.LogError(err, "Error getting user by username: {Username}", username);
             return JsonResponse.NotFound("User not found");
         }
     }

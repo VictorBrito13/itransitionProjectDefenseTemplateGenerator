@@ -8,10 +8,12 @@ public class TemplateController : Controller {
     private readonly Services.Topic.ITopic _TopicService;
     private readonly Services.Template.ITemplate _TemplateService;
     private Services.Admin.IAdmin _AdminService;
-    public TemplateController(Services.Topic.ITopic topicService, Services.Template.ITemplate templateService, Services.Admin.IAdmin _adminService) {
+    private readonly ILogger<TemplateController> _logger;
+    public TemplateController(Services.Topic.ITopic topicService, Services.Template.ITemplate templateService, Services.Admin.IAdmin _adminService, ILogger<TemplateController> logger) {
         _TopicService = topicService;
         _TemplateService = templateService;
         _AdminService = _adminService;
+        _logger = logger;
     }
 
     [HttpGet("/template/create")]
@@ -105,6 +107,7 @@ public class TemplateController : Controller {
                 return JsonResponse.Error("This template could not be updated");
             }
         } catch (Exception err) {
+            _logger.LogError(err, "Error updating template {TemplateId}", templateId);
             if(err.ToString().Contains("cannot be tracked because another instance with the key value")) {
                 return JsonResponse.Error("There is a entity with this value");
             }
@@ -126,6 +129,8 @@ public class TemplateController : Controller {
         }
 
         Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
+
+        _logger.LogInformation("Like action '{Action}' completed for template {TemplateId} by user {UserId}, result count: {Count}", action, templateId, userId, actionCompleted?.Length ?? 0);
 
         if(actionCompleted != null) {
             return JsonResponse.Ok(actionCompleted.Length);
@@ -163,6 +168,7 @@ public class TemplateController : Controller {
                 return JsonResponse.Error("This action could not be done");
             }
         } catch(Exception err) {
+            _logger.LogError(err, "Error deleting template {TemplateId}", templateId);
             return JsonResponse.Error("This action could not be done");
         }
     }

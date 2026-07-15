@@ -6,9 +6,11 @@ namespace ItransitionTemplates.Controllers
     public class ResponseController : Controller {
 
         private ItransitionTemplates.Services.Response.IResponse _responseService;
+        private readonly ILogger<ResponseController> _logger;
 
-        public ResponseController(ItransitionTemplates.Services.Response.IResponse responseService) {
+        public ResponseController(ItransitionTemplates.Services.Response.IResponse responseService, ILogger<ResponseController> logger) {
             _responseService = responseService;
+            _logger = logger;
         }
 
         [HttpPost("/response/add")]

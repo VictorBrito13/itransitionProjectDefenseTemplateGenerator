@@ -1,15 +1,16 @@
 using ItransitionTemplates.Data;
 using ItransitionTemplates.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItransitionTemplates.Services.Template
 {
     public class Template : ITemplate {
         private readonly ApplicationDBContext _context;
+        private readonly ILogger<Template> _logger;
 
-        public Template(ApplicationDBContext context) {
+        public Template(ApplicationDBContext context, ILogger<Template> logger) {
             _context = context;
+            _logger = logger;
         }
 
         //Save a template in the database
@@ -17,7 +18,7 @@ namespace ItransitionTemplates.Services.Template
             await _context.AddAsync(template);
             var n = await _context.SaveChangesAsync();
 
-            Console.WriteLine(n);
+            _logger.LogInformation("AddTemplate: {RowsAffected} rows affected", n);
             if(n >= 1) {
                 return template;
             }

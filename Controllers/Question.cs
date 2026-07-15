@@ -12,10 +12,12 @@ namespace ItransitionTemplates.Controllers {
     public class QuestionController : Controller {
         private Services.Question.IQuestion _QuestionService;
         private Services.QuestionOption.IQuestionOption _QuestionOptionService;
+        private readonly ILogger<QuestionController> _logger;
 
-        public QuestionController(Services.Question.IQuestion question, Services.QuestionOption.IQuestionOption questionOptionService) {
+        public QuestionController(Services.Question.IQuestion question, Services.QuestionOption.IQuestionOption questionOptionService, ILogger<QuestionController> logger) {
             _QuestionService = question;
             _QuestionOptionService = questionOptionService;
+            _logger = logger;
         }
 
         [HttpPost("/question/add")]

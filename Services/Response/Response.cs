@@ -3,7 +3,7 @@ using ItransitionTemplates.Data;
 namespace ItransitionTemplates.Services.Response
 {
     public class Response : IResponse {
-        private ApplicationDBContext _context;
+        private readonly ApplicationDBContext _context;
 
         public Response(ApplicationDBContext context) {
             _context = context;
