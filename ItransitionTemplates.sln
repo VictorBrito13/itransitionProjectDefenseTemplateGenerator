@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{52FBB52C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItransitionTemplates.Tests.Unit", "tests\ItransitionTemplates.Tests.Unit\ItransitionTemplates.Tests.Unit.csproj", "{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItransitionTemplates.Tests.Integration", "tests\ItransitionTemplates.Tests.Integration\ItransitionTemplates.Tests.Integration.csproj", "{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +38,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DD8896C2-A4F4-4A40-9F22-FD7E9EEAC4B1} = {52FBB52C-4745-4588-B859-8D2B1385877E}
+		{B331C2AD-78A3-4B60-BD31-0FBF7485DB9E} = {52FBB52C-4745-4588-B859-8D2B1385877E}
 	EndGlobalSection
 EndGlobal
