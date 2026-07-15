@@ -149,11 +149,8 @@ if(urlParamsSearcher.get("templateId")) {
 
         $searchResult.innerHTML = null;
         
-        if(json.errorMsg) {
-            const $p = document.createElement("p");
-            $p.textContent = json.errorMsg;
-            $p.className = "text-sm text-red-600";
-            $searchResult.appendChild($p);
+        if(json.error) {
+            showError(json.error.message);
         } else {
             const $btn = document.createElement("button");
             $btn.textContent = json.user.Email;
@@ -242,9 +239,8 @@ $btnCreateTemplate.addEventListener("click", async e => {
             location.assign(`${location.origin}/user/log-in`);
         }
 
-        if(templateUpdatedJSON.errorMsg) {
-            showToast('error', templateUpdatedJSON.errorMsg);
-            $serverMsgs.textContent = templateUpdatedJSON.errorMsg;
+        if(templateUpdatedJSON.error) {
+            showError(templateUpdatedJSON.error.message);
         } else if(templateUpdatedJSON.data) {
             showToast('success', templateUpdatedJSON.data);
             $serverMsgs.textContent = templateUpdatedJSON.data;
@@ -267,9 +263,8 @@ $btnCreateTemplate.addEventListener("click", async e => {
         
         console.log(templateSavedJSON);
 
-        if(templateSavedJSON.errorMsg) {
-            showToast('error', templateSavedJSON.errorMsg);
-            $serverMsgs.textContent = templateSavedJSON.errorMsg;
+        if(templateSavedJSON.error) {
+            showError(templateSavedJSON.error.message);
         } else {
             showToast('success', 'Your template has been saved successfully.');
             $serverMsgs.innerHTML =

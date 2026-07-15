@@ -28,14 +28,8 @@ try {
 
 console.log(template);
 
-if(template.errorMsg) {
-    $serverMsgs.innerHTML =
-        `
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">
-            ${template.errorMsg}
-            <a href="/" class="text-sm font-medium text-red-600 underline hover:text-red-800 ml-2">Go back home</a>
-        </div>
-        `;
+if(template.error) {
+    showErrorInContainer(template.error.message, $serverMsgs);
 
     document.getElementById("form-header").classList.add("hidden");
     $form.closest('.bg-white').classList.add("hidden");
@@ -59,8 +53,8 @@ if(template.errorMsg) {
             
             const likedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=like`)).json();
 
-            if(likedRes.errorMsg) {
-                $serverMsgs.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">${likedRes.errorMsg}</div>`;
+            if(likedRes.error) {
+                showError(likedRes.error.message);
                 return;
             }
             
@@ -73,8 +67,8 @@ if(template.errorMsg) {
         } else if($btnLikeTemplate.dataset["likeAction"] === "unlike") {
             const unlikedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)).json();
 
-            if(unlikedRes.errorMsg) {
-                $serverMsgs.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">${unlikedRes.errorMsg}</div>`;
+            if(unlikedRes.error) {
+                showError(unlikedRes.error.message);
                 return;
             }
 
@@ -309,13 +303,13 @@ function setupSubmitHandler(templateData) {
                 $successState.classList.remove('hidden');
             } else {
                 // Show error
-                $serverMsgs.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">Failed to submit response. Please try again.</div>`;
+                showErrorInContainer('Failed to submit response — please try again', $serverMsgs);
                 $btnSubmit.disabled = false;
                 $btnSubmit.textContent = 'Submit Response';
             }
         } catch(err) {
             console.error(err);
-            $serverMsgs.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4">An error occurred. Please try again.</div>`;
+            showErrorInContainer('An error occurred — please try again', $serverMsgs);
             $btnSubmit.disabled = false;
             $btnSubmit.textContent = 'Submit Response';
         }
