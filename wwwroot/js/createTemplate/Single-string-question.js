@@ -14,7 +14,7 @@ export default class SingleLineQuestion {
         const $input = document.createElement("input");
 
         $div.className = "mt-4";
-        $input.className = "form-control";
+        $input.className = "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm";
         $input.dataset["questionId"] = this.questionId;
         $input.required = true;
         $label.textContent = this.label;
@@ -29,7 +29,7 @@ export default class SingleLineQuestion {
             const $btnDeleteQuestion = document.createElement("button");
             $label.contentEditable =  true;
             $label.className = "me-3";
-            $btnDeleteQuestion.className = "btn btn-danger";
+            $btnDeleteQuestion.className = "px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500 transition-colors";
             $btnDeleteQuestion.textContent = "delete the question";
             deleteElementOnClick($btnDeleteQuestion, $div);
             $div.appendChild($btnDeleteQuestion);

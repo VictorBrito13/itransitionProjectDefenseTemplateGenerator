@@ -32,7 +32,7 @@ export default class MultipleOptionsQuestion {
         });
 
         $div.className = "mt-4";
-        $select.className = "form-select";
+        $select.className = "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm bg-white";
         $select.dataset["questionId"] = this.questionId;
         $select.id = this.#selectId;
         //label configuration
@@ -51,7 +51,7 @@ export default class MultipleOptionsQuestion {
             $btnEditOptions.textContent = "Edit options";
             $btnEditOptions.type = "button";
             $label.className = "me-3";
-            $btnEditOptions.className = "btn btn-primary";
+            $btnEditOptions.className = "px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-600 focus:ring-2 focus:ring-primary transition-colors";
             $btnEditOptions.dataset["bsToggle"] = "modal";
             $btnEditOptions.dataset["bsTarget"] = "#editOptionsModal";
 
@@ -69,7 +69,7 @@ export default class MultipleOptionsQuestion {
                     $h4.className = "option";
                     $h4.contentEditable;
                     $btnDeleteOption.type = "button";
-                    $btnDeleteOption.className = "btn btn-danger";
+                    $btnDeleteOption.className = "px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors";
                     $btnDeleteOption.textContent = "Delete";
                     deleteElementOnClick($btnDeleteOption, $div);
     
@@ -80,7 +80,7 @@ export default class MultipleOptionsQuestion {
             });
 
                 //button to delete the question configuration
-            $btnDeleteQuestion.className = "btn btn-danger";
+            $btnDeleteQuestion.className = "px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500 transition-colors";
             $btnDeleteQuestion.textContent = "delete the question";
             deleteElementOnClick($btnDeleteQuestion, $div);
 
