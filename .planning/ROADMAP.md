@@ -52,3 +52,32 @@
 ---
 
 *Phase 1 focuses on frontend-only changes. Backend services, controllers, and data models remain unchanged. All UI improvements are achieved through view layer modifications and Tailwind CSS migration.*
+
+## Milestone 2: Code Quality & Testing
+
+### Phase 3: Code Refactoring & Test Infrastructure
+
+**Goal:** Eliminate duplicated code across backend controllers and frontend JavaScript, remove unused code, enforce separation of concerns following MVC best practices, and establish a comprehensive test suite with unit and integration tests.
+
+**Depends on:** Phase 1 (completed)
+
+**Requirements:** [REQ-10, REQ-11, REQ-12, REQ-13]
+
+**Plans:** 4 plans
+
+**Wave 1** *(independent, can run in parallel)*:
+- [ ] 03-01-PLAN.md — Backend refactoring (shared JSON response helper, session validation consolidation, ILogger migration)
+- [ ] 03-02-PLAN.md — Frontend refactoring (BaseQuestion class, shared validation utility, toast partial, unused file removal)
+
+**Wave 2** *(blocked on Wave 1 — requires refactored services)*:
+- [ ] 03-03-PLAN.md — Test infrastructure & unit tests (xUnit project, service tests, utility tests)
+
+**Wave 3** *(blocked on Wave 2 — requires test infrastructure)*:
+- [ ] 03-04-PLAN.md — Integration tests (WebApplicationFactory, controller endpoint tests)
+
+**Cross-cutting constraints:**
+- All controllers must use shared JsonResponse utility (no manual JsonSerializer.Serialize)
+- All logging must use ILogger (no Console.WriteLine)
+- All question type JS classes must extend BaseQuestion
+- Test projects must be under tests/{unit,integration}/
+- All tests must pass with `dotnet test`

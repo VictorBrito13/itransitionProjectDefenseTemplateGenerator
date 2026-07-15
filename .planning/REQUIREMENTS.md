@@ -71,3 +71,41 @@ Audit and fix visual inconsistencies across all migrated views:
 - Ensure consistent spacing, typography, and color usage
 - Add micro-interactions (hover states, transitions, focus styles) where missing
 - Verify responsive behavior on all viewport sizes
+
+---
+
+# Requirements — ItransitionTemplates Phase 3
+
+## REQ-10: Backend Code Deduplication
+Eliminate duplicated patterns across all controllers and services:
+- Extract session validation into a shared helper (use or refactor Utils/Auth.cs)
+- Create a JsonResponse utility to replace all manual JsonSerializer.Serialize(new { data/errorMsg }) patterns
+- Consolidate the duplicated like/unlike branches in TemplateController.LikeAction
+- Replace all Console.WriteLine calls with ILogger-based logging
+- Remove unused using statements from service files
+
+## REQ-11: Frontend Code Deduplication
+Eliminate duplicated patterns across JavaScript files and Razor views:
+- Create a BaseQuestion class that all 5 question type classes extend (SingleLine, Multiline, PositiveInteger, Checkbox, MultipleOptions)
+- Extract showFieldError/clearFieldError into a shared validation utility (wwwroot/js/utils/validation.js)
+- Create a reusable Razor partial (_ToastPartial.cshtml) for TempData-based toast notifications
+- Replace 6 hardcoded skeleton cards in Index.cshtml with a Razor loop
+- Deduplicate the toggle templates loading logic in index.js
+- Fix Bootstrap class remnants in Checkbox-question.js
+
+## REQ-12: Unused Code Removal
+Identify and remove all unused code:
+- Delete wwwroot/js/updateTemplate/updateTemplate.js (empty function, never imported)
+- Delete wwwroot/js/site.js (only contains a comment, no code)
+- Remove the site.js script reference from _Layout.cshtml
+- Remove unused using statements (Microsoft.EntityFrameworkCore.Metadata.Internal, MySqlConnector in User service)
+
+## REQ-13: Test Infrastructure & Test Coverage
+Establish a comprehensive test suite:
+- Create xUnit test project under tests/ (unit tests)
+- Create integration test project under tests/ (integration tests)
+- Write unit tests for all 7 service classes (at least 1 test per public method)
+- Write unit tests for utility classes (HashText, JsonResponse)
+- Write integration tests for all 5 controllers using WebApplicationFactory
+- Use EF Core InMemory provider for test isolation
+- All tests must pass with `dotnet test`

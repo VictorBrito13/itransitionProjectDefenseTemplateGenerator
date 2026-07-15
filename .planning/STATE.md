@@ -1,14 +1,24 @@
 # Project State — ItransitionTemplates
 
 ## Current Status
-- **Phase:** 2 — Design Token System & Visual Polish
+- **Phase:** 3 — Code Refactoring & Test Infrastructure
 - **Status:** Planning
-- **Last Activity:** 2026-07-14
+- **Last Activity:** 2026-07-15
 
 ## Phase 1 Completion
 - **Status:** Complete
 - **Plans executed:** 4/4
 - **Requirements delivered:** REQ-01, REQ-02, REQ-03, REQ-04, REQ-05
+
+## Phase 2 Status
+- **Status:** Planned (not executed)
+- **Plans:** 3 plans (02-01, 02-02, 02-03)
+- **Requirements:** REQ-06, REQ-07, REQ-08, REQ-09
+
+## Phase 3 Status
+- **Status:** Planning
+- **Plans:** 4 plans (03-01, 03-02, 03-03, 03-04)
+- **Requirements:** REQ-10, REQ-11, REQ-12, REQ-13
 
 ## Decisions
 | ID | Decision | Status | Date |
@@ -27,8 +37,14 @@
 | D-12 | Sonner.js Toast Implementation | Approved | 2026-07-14 |
 | D-13 | Error Page Redesign | Approved | 2026-07-14 |
 | D-14 | Visual Consistency Audit | Approved | 2026-07-14 |
+| D-15 | Backend JsonResponse Utility | Approved | 2026-07-15 |
+| D-16 | ILogger Migration | Approved | 2026-07-15 |
+| D-17 | BaseQuestion JS Class | Approved | 2026-07-15 |
+| D-18 | xUnit + Moq Test Stack | Approved | 2026-07-15 |
+| D-19 | EF Core InMemory for Tests | Approved | 2026-07-15 |
 
 ## History
 - 2026-07-14: Project initialized, Phase 1 planning started
 - 2026-07-14: Phase 1 completed (all 4 plans executed)
 - 2026-07-14: Phase 2 planning started
+- 2026-07-15: Phase 3 planning started — Code Refactoring & Test Infrastructure
