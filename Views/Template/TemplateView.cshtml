@@ -85,17 +85,7 @@
         }
     }
 
-    <script>
-        // Show server messages as toast notifications
-        @if (TempData["errorMsg"] != null)
-        {
-            <text>showToast('error', '@TempData["errorMsg"]');</text>
-        }
-        @if (TempData["successMsg"] != null)
-        {
-            <text>showToast('success', '@TempData["successMsg"]');</text>
-        }
-    </script>
+    @await Html.PartialAsync("_ToastPartial")
 
     <script src="~/js/templateView/templateView.js" type="module"></script>
 </div>

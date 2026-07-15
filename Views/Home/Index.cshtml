@@ -80,78 +80,21 @@
     @* Templates Grid — rendered by JS *@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="latest-templates-container">
         @* Skeleton Loading State *@
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+        @for (int i = 0; i < 6; i++)
+        {
+            <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
+                <div class="h-32 bg-gray-200 animate-pulse"></div>
+                <div class="p-6">
+                    <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
+                    <div class="flex items-center gap-2">
+                        <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
+                        <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-soft overflow-hidden skeleton-card">
-            <div class="h-32 bg-gray-200 animate-pulse"></div>
-            <div class="p-6">
-                <div class="h-6 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-2 w-full"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse mb-4 w-1/2"></div>
-                <div class="flex items-center gap-2">
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-20"></div>
-                    <div class="h-3 bg-gray-200 rounded animate-pulse w-12"></div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 
     @* Empty State — hidden by default, shown by JS when no templates *@

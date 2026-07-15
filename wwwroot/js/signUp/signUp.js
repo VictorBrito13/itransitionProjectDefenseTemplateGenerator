@@ -1,3 +1,5 @@
+import { showFieldError, clearFieldError } from "../utils/validation.js";
+
 const $email = document.getElementById("email");
 const $username = document.getElementById("username");
 const $password = document.getElementById("password");
@@ -33,19 +35,8 @@ let validationState = {
     confirm: false,
 };
 
-// --- Utility functions ---
-function showFieldError(input, errorEl, message) {
-    input.classList.add("border-red-500");
-    input.classList.remove("border-gray-300");
-    errorEl.textContent = message;
-    errorEl.classList.remove("hidden");
-}
-
-function clearFieldError(input, errorEl) {
-    input.classList.remove("border-red-500");
-    input.classList.add("border-gray-300");
-    errorEl.classList.add("hidden");
-}
+// --- Utility functions (imported from shared validation module) ---
+// showFieldError and clearFieldError are imported at the top of this file
 
 function updateSubmitButton() {
     const allValid = validationState.email && validationState.username && validationState.password && validationState.confirm;

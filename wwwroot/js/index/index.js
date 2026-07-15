@@ -29,16 +29,26 @@ function hideSkeletons() {
 
 // --- Template Loading ---
 async function loadTemplates() {
+    await loadAndRenderTemplates(getLatestTemplates, "latest");
+}
+
+/**
+ * Shared helper: shows skeletons, fetches templates via the given function,
+ * hides skeletons, then renders results or shows empty state.
+ * @param {Function} fetchFn - Async function that returns { data: [...] }
+ * @param {string} mode - "latest" or "user" for printTemplates
+ */
+async function loadAndRenderTemplates(fetchFn, mode) {
     showSkeletons();
     try {
-        const latestTemplates = await getLatestTemplates();
+        const result = await fetchFn();
         hideSkeletons();
 
-        if (latestTemplates && latestTemplates.data && latestTemplates.data.length > 0) {
+        if (result && result.data && result.data.length > 0) {
             $templatesContainer.classList.remove('hidden');
             const $emptyState = document.getElementById('empty-state');
             if ($emptyState) $emptyState.classList.add('hidden');
-            await printTemplates(latestTemplates.data, $templatesContainer, "latest");
+            await printTemplates(result.data, $templatesContainer, mode);
         } else {
             $templatesContainer.classList.add('hidden');
             const $emptyState = document.getElementById('empty-state');
@@ -46,7 +56,7 @@ async function loadTemplates() {
         }
     } catch (e) {
         hideSkeletons();
-        console.error("Failed to load templates:", e);
+        console.error(`Failed to load ${mode} templates:`, e);
     }
 }
 
@@ -132,56 +142,18 @@ $inputSearchTemplatesByQuery.addEventListener("focus", (e) => {
 // --- User Templates Toggle ---
 if ($btnToggleTemplates) {
     $btnToggleTemplates.addEventListener("click", async () => {
-        showSkeletons();
-
         if (currentMode === "latest") {
             currentMode = "user";
             $btnToggleTemplates.textContent = "Latest Templates";
             $templatesHeader.textContent = "Your Templates";
             resetPagesForLatestTemplates();
-
-            try {
-                const userTemplates = await getTemplatesByUserId();
-                hideSkeletons();
-
-                if (userTemplates && userTemplates.data && userTemplates.data.length > 0) {
-                    $templatesContainer.classList.remove('hidden');
-                    const $emptyState = document.getElementById('empty-state');
-                    if ($emptyState) $emptyState.classList.add('hidden');
-                    await printTemplates(userTemplates.data, $templatesContainer, "user");
-                } else {
-                    $templatesContainer.classList.add('hidden');
-                    const $emptyState = document.getElementById('empty-state');
-                    if ($emptyState) $emptyState.classList.remove('hidden');
-                }
-            } catch (e) {
-                hideSkeletons();
-                console.error("Failed to load user templates:", e);
-            }
+            await loadAndRenderTemplates(getTemplatesByUserId, "user");
         } else {
             currentMode = "latest";
             $btnToggleTemplates.textContent = "Your Templates";
             $templatesHeader.textContent = "Latest Templates";
             resetPagesForUserTemplates();
-
-            try {
-                const latestTemplates = await getLatestTemplates();
-                hideSkeletons();
-
-                if (latestTemplates && latestTemplates.data && latestTemplates.data.length > 0) {
-                    $templatesContainer.classList.remove('hidden');
-                    const $emptyState = document.getElementById('empty-state');
-                    if ($emptyState) $emptyState.classList.add('hidden');
-                    await printTemplates(latestTemplates.data, $templatesContainer, "latest");
-                } else {
-                    $templatesContainer.classList.add('hidden');
-                    const $emptyState = document.getElementById('empty-state');
-                    if ($emptyState) $emptyState.classList.remove('hidden');
-                }
-            } catch (e) {
-                hideSkeletons();
-                console.error("Failed to load latest templates:", e);
-            }
+            await loadAndRenderTemplates(getLatestTemplates, "latest");
         }
     });
 }

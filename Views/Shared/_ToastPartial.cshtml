@@ -1,0 +1,11 @@
+@* Reusable toast notification partial — reads TempData and emits showToast calls *@
+<script>
+    @if (TempData["errorMsg"] != null)
+    {
+        <text>showToast('error', '@TempData["errorMsg"]');</text>
+    }
+    @if (TempData["successMsg"] != null)
+    {
+        <text>showToast('success', '@TempData["successMsg"]');</text>
+    }
+</script>

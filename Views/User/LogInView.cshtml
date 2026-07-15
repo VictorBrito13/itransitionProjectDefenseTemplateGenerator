@@ -91,7 +91,9 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+import { showFieldError, clearFieldError } from "/js/utils/validation.js";
+
 (function() {
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
@@ -137,28 +139,14 @@
         return true;
     }
 
-    function showFieldError(input, errorEl, message) {
-        input.classList.add('border-red-500');
-        input.classList.remove('border-gray-300');
-        errorEl.textContent = message;
-        errorEl.classList.remove('hidden');
-    }
-
-    function clearFieldError(input, errorEl) {
-        input.classList.remove('border-red-500');
-        input.classList.add('border-gray-300');
-        errorEl.classList.add('hidden');
-    }
-
     emailInput.addEventListener('blur', validateEmail);
     passwordInput.addEventListener('blur', validatePassword);
 
-    // Show server error as toast notification
+    // Show server error in fallback container
     @if (errorMsg != null)
     {
         <text>
         errorContainer.textContent = '@errorMsg';
-        showToast('error', '@errorMsg');
         </text>
     }
 
@@ -179,3 +167,5 @@
     });
 })();
 </script>
+
+@await Html.PartialAsync("_ToastPartial")
