@@ -36,3 +36,38 @@ Ensure all redesigned views are fully responsive:
 - Touch-friendly targets (min 44x44px)
 - Readable typography at all screen sizes
 - Collapsible navigation on mobile
+
+## REQ-06: Design Token System
+Define and document a comprehensive design token system for cross-app visual consistency:
+- Centralized color palette with semantic naming (bg, text, border variants)
+- Typography scale with defined weights, sizes, and line heights
+- Spacing and sizing scale (4px base unit)
+- Shadow and elevation tokens
+- Border radius tokens
+- Animation timing and easing tokens
+- Design token documentation in a single source of truth (CSS custom properties or JSON)
+- Consumed by all views for consistent styling
+
+## REQ-07: Toast Notification System
+Implement a non-intrusive toast notification system using Sonner.js:
+- Success, error, warning, and info toast variants
+- Auto-dismiss with configurable duration
+- Stacking behavior for multiple notifications
+- Accessible announcements for screen readers
+- Integration with existing form submission flows
+- Replace all Bootstrap alert-based notifications
+
+## REQ-08: Remaining Views Polish
+Redesign remaining views and partials that haven't been migrated to Tailwind:
+- Error.cshtml - Redesign with Tailwind, branded error page with helpful navigation
+- _ValidationScriptsPartial.cshtml - Update if needed for Tailwind-compatible validation
+- Any partials with Bootstrap remnants
+- Consistent loading, empty, and error states across all views
+
+## REQ-09: Visual Consistency Audit
+Audit and fix visual inconsistencies across all migrated views:
+- Ensure all views use the defined design tokens
+- Fix any remaining Bootstrap class references in views and JS files
+- Ensure consistent spacing, typography, and color usage
+- Add micro-interactions (hover states, transitions, focus styles) where missing
+- Verify responsive behavior on all viewport sizes
