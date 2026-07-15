@@ -50,7 +50,7 @@ async function buildForm($parentElement, json, editionMode = false) {
         if(!editionMode) {
             const $btnSubmit = document.createElement("button");
             $btnSubmit.type = "submit";
-            $btnSubmit.className = "btn btn-success"
+            $btnSubmit.className = "px-8 py-3 bg-secondary text-white font-medium rounded-xl hover:bg-secondary-600 focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors"
             $btnSubmit.textContent = "Send";
 
             $parentElement.addEventListener("submit", async e => {
