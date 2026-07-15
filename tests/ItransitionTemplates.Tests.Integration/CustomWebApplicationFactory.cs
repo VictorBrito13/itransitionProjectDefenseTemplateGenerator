@@ -19,6 +19,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
+            // Add distributed memory cache for session support
+            services.AddDistributedMemoryCache();
+
             // Remove the existing MySQL DbContext registration
             var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<ApplicationDBContext>));
@@ -40,30 +43,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             {
                 options.UseInMemoryDatabase(_dbName);
             });
-
-            // Ensure the database is created
-            var sp = services.BuildServiceProvider();
-            using var scope = sp.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
-            db.Database.EnsureCreated();
-
-            // Seed default topics needed by templates
-            SeedData(db);
         });
-    }
-
-    private static void SeedData(ApplicationDBContext db)
-    {
-        // Seed topics that templates reference
-        if (!db.Topics.Any())
-        {
-            db.Topics.AddRange(
-                new Topic { TopicId = 1, Name = "Education" },
-                new Topic { TopicId = 2, Name = "Survey" },
-                new Topic { TopicId = 3, Name = "Feedback" }
-            );
-            db.SaveChanges();
-        }
     }
 
     /// <summary>
@@ -73,8 +53,30 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        db.Database.EnsureCreated();
         seedAction(db);
         await db.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Ensures the database is created and seeded with default data.
+    /// Call this at the start of each test class.
+    /// </summary>
+    public async Task InitializeDatabaseAsync()
+    {
+        using var scope = Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        db.Database.EnsureCreated();
+
+        if (!db.Topics.Any())
+        {
+            db.Topics.AddRange(
+                new Topic { TopicId = 1, Name = "Education" },
+                new Topic { TopicId = 2, Name = "Survey" },
+                new Topic { TopicId = 3, Name = "Feedback" }
+            );
+            await db.SaveChangesAsync();
+        }
     }
 
     /// <summary>
