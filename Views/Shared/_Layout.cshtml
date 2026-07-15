@@ -39,7 +39,7 @@
 </head>
 <body class="bg-gray-50 font-sans text-gray-900 antialiased" x-data="{ sidebarOpen: false }">
     <!-- Top Navbar -->
-    <header class="fixed top-0 left-0 right-0 z-30 h-16 bg-white border-b border-gray-200 shadow-sm">
+    <header class="fixed top-0 left-0 right-0 z-30 h-16 glass-strong border-b border-gray-200 shadow-sm">
         <div class="flex items-center justify-between h-full px-4 md:px-6">
             <!-- Left: Hamburger + Logo -->
             <div class="flex items-center gap-3">
@@ -97,7 +97,7 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-soft border border-gray-100 py-1 z-50">
+                            class="absolute right-0 mt-2 w-48 glass rounded-xl shadow-soft border border-gray-100 py-1 z-50">
                             <a asp-controller="User" asp-action="LogOut" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                 Sign out
                             </a>
@@ -139,7 +139,7 @@
         x-transition:leave="transition-transform ease-in duration-300"
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform md:hidden">
+        class="fixed inset-y-0 left-0 z-50 w-64 glass border-r border-gray-200 transform md:hidden">
         <nav class="flex flex-col h-full pt-20 pb-4 px-3">
             <div class="flex-1 space-y-1">
                 <a asp-controller="Home" asp-action="Index"
@@ -149,19 +149,32 @@
                     </svg>
                     Home
                 </a>
-                <a asp-controller="Template" asp-action="CreateTemplate"
-                   class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Create Template
-                </a>
+                @if (Context.Session.GetString("User") != null)
+                {
+                    <a asp-controller="Template" asp-action="CreateTemplate"
+                       class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Create Template
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="User" asp-action="LogInView"
+                       class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        Log in
+                    </a>
+                }
             </div>
         </nav>
     </aside>
 
     <!-- Desktop sidebar (always visible on md+) -->
-    <aside class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:z-20 md:w-64 md:bg-white md:border-r md:border-gray-200 md:pt-20 md:pb-4 md:px-3">
+    <aside class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:z-20 md:w-64 md:glass md:border-r md:border-gray-200 md:pt-20 md:pb-4 md:px-3">
         <nav class="flex flex-col h-full">
             <div class="flex-1 space-y-1">
                 <a asp-controller="Home" asp-action="Index"
@@ -171,13 +184,26 @@
                     </svg>
                     Home
                 </a>
-                <a asp-controller="Template" asp-action="CreateTemplate"
-                   class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Create Template
-                </a>
+                @if (Context.Session.GetString("User") != null)
+                {
+                    <a asp-controller="Template" asp-action="CreateTemplate"
+                       class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Create Template
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="User" asp-action="LogInView"
+                       class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        Log in
+                    </a>
+                }
             </div>
         </nav>
     </aside>
