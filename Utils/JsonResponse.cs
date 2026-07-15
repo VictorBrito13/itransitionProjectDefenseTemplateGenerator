@@ -11,12 +11,41 @@ namespace ItransitionTemplates.Utils
 
         public static JsonResult Error(string message, int statusCode = 400)
         {
-            return new JsonResult(new { errorMsg = message, status = statusCode }) { StatusCode = statusCode };
+            return new JsonResult(new
+            {
+                error = new
+                {
+                    code = statusCode,
+                    message = message,
+                    details = (string?)null
+                }
+            }) { StatusCode = statusCode };
+        }
+
+        public static JsonResult Error(string message, string details, int statusCode = 400)
+        {
+            return new JsonResult(new
+            {
+                error = new
+                {
+                    code = statusCode,
+                    message = message,
+                    details = details
+                }
+            }) { StatusCode = statusCode };
         }
 
         public static JsonResult NotFound(string message)
         {
-            return new JsonResult(new { errorMsg = message }) { StatusCode = 404 };
+            return new JsonResult(new
+            {
+                error = new
+                {
+                    code = 404,
+                    message = message,
+                    details = "NotFound"
+                }
+            }) { StatusCode = 404 };
         }
     }
 }

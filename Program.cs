@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ItransitionTemplates.Data;
+using ItransitionTemplates.Middleware;
 using ItransitionTemplates.Services.Admin;
 using ItransitionTemplates.Services.Question;
 using ItransitionTemplates.Services.QuestionOption;
@@ -51,6 +52,8 @@ if (!app.Environment.IsDevelopment())
 app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseRouting();
 
