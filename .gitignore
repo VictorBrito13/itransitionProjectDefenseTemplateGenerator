@@ -1,5 +1,5 @@
 bin
-/obj/
+obj/
 pub
 node_modules/
 wwwroot/css/tailwind.min.css

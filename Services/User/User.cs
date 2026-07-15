@@ -21,9 +21,9 @@ namespace ItransitionTemplates.Services.User
             return await _context.Users.Where(u => (u.Email == user.Email) && (u.Password == user.Password)).FirstOrDefaultAsync();
         }
 
-        public async Task<string> AddUser(Models.User user) {
+        public async Task<Models.User> AddUser(Models.User user) {
 
-            if(user == null) return "There is no user to add";
+            if(user == null) return null;
 
             try
             {
@@ -31,7 +31,7 @@ namespace ItransitionTemplates.Services.User
                 user.Password = HashText.GetHashString(user.Password);
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                return "User added successfully";
+                return user;
 
             } catch (DbUpdateException dbue) {
                 //Duplicate entry exception handler

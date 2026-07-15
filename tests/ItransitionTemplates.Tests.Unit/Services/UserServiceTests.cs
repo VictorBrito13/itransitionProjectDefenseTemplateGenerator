@@ -92,7 +92,7 @@ namespace ItransitionTemplates.Tests.Unit.Services
         }
 
         [Fact]
-        public async Task AddUser_ValidUser_ReturnsSuccess()
+        public async Task AddUser_ValidUser_ReturnsUser()
         {
             // Arrange
             var user = new ItransitionTemplates.Models.User
@@ -106,20 +106,22 @@ namespace ItransitionTemplates.Tests.Unit.Services
             var result = await _service.AddUser(user);
 
             // Assert
-            Assert.Equal("User added successfully", result);
+            Assert.NotNull(result);
+            Assert.Equal("new@example.com", result.Email);
+            Assert.Equal("newuser", result.Username);
             var saved = await _context.Users.FirstOrDefaultAsync(u => u.Email == "new@example.com");
             Assert.NotNull(saved);
             Assert.NotEqual("password123", saved.Password); // Password should be hashed
         }
 
         [Fact]
-        public async Task AddUser_NullUser_ReturnsErrorMessage()
+        public async Task AddUser_NullUser_ReturnsNull()
         {
             // Act
             var result = await _service.AddUser(null);
 
             // Assert
-            Assert.Equal("There is no user to add", result);
+            Assert.Null(result);
         }
 
         [Fact]
