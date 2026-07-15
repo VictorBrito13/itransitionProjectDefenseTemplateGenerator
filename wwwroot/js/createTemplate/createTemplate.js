@@ -242,20 +242,13 @@ $btnCreateTemplate.addEventListener("click", async e => {
             location.assign(`${location.origin}/user/log-in`);
         }
 
-        const $p = document.createElement("p");
         if(templateUpdatedJSON.errorMsg) {
-            $p.textContent = templateUpdatedJSON.errorMsg;
-            $p.className = "p-3 rounded text-white bg-red-500";
+            showToast('error', templateUpdatedJSON.errorMsg);
+            $serverMsgs.textContent = templateUpdatedJSON.errorMsg;
         } else if(templateUpdatedJSON.data) {
-            $p.textContent = templateUpdatedJSON.data;
-            $p.className = "p-3 rounded text-white bg-secondary";
+            showToast('success', templateUpdatedJSON.data);
+            $serverMsgs.textContent = templateUpdatedJSON.data;
         }
-
-        $serverMsgs.appendChild($p);
-
-        setTimeout(() => {
-            $serverMsgs.innerHTML = null;
-        }, 3000);
 
     } else {
         //Petition to save the template
@@ -273,22 +266,15 @@ $btnCreateTemplate.addEventListener("click", async e => {
         }
         
         console.log(templateSavedJSON);
-        const $p = document.createElement("p");
 
         if(templateSavedJSON.errorMsg) {
-            $p.className = "bg-red-500 rounded text-white p-3";
-            $p.textContent = templateSavedJSON.errorMsg;
+            showToast('error', templateSavedJSON.errorMsg);
+            $serverMsgs.textContent = templateSavedJSON.errorMsg;
         } else {
-            $p.className = "bg-secondary rounded text-white p-3";
-            $p.innerHTML =
+            showToast('success', 'Your template has been saved successfully.');
+            $serverMsgs.innerHTML =
             `Your template has been saved successfully. You can update your template
             <a class="underline font-medium hover:text-emerald-100" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">here</a>`;
         }
-
-        $serverMsgs.appendChild($p);
-
-        setTimeout(() => {
-            $serverMsgs.innerHTML = null;
-        }, 3000);
     }
 });

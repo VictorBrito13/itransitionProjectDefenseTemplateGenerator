@@ -329,4 +329,16 @@ function templateBuilder() {
 }
 </script>
 
+<script>
+    // Show server messages as toast notifications
+    @if (TempData["errorMsg"] != null)
+    {
+        <text>showToast('error', '@TempData["errorMsg"]');</text>
+    }
+    @if (TempData["successMsg"] != null)
+    {
+        <text>showToast('success', '@TempData["successMsg"]');</text>
+    }
+</script>
+
 <script src="~/js/createTemplate/createTemplate.js" type="module"></script>

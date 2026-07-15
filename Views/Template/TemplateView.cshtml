@@ -11,9 +11,9 @@
         string userEmail = (string) TempData["userEmail"];
         string userId = TempData["userId"].ToString();
         if(errorMsg != null) {
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+            <!-- Error displayed via toast notification -->
+            <div class="hidden">
                 <p>@errorMsg</p>
-                <a href="/" class="text-sm font-medium text-red-600 underline hover:text-red-800 mt-1 inline-block">Go back home</a>
             </div>
         } else {
             <!-- Template Header -->
@@ -84,6 +84,18 @@
             </div>
         }
     }
+
+    <script>
+        // Show server messages as toast notifications
+        @if (TempData["errorMsg"] != null)
+        {
+            <text>showToast('error', '@TempData["errorMsg"]');</text>
+        }
+        @if (TempData["successMsg"] != null)
+        {
+            <text>showToast('success', '@TempData["successMsg"]');</text>
+        }
+    </script>
 
     <script src="~/js/templateView/templateView.js" type="module"></script>
 </div>
