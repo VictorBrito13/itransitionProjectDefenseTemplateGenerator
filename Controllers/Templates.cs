@@ -28,18 +28,18 @@ public class TemplateController : Controller {
     [HttpPost("/template/create")]
     public async Task<ActionResult<Models.Template>> CreateTemplate([FromBody] Models.Template template) {
         if(template.TopicId <= 0) {
-            TempData["errorMsg"] = "Define a topic for this template";
+            TempData["errorMsg"] = "Please select a topic for your template before saving";
             return View("CreateTemplate");
         }
 
         Models.User? userSession = Auth.ValidateSession(HttpContext);
 
         if(userSession == null) {
-            return JsonResponse.Error("Login to complete this action", 401);
+            return JsonResponse.Error("Please sign in to create a template", 401);
         }
 
         if(template == null) {
-            return JsonResponse.Error("The tamplate is null");
+            return JsonResponse.Error("Template data is missing — please check your input");
         }
 
         Models.Template saved = await _TemplateService.AddTemplate(template);
@@ -49,7 +49,7 @@ public class TemplateController : Controller {
         Models.Admin adminSaved = await _AdminService.AddAdmin(admin);
 
         if(saved == null || adminSaved == null) {
-            return JsonResponse.Error("An error has ocurred, try again");
+            return JsonResponse.Error("Failed to save template — please try again");
         }
 
         return Ok(saved);
@@ -96,20 +96,20 @@ public class TemplateController : Controller {
         Models.User? userSession = Auth.ValidateSession(HttpContext);
 
         if(userSession == null) {
-            return JsonResponse.Error("Login to complete this action", 401);
+            return JsonResponse.Error("Please sign in to update this template", 401);
         }
 
         try {
             int result = await _TemplateService.UpdateTemplate(templateId, template);
             if(result == 404) {
-                return JsonResponse.NotFound("The tamplate was not found");
+                return JsonResponse.NotFound("Template not found — it may have been deleted");
             } else if(result == 500) {
-                return JsonResponse.Error("This template could not be updated");
+                return JsonResponse.Error("Failed to save changes — the template may have been modified by another user");
             }
         } catch (Exception err) {
             _logger.LogError(err, "Error updating template {TemplateId}", templateId);
             if(err.ToString().Contains("cannot be tracked because another instance with the key value")) {
-                return JsonResponse.Error("There is a entity with this value");
+                return JsonResponse.Error("A template with this title already exists");
             }
         }
 
@@ -125,7 +125,7 @@ public class TemplateController : Controller {
         Models.User? userSession = Auth.ValidateSession(HttpContext);
 
         if(userSession == null) {
-            return JsonResponse.Error("Login to complete this action", 401);
+            return JsonResponse.Error("Please sign in to like this template", 401);
         }
 
         Like[] actionCompleted = await _TemplateService.LikeAction(userId, templateId, action);
@@ -136,7 +136,7 @@ public class TemplateController : Controller {
             return JsonResponse.Ok(actionCompleted.Length);
         }
 
-        return JsonResponse.Error("We could not complete this action");
+        return JsonResponse.Error("Failed to update like — please try again");
     }
 
     //It return the number of likes of a given template
@@ -157,7 +157,7 @@ public class TemplateController : Controller {
             Models.User? userSession = Auth.ValidateSession(HttpContext);
 
             if(userSession == null) {
-                return JsonResponse.Error("Login to complete this action", 401);
+                return JsonResponse.Error("Please sign in to delete this template", 401);
             }
 
             int n = await _TemplateService.DeleteTemplate(templateId);
@@ -165,11 +165,11 @@ public class TemplateController : Controller {
             if(n == 200) {
                 return JsonResponse.Ok("Template deleted successfully");
             } else {
-                return JsonResponse.Error("This action could not be done");
+                return JsonResponse.Error("Failed to delete template — you may not have permission");
             }
         } catch(Exception err) {
             _logger.LogError(err, "Error deleting template {TemplateId}", templateId);
-            return JsonResponse.Error("This action could not be done");
+            return JsonResponse.Error("Failed to delete template — please try again");
         }
     }
 

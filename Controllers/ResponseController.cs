@@ -18,7 +18,7 @@ namespace ItransitionTemplates.Controllers
             int n = await _responseService.AddResponses(responses);
 
             if(n >= 400 && n < 500) {
-                return JsonResponse.Error("This answers could not be saved");
+                return JsonResponse.Error("Failed to save responses — please try again");
             }
 
             return JsonResponse.Ok("Responses saved successfully");

@@ -24,18 +24,18 @@ namespace ItransitionTemplates.Controllers {
         public async Task<ActionResult<Models.Question[]>> AddQuestions([FromBody] QuestionAndOptions questionAndOptions) {
             if (questionAndOptions == null || questionAndOptions.questions.Length == 0)
             {
-                return JsonResponse.Error("There are no questions for this form");
+                return JsonResponse.Error("No questions provided — please add at least one question");
             }
             
             Models.Question[] saved = await _QuestionService.AddQuestions(questionAndOptions.questions);
             Models.QuestionOption[] optionsSaved = await _QuestionOptionService.AddOptions(questionAndOptions.questionOptions);
 
             if(saved == null) {
-                return JsonResponse.Error("We could not add questions");
+                return JsonResponse.Error("Failed to save questions — please try again");
             }
 
             if(optionsSaved == null) {
-                return JsonResponse.Error("We could not add options to the questions");
+                return JsonResponse.Error("Failed to save question options — please try again");
             }
 
             return JsonResponse.Ok("success");

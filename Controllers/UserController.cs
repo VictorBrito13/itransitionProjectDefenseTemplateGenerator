@@ -27,7 +27,7 @@ public class UserController : Controller {
             Session.Store(HttpContext, "userSession", new { UserId=userFound.UserId, Username=userFound.Username, Email=userFound.Email});
             return RedirectToAction("Index", "Home");
         } else {
-            TempData["errorMsg"] = "The user was not found, ensure email and password are correct";
+            TempData["errorMsg"] = "Invalid email or password — please check your credentials and try again";
             return View("LogInView");
         }
     }
@@ -41,15 +41,15 @@ public class UserController : Controller {
     public async Task<IActionResult> SignUp([FromForm] Models.User user) {
         //Store the user in the database
         try {
-            string stored = await _UserService.AddUser(user);
-            //This is temporary, this action must redirect to the templates view
-            return RedirectToAction("LogInView");
+            Models.User createdUser = await _UserService.AddUser(user);
+            Session.Store(HttpContext, "userSession", new { UserId=createdUser.UserId, Username=createdUser.Username, Email=createdUser.Email});
+            return RedirectToAction("Index", "Home");
         } catch (DBException err) {
             TempData["ErrorMsg"] = err.Msg;
             return View("SignUpView");
         } catch (Exception err) {
             _logger.LogError(err, "Unknown error during user sign-up");
-            TempData["errorMsg"] = "An unknown error has occurred";
+            TempData["errorMsg"] = "Failed to create account — please try again";
             return View("SignUpView");
         }
     }
