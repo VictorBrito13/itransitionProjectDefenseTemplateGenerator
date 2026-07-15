@@ -20,6 +20,11 @@
 - **Plans:** 4 plans (03-01, 03-02, 03-03, 03-04)
 - **Requirements:** REQ-10, REQ-11, REQ-12, REQ-13
 
+## Phase 4 Status
+- **Status:** Planned (not executed)
+- **Plans:** 2 plans (04-01, 04-02)
+- **Requirements:** REQ-14, REQ-15, REQ-16, REQ-17
+
 ## Decisions
 | ID | Decision | Status | Date |
 |----|----------|--------|------|
@@ -42,9 +47,15 @@
 | D-17 | BaseQuestion JS Class | Approved | 2026-07-15 |
 | D-18 | xUnit + Moq Test Stack | Approved | 2026-07-15 |
 | D-19 | EF Core InMemory for Tests | Approved | 2026-07-15 |
+| D-20 | Global Exception Handling Middleware | Approved | 2026-07-15 |
+| D-21 | Structured Error Response Format | Approved | 2026-07-15 |
+| D-22 | Meaningful Error Messages | Approved | 2026-07-15 |
+| D-23 | Frontend Error Display Component | Approved | 2026-07-15 |
+| D-24 | Service Error Propagation | Approved | 2026-07-15 |
 
 ## History
 - 2026-07-14: Project initialized, Phase 1 planning started
 - 2026-07-14: Phase 1 completed (all 4 plans executed)
 - 2026-07-14: Phase 2 planning started
 - 2026-07-15: Phase 3 planning started — Code Refactoring & Test Infrastructure
+- 2026-07-15: Phase 4 planning started — Error Handling & Meaningful Error Messages

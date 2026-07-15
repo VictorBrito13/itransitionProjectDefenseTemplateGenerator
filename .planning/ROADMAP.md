@@ -81,3 +81,25 @@
 - All question type JS classes must extend BaseQuestion
 - Test projects must be under tests/{unit,integration}/
 - All tests must pass with `dotnet test`
+
+### Phase 4: Error Handling & Meaningful Error Messages
+
+**Goal:** Add consistent, meaningful error handling across the entire application — backend middleware for unhandled exceptions, structured error responses from all controllers and services, and a frontend error display component that shows clear, user-friendly messages when something goes wrong.
+
+**Depends on:** Phase 1 (completed)
+
+**Requirements:** [REQ-14, REQ-15, REQ-16, REQ-17]
+
+**Plans:** 2 plans
+
+**Wave 1** *(independent, can run in parallel)*:
+- [ ] 04-01-PLAN.md — Backend error handling (global exception middleware, structured error responses, meaningful error messages in all controllers)
+- [ ] 04-02-PLAN.md — Frontend error display component (ErrorDisplay component, HTTP error handling in makeRequest.js, error state UI patterns)
+
+**Cross-cutting constraints:**
+- All controllers must return structured JSON error responses (consistent format: `{ error: { code, message, details? } }`)
+- All services must throw meaningful exceptions (not return null silently)
+- Global exception middleware catches unhandled exceptions and returns proper HTTP status codes
+- Frontend must display user-friendly error messages for all HTTP failures
+- Error messages must be specific and actionable (not generic "An error occurred")
+- All error responses must include appropriate HTTP status codes (400, 401, 403, 404, 500)
