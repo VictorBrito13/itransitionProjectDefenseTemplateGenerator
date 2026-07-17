@@ -3,6 +3,7 @@
 ## Milestone 1: UI Redesign & UX Enhancement
 
 ### Phase 1: UI Redesign — Tailwind CSS + Nielsen Heuristics
+
 **Goal:** Redesign the website UI to be more attractive and usable, following Nielsen Heuristic principles and Information Architecture guidelines, while refactoring all components to use Tailwind CSS.
 
 **Depends on:** None (first phase)
@@ -12,14 +13,17 @@
 **Plans:** 4 plans
 
 **Wave 1** *(independent, can run in parallel)*:
+
 - [x] 01-01-PLAN.md — Tailwind CSS setup and layout foundation
 - [x] 01-02-PLAN.md — Authentication pages redesign (Login, SignUp)
 
 **Wave 2** *(blocked on Wave 1 — requires layout from 01-01)*:
+
 - [x] 01-03-PLAN.md — Home page redesign with template discovery UX
 - [x] 01-04-PLAN.md — Template builder and response pages redesign
 
 **Cross-cutting constraints:**
+
 - All views must use Tailwind CSS classes (no Bootstrap)
 - All interactive elements must have focus states (focus:ring-2)
 - All forms must have inline validation
@@ -36,18 +40,44 @@
 **Plans:** 3 plans
 
 **Wave 1** *(foundation — design token system)*:
+
 - [ ] 02-01-PLAN.md — Design Token System (CSS custom properties, extended config, documentation)
 
 **Wave 2** *(blocked on Wave 1 — uses design tokens)*:
+
 - [ ] 02-02-PLAN.md — Toast Notifications + Error Page Redesign (Sonner.js integration, Error.cshtml)
 - [ ] 02-03-PLAN.md — Visual Consistency Audit (fix Bootstrap remnants in JS, remove Bootstrap lib)
 
 **Cross-cutting constraints:**
+
 - Design tokens must be documented in a single source of truth (`.planning/design-tokens.md`)
 - All notifications use Sonner.js (per D-05)
 - Error pages must follow the app's aesthetic (no default Bootstrap error styling)
 - Animations must be tasteful and purposeful (not decorative)
 - Consistent with Phase 1 color palette and typography
+
+### Phase 6: E2E Testing with Cypress
+
+**Goal:** Implement comprehensive end-to-end testing using Cypress for all application features from sign up to template likes, with reusable custom commands to avoid code duplication.
+
+**Requirements**: TBD
+
+**Depends on:** Phase 5
+
+**Plans:** 3 plans
+
+**Wave 1** *(foundation — Cypress setup)*:
+- [ ] 06-01-PLAN.md — Cypress setup and custom commands for authentication
+
+**Wave 2** *(blocked on Wave 1 — requires Cypress foundation)*:
+- [ ] 06-02-PLAN.md — Authentication E2E tests (signup, login, logout, session-aware UI)
+- [ ] 06-03-PLAN.md — Template E2E tests (create, view, search, like/unlike)
+
+**Cross-cutting constraints:**
+- All tests must use Cypress custom commands to avoid code duplication
+- Sign-in logic must be encapsulated in cy.login() custom command
+- Tests must cover both positive and negative scenarios
+- All tests must pass with `npx cypress run`
 
 ---
 
@@ -66,16 +96,20 @@
 **Plans:** 4 plans
 
 **Wave 1** *(independent, can run in parallel)*:
+
 - [ ] 03-01-PLAN.md — Backend refactoring (shared JSON response helper, session validation consolidation, ILogger migration)
 - [ ] 03-02-PLAN.md — Frontend refactoring (BaseQuestion class, shared validation utility, toast partial, unused file removal)
 
 **Wave 2** *(blocked on Wave 1 — requires refactored services)*:
+
 - [ ] 03-03-PLAN.md — Test infrastructure & unit tests (xUnit project, service tests, utility tests)
 
 **Wave 3** *(blocked on Wave 2 — requires test infrastructure)*:
+
 - [ ] 03-04-PLAN.md — Integration tests (WebApplicationFactory, controller endpoint tests)
 
 **Cross-cutting constraints:**
+
 - All controllers must use shared JsonResponse utility (no manual JsonSerializer.Serialize)
 - All logging must use ILogger (no Console.WriteLine)
 - All question type JS classes must extend BaseQuestion
@@ -93,13 +127,39 @@
 **Plans:** 2 plans
 
 **Wave 1** *(independent, can run in parallel)*:
+
 - [ ] 04-01-PLAN.md — Backend error handling (global exception middleware, structured error responses, meaningful error messages in all controllers)
 - [ ] 04-02-PLAN.md — Frontend error display component (ErrorDisplay component, HTTP error handling in makeRequest.js, error state UI patterns)
 
 **Cross-cutting constraints:**
+
 - All controllers must return structured JSON error responses (consistent format: `{ error: { code, message, details? } }`)
 - All services must throw meaningful exceptions (not return null silently)
 - Global exception middleware catches unhandled exceptions and returns proper HTTP status codes
 - Frontend must display user-friendly error messages for all HTTP failures
 - Error messages must be specific and actionable (not generic "An error occurred")
 - All error responses must include appropriate HTTP status codes (400, 401, 403, 404, 500)
+
+### Phase 5: Glassmorphism & UI Polish
+
+**Goal:** Add glassmorphism visual effects to frontend elements for a modern, frosted-glass aesthetic. Fix session-aware button visibility: show logout only when authenticated, hide sign-in when authenticated (and vice versa).
+
+**Depends on:** Phase 1, Phase 2
+
+**Requirements:** [REQ-18, REQ-19]
+
+**Plans:** 2 plans
+
+**Wave 1** *(independent, can run in parallel)*:
+
+- [ ] 05-01-PLAN.md — Glassmorphism effects (backdrop-blur, semi-transparent backgrounds, glass cards, frosted sidebar)
+- [ ] 05-02-PLAN.md — Session-aware button visibility (conditional logout/sign-in rendering in layout, session check in views)
+
+**Cross-cutting constraints:**
+
+- Glassmorphism uses `backdrop-blur-md bg-white/70 border border-white/20` patterns
+- Must work on both light and semi-dark backgrounds
+- Button visibility checks `TempData["username"]` or session state
+- Logout button only visible when user is authenticated
+- Sign-in/Sign-up buttons hidden when user is authenticated
+- All changes must maintain existing responsive behavior
