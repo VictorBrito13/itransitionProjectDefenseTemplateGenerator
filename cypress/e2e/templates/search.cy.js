@@ -20,10 +20,6 @@ const mockTemplates = [
 ];
 
 describe('Template Search', () => {
-  beforeEach(() => {
-    cy.fixture('users.json').as('users');
-  });
-
   it('should search templates by title', function () {
     cy.intercept('GET', '/template/templates*', {
       statusCode: 200,

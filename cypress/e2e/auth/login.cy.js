@@ -1,61 +1,52 @@
 describe('Login', () => {
+  const uniqueId = Date.now();
+  const testEmail = `logintest${uniqueId}@example.com`;
+  const testUsername = `logintestuser${uniqueId}`;
+  const testPassword = 'TestPass123!';
+
+  before(() => {
+    // Create user via signup first
+    cy.signup(testEmail, testPassword, testUsername);
+  });
+
   beforeEach(() => {
     cy.visit('/user/log-in');
   });
 
   it('should login with valid credentials and redirect to home', () => {
-    cy.fixture('users').then((users) => {
-      const { validUser } = users;
+    cy.login(testEmail, testPassword);
 
-      cy.login(validUser.email, validUser.password);
-
-      cy.url().should('eq', Cypress.config('baseUrl') + '/');
-      cy.get('[data-cy="user-avatar-btn"]').should('be.visible');
-    });
+    cy.url().should('eq', Cypress.config('baseUrl') + '/');
+    cy.get('[data-cy="user-avatar-btn"]').should('be.visible');
   });
 
   it('should show error for invalid credentials', () => {
-    cy.fixture('users').then((users) => {
-      const { validUser } = users;
+    cy.get('[data-cy="login-email"]').type(testEmail);
+    cy.get('[data-cy="login-password"]').type('WrongPassword123!');
+    cy.get('[data-cy="login-submit-btn"]').click();
 
-      cy.get('[data-cy="login-email"]').type(validUser.email);
-      cy.get('[data-cy="login-password"]').type('WrongPassword123!');
-      cy.get('[data-cy="login-submit-btn"]').click();
-
-      cy.url().should('include', '/user/log-in');
-      cy.get('[data-cy="login-error-container"]')
-        .should('be.visible')
-        .and('contain', 'Invalid email or password');
-    });
+    cy.url().should('include', '/user/log-in');
+    cy.get('[data-cy="login-error-container"]')
+      .should('be.visible')
+      .and('contain', 'Invalid email or password');
   });
 
   it('should show error for non-existent user', () => {
-    cy.fixture('users').then((users) => {
-      const { invalidUser } = users;
+    cy.get('[data-cy="login-email"]').type('nonexistent@example.com');
+    cy.get('[data-cy="login-password"]').type('SomePassword123!');
+    cy.get('[data-cy="login-submit-btn"]').click();
 
-      cy.get('[data-cy="login-email"]').type(invalidUser.email);
-      cy.get('[data-cy="login-password"]').type(invalidUser.password);
-      cy.get('[data-cy="login-submit-btn"]').click();
-
-      cy.url().should('include', '/user/log-in');
-      cy.get('[data-cy="login-error-container"]')
-        .should('be.visible')
-        .and('contain', 'Invalid email or password');
-    });
+    cy.url().should('include', '/user/log-in');
+    cy.get('[data-cy="login-error-container"]')
+      .should('be.visible')
+      .and('contain', 'Invalid email or password');
   });
 
   it('should redirect to home if already authenticated', () => {
-    cy.fixture('users').then((users) => {
-      const { validUser } = users;
+    cy.login(testEmail, testPassword);
 
-      // Login first
-      cy.login(validUser.email, validUser.password);
+    cy.visit('/user/log-in');
 
-      // Try to visit login page while authenticated
-      cy.visit('/user/log-in');
-
-      // Should redirect back to home
-      cy.url().should('eq', Cypress.config('baseUrl') + '/');
-    });
+    cy.url().should('eq', Cypress.config('baseUrl') + '/');
   });
 });

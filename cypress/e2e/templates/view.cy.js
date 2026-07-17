@@ -20,8 +20,13 @@ const mockTemplates = [
 ];
 
 describe('Template Viewing', () => {
-  beforeEach(() => {
-    cy.fixture('users.json').as('users');
+  const uniqueId = Date.now();
+  const testEmail = `viewtest${uniqueId}@example.com`;
+  const testUsername = `viewtestuser${uniqueId}`;
+  const testPassword = 'TestPass123!';
+
+  before(() => {
+    cy.signup(testEmail, testPassword, testUsername);
   });
 
   it('should display templates on home page', function () {
@@ -43,7 +48,7 @@ describe('Template Viewing', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');
@@ -64,7 +69,7 @@ describe('Template Viewing', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');

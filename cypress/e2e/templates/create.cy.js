@@ -1,26 +1,30 @@
 describe('Template Creation', () => {
-  beforeEach(() => {
-    cy.fixture('users.json').as('users');
-    cy.fixture('templates.json').as('templates');
+  const uniqueId = Date.now();
+  const testEmail = `templatetest${uniqueId}@example.com`;
+  const testUsername = `templatetestuser${uniqueId}`;
+  const testPassword = 'TestPass123!';
+
+  before(() => {
+    cy.signup(testEmail, testPassword, testUsername);
   });
 
   it('should create a new template when authenticated', function () {
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
 
     cy.intercept('POST', '/template/create').as('createTemplate');
     cy.visit('/template/create');
 
     cy.get('[data-cy="page-title"]').should('contain', 'Create a new template');
 
-    cy.get('[data-cy="template-topic-select"]').select(this.templates.validTemplate.topicId);
+    cy.get('[data-cy="template-topic-select"]').select('1');
 
     cy.get('[data-cy="template-title-input"]')
       .clear()
-      .type(this.templates.validTemplate.title);
+      .type('Test Template');
 
     cy.get('[data-cy="template-description-input"]')
       .clear()
-      .type(this.templates.validTemplate.description);
+      .type('A test template for E2E testing');
 
     cy.get('[data-cy="add-single-line-btn"]').click();
 
@@ -35,7 +39,7 @@ describe('Template Creation', () => {
   });
 
   it('should show error for missing required fields', function () {
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/template/create');
 
     cy.get('[data-cy="btn-create-template"]').click();
@@ -44,7 +48,7 @@ describe('Template Creation', () => {
   });
 
   it('should show error for invalid topic', function () {
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/template/create');
 
     cy.get('[data-cy="template-title-input"]')

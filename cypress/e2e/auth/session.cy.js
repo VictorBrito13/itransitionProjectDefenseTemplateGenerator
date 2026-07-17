@@ -1,16 +1,22 @@
 describe('Session-Aware UI', () => {
+  const uniqueId = Date.now();
+  const testEmail = `sessiontest${uniqueId}@example.com`;
+  const testUsername = `sessiontestuser${uniqueId}`;
+  const testPassword = 'TestPass123!';
+
+  before(() => {
+    // Create user via signup first
+    cy.signup(testEmail, testPassword, testUsername);
+  });
+
   describe('when authenticated', () => {
     beforeEach(() => {
-      cy.fixture('users').then((users) => {
-        const { validUser } = users;
-        cy.login(validUser.email, validUser.password);
-      });
+      cy.login(testEmail, testPassword);
     });
 
     it('should show logout button when authenticated', () => {
       cy.get('[data-cy="user-avatar-btn"]').should('be.visible');
 
-      // Click avatar to reveal dropdown
       cy.get('[data-cy="user-avatar-btn"]').click();
       cy.get('[data-cy="sign-out-link"]').should('be.visible');
     });
@@ -39,17 +45,12 @@ describe('Session-Aware UI', () => {
 
   describe('session persistence', () => {
     it('should maintain session across page refreshes', () => {
-      cy.fixture('users').then((users) => {
-        const { validUser } = users;
-        cy.login(validUser.email, validUser.password);
+      cy.login(testEmail, testPassword);
 
-        // Refresh the page
-        cy.reload();
+      cy.reload();
 
-        // Verify still authenticated - avatar should be visible
-        cy.get('[data-cy="user-avatar-btn"]').should('be.visible');
-        cy.get('[data-cy="sign-in-link"]').should('not.exist');
-      });
+      cy.get('[data-cy="user-avatar-btn"]').should('be.visible');
+      cy.get('[data-cy="sign-in-link"]').should('not.exist');
     });
   });
 });

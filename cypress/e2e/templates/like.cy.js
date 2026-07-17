@@ -20,8 +20,13 @@ const mockTemplates = [
 ];
 
 describe('Template Like/Unlike', () => {
-  beforeEach(() => {
-    cy.fixture('users.json').as('users');
+  const uniqueId = Date.now();
+  const testEmail = `liketest${uniqueId}@example.com`;
+  const testUsername = `liketestuser${uniqueId}`;
+  const testPassword = 'TestPass123!';
+
+  before(() => {
+    cy.signup(testEmail, testPassword, testUsername);
   });
 
   it('should like a template when authenticated', function () {
@@ -30,7 +35,7 @@ describe('Template Like/Unlike', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');
@@ -60,7 +65,7 @@ describe('Template Like/Unlike', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');
@@ -113,7 +118,7 @@ describe('Template Like/Unlike', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');
@@ -145,7 +150,7 @@ describe('Template Like/Unlike', () => {
       body: mockTemplates,
     }).as('getTemplates');
 
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.login(testEmail, testPassword);
     cy.visit('/');
 
     cy.wait('@getTemplates');

@@ -30,7 +30,7 @@ public class TemplateController : Controller {
         
         if (userSession == null) {
             _logger.LogInformation("DEBUG [CreateTemplateView] Redirecting to /user/log-in");
-            return Redirect("/user/log-in");
+            return new RedirectResult("/user/log-in", permanent: false, preserveMethod: true);
         }
 
         Models.Topic[] topics = await _TopicService.GetTopics();
@@ -96,7 +96,7 @@ public class TemplateController : Controller {
     [HttpGet("/template/template")]
     public IActionResult GetTemplateView() {
         Models.User? user = Auth.ValidateUserSession(HttpContext);
-        if (user == null) return Redirect("/user/log-in");
+        if (user == null) return new RedirectResult("/user/log-in", permanent: false, preserveMethod: true);
         TempData["userEmail"] = user.Email;
         TempData["userId"] = user.UserId;
         return View("TemplateView");
