@@ -20,14 +20,15 @@
         }
 
         <!-- Inline error container (fallback, hidden by default) -->
-        <div class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" id="error-container"></div>
+        <div data-cy="login-error-container" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" id="error-container"></div>
 
         <!-- Login form -->
-        <form action="/user/log-in" method="post" id="loginForm" novalidate>
+        <form data-cy="login-form" action="/user/log-in" method="post" id="loginForm" novalidate>
             <!-- Email -->
             <div class="mb-5">
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
+                    data-cy="login-email"
                     type="email"
                     name="email"
                     id="email"
@@ -35,7 +36,7 @@
                     placeholder="you@example.com"
                     required
                 />
-                <p class="hidden mt-1.5 text-sm text-error" id="email-error"></p>
+                <p data-cy="login-email-error" class="hidden mt-1.5 text-sm text-error" id="email-error"></p>
             </div>
 
             <!-- Password -->
@@ -43,6 +44,7 @@
                 <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <div class="relative">
                     <input
+                        data-cy="login-password"
                         type="password"
                         name="password"
                         id="password"
@@ -51,6 +53,7 @@
                         required
                     />
                     <button
+                        data-cy="login-toggle-password"
                         type="button"
                         id="toggle-password"
                         class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
@@ -65,11 +68,12 @@
                         </svg>
                     </button>
                 </div>
-                <p class="hidden mt-1.5 text-sm text-error" id="password-error"></p>
+                <p data-cy="login-password-error" class="hidden mt-1.5 text-sm text-error" id="password-error"></p>
             </div>
 
             <!-- Submit button -->
             <button
+                data-cy="login-submit-btn"
                 type="submit"
                 id="login-btn"
                 class="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-blue-600 transition-colors focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center gap-2"
@@ -85,7 +89,7 @@
         <!-- Footer link -->
         <p class="mt-6 text-center text-sm text-gray-500">
             Don't have an account?
-            <a href="/user/sign-up" class="font-medium text-primary hover:text-blue-600 transition-colors">Sign up</a>
+            <a data-cy="login-signup-link" href="/user/sign-up" class="font-medium text-primary hover:text-blue-600 transition-colors">Sign up</a>
         </p>
     </div>
 </div>
