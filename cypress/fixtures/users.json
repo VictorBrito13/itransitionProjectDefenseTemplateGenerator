@@ -1,0 +1,17 @@
+{
+  "validUser": {
+    "email": "test@example.com",
+    "password": "Test123!",
+    "username": "testuser"
+  },
+  "newUser": {
+    "email": "new@example.com",
+    "password": "New123!",
+    "username": "newuser"
+  },
+  "invalidUser": {
+    "email": "invalid@example.com",
+    "password": "wrong",
+    "username": "invalid"
+  }
+}
