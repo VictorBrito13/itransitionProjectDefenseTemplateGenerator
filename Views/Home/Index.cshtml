@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors shadow-sm">
+                    <a data-cy="home-create-template-link" href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -28,8 +28,8 @@
                     </a>
                 </div>
             </div>
-            <input type="hidden" value="@userId" id="userId">
-            <input type="hidden" value="@username" id="username">
+            <input data-cy="home-user-id" type="hidden" value="@userId" id="userId">
+            <input data-cy="home-username" type="hidden" value="@username" id="username">
         </div>
     } else {
         @* Hero Section — guests *@
@@ -37,7 +37,7 @@
             <div class="max-w-2xl">
                 <h1 class="text-4xl font-bold mb-4">Create and Share Templates</h1>
                 <p class="text-xl text-blue-100 mb-8">Build custom forms, surveys, and questionnaires in minutes</p>
-                <a href="/user/sign-up" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
+                <a data-cy="home-hero-signup-link" href="/user/sign-up" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
                     Get Started
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -55,22 +55,23 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input
+            data-cy="home-search-input"
             type="search"
             id="search-template-control"
             placeholder="Search for templates..."
             class="w-full pl-12 pr-4 py-4 glass-subtle border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-lg outline-none transition-all"
         />
     </div>
-    <div id="search-result-container" class="absolute w-full glass border border-gray-200 rounded-xl shadow-lg mt-2 max-h-96 overflow-y-auto z-50 hidden"></div>
+    <div data-cy="home-search-results" id="search-result-container" class="absolute w-full glass border border-gray-200 rounded-xl shadow-lg mt-2 max-h-96 overflow-y-auto z-50 hidden"></div>
 </div>
 
 @* Templates Section *@
 <div>
     <div class="flex items-center justify-between mb-6">
-        <h2 id="templates-header" class="text-2xl font-bold text-gray-900">Latest Templates</h2>
+        <h2 data-cy="home-templates-header" id="templates-header" class="text-2xl font-bold text-gray-900">Latest Templates</h2>
         @{
             if(username != null) {
-                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-600 glass border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-primary transition-colors" id="btn-toggle-templates">
+                <button data-cy="home-toggle-templates-btn" type="button" class="px-4 py-2 text-sm font-medium text-gray-600 glass border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-primary transition-colors" id="btn-toggle-templates">
                     Your Templates
                 </button>
             }
@@ -78,7 +79,7 @@
     </div>
 
     @* Templates Grid — rendered by JS *@
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="latest-templates-container">
+    <div data-cy="home-templates-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="latest-templates-container">
         @* Skeleton Loading State *@
         @for (int i = 0; i < 6; i++)
         {
@@ -98,13 +99,13 @@
     </div>
 
     @* Empty State — hidden by default, shown by JS when no templates *@
-    <div id="empty-state" class="text-center py-16 hidden">
+    <div data-cy="home-empty-state" id="empty-state" class="text-center py-16 hidden">
         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
         <h3 class="text-xl font-semibold text-gray-700 mb-2">No templates yet</h3>
         <p class="text-gray-500 mb-6">Be the first to create one!</p>
-        <a href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors">
+        <a data-cy="home-empty-create-link" href="/template/create" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors">
             Create Template
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -114,7 +115,7 @@
 
     @* Load More Button *@
     <div id="load-more-container" class="text-center mt-8 hidden">
-        <button id="load-more-btn" class="px-8 py-3 glass border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors shadow-sm">
+        <button data-cy="home-load-more-btn" id="load-more-btn" class="px-8 py-3 glass border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors shadow-sm">
             Load More
         </button>
     </div>
