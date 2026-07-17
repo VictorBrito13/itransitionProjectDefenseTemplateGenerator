@@ -18,7 +18,18 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        _logger.LogInformation("DEBUG [Home.Index] Request received. CookiePresent={CookiePresent}, SessionId={SessionId}",
+            HttpContext.Request.Cookies.ContainsKey(".AspNetCore.Session"),
+            HttpContext.Session.Id);
+
         ItransitionTemplates.Models.User user = Session.GetObject<ItransitionTemplates.Models.User>(HttpContext, "userSession");
+        _logger.LogInformation("DEBUG [Home.Index] Session read. KeyExists={KeyExists}, RawJson={RawJson}, UserId={UserId}, Username={Username}, Email={Email}",
+            HttpContext.Session.Keys.Contains("userSession"),
+            HttpContext.Session.GetString("userSession"),
+            user?.UserId,
+            user?.Username,
+            user?.Email);
+
         TempData["username"] = user?.Username;
         TempData["userId"] = user?.UserId.ToString();
         return View();

@@ -74,7 +74,7 @@
 
 **Wave 2** *(blocked on Wave 1 — requires Cypress foundation)*:
 - [x] 06-02-PLAN.md — Authentication E2E tests (signup, login, logout, session-aware UI)
-- [ ] 06-03-PLAN.md — Template E2E tests (create, view, search, like/unlike)
+- [x] 06-03-PLAN.md — Template E2E tests (create, view, search, like/unlike)
 
 **Cross-cutting constraints:**
 - All interactive elements must have `data-cy` attributes with "cy-" prefix convention

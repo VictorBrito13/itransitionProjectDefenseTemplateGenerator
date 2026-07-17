@@ -24,7 +24,31 @@ public class UserController : Controller {
 
         if(userFound != null) {
             //Store the user in the session
-            Session.Store(HttpContext, "userSession", new { UserId=userFound.UserId, Username=userFound.Username, Email=userFound.Email});
+            var sessionPayload = new { UserId=userFound.UserId, Username=userFound.Username, Email=userFound.Email};
+            Session.Store(HttpContext, "userSession", sessionPayload);
+
+            // --- DEBUG: Log session state after Store ---
+            string? rawJson = HttpContext.Session.GetString("userSession");
+            bool keyExists = rawJson != null;
+            Models.User? deserialized = null;
+            try {
+                if (rawJson != null) {
+                    deserialized = System.Text.Json.JsonSerializer.Deserialize<Models.User>(rawJson);
+                }
+            } catch (Exception deserErr) {
+                _logger.LogWarning("DEBUG [LogIn] Deserialization failed: {Error}", deserErr.Message);
+            }
+            _logger.LogInformation(
+                "DEBUG [LogIn] Session stored. KeyExists={KeyExists}, RawJson={RawJson}, " +
+                "DeserializedUserId={UserId}, DeserializedUsername={Username}, DeserializedEmail={Email}",
+                keyExists,
+                rawJson ?? "(null)",
+                deserialized?.UserId.ToString() ?? "(null)",
+                deserialized?.Username ?? "(null)",
+                deserialized?.Email ?? "(null)"
+            );
+            // --- END DEBUG ---
+
             return RedirectToAction("Index", "Home");
         } else {
             TempData["errorMsg"] = "Invalid email or password, please check your credentials and try again";
@@ -42,7 +66,31 @@ public class UserController : Controller {
         //Store the user in the database
         try {
             Models.User createdUser = await _UserService.AddUser(user);
-            Session.Store(HttpContext, "userSession", new { UserId=createdUser.UserId, Username=createdUser.Username, Email=createdUser.Email});
+            var sessionPayload = new { UserId=createdUser.UserId, Username=createdUser.Username, Email=createdUser.Email};
+            Session.Store(HttpContext, "userSession", sessionPayload);
+
+            // --- DEBUG: Log session state after Store ---
+            string? rawJson = HttpContext.Session.GetString("userSession");
+            bool keyExists = rawJson != null;
+            Models.User? deserialized = null;
+            try {
+                if (rawJson != null) {
+                    deserialized = System.Text.Json.JsonSerializer.Deserialize<Models.User>(rawJson);
+                }
+            } catch (Exception deserErr) {
+                _logger.LogWarning("DEBUG [SignUp] Deserialization failed: {Error}", deserErr.Message);
+            }
+            _logger.LogInformation(
+                "DEBUG [SignUp] Session stored. KeyExists={KeyExists}, RawJson={RawJson}, " +
+                "DeserializedUserId={UserId}, DeserializedUsername={Username}, DeserializedEmail={Email}",
+                keyExists,
+                rawJson ?? "(null)",
+                deserialized?.UserId.ToString() ?? "(null)",
+                deserialized?.Username ?? "(null)",
+                deserialized?.Email ?? "(null)"
+            );
+            // --- END DEBUG ---
+
             return RedirectToAction("Index", "Home");
         } catch (DBException err) {
             TempData["errorMsg"] = err.Msg;

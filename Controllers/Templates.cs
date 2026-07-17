@@ -21,6 +21,18 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/create")]
     public async Task<IActionResult> CreateTemplateView() {
+        _logger.LogInformation("DEBUG [CreateTemplateView] Request received. Path={Path}, Method={Method}", HttpContext.Request.Path, HttpContext.Request.Method);
+        _logger.LogInformation("DEBUG [CreateTemplateView] Session cookie present: {CookiePresent}", HttpContext.Request.Cookies.ContainsKey(".AspNetCore.Session"));
+        _logger.LogInformation("DEBUG [CreateTemplateView] Session ID: {SessionId}", HttpContext.Session.Id);
+        
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        _logger.LogInformation("DEBUG [CreateTemplateView] ValidateSession returned: {IsNull}", userSession == null ? "null" : "valid user");
+        
+        if (userSession == null) {
+            _logger.LogInformation("DEBUG [CreateTemplateView] Redirecting to /user/log-in");
+            return Redirect("/user/log-in");
+        }
+
         Models.Topic[] topics = await _TopicService.GetTopics();
         TempData["topics"] = System.Text.Json.JsonSerializer.Serialize(topics);
         return View("CreateTemplate");

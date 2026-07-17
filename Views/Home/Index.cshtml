@@ -67,15 +67,18 @@
 
 @* Templates Section *@
 <div>
+    @* Tab Navigation *@
     <div class="flex items-center justify-between mb-6">
-        <h2 data-cy="home-templates-header" id="templates-header" class="text-2xl font-bold text-gray-900">Latest Templates</h2>
-        @{
-            if(username != null) {
-                <button data-cy="home-toggle-templates-btn" type="button" class="px-4 py-2 text-sm font-medium text-gray-600 glass border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-primary transition-colors" id="btn-toggle-templates">
+        <div class="flex gap-1 glass rounded-xl p-1" role="tablist">
+            @if (username != null) {
+                <button data-cy="home-tab-templates" type="button" class="px-5 py-2.5 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:text-gray-900" id="tab-templates" role="tab" aria-selected="false">
                     Your Templates
                 </button>
             }
-        }
+            <button data-cy="home-tab-latest" type="button" class="px-5 py-2.5 text-sm font-medium rounded-lg transition-colors bg-white shadow-sm text-gray-900" id="tab-latest" role="tab" aria-selected="true">
+                Latest Templates
+            </button>
+        </div>
     </div>
 
     @* Templates Grid — rendered by JS *@

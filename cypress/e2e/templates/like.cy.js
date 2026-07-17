@@ -16,7 +16,7 @@ describe('Template Like/Unlike', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
@@ -47,7 +47,7 @@ describe('Template Like/Unlike', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
@@ -78,7 +78,7 @@ describe('Template Like/Unlike', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
@@ -98,7 +98,7 @@ describe('Template Like/Unlike', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
@@ -132,7 +132,7 @@ describe('Template Like/Unlike', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 

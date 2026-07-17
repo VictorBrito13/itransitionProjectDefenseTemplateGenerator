@@ -11,8 +11,8 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
-const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
-const $templatesHeader = document.getElementById("templates-header");
+const $tabTemplates = document.getElementById("tab-templates");
+const $tabLatest = document.getElementById("tab-latest");
 const $templatesContainer = document.getElementById("latest-templates-container");
 const $inputSearchTemplatesByQuery = document.getElementById("search-template-control");
 const $searchResultsContainer = document.getElementById("search-result-container");
@@ -146,22 +146,38 @@ $inputSearchTemplatesByQuery.addEventListener("focus", (e) => {
     }
 });
 
-// --- User Templates Toggle ---
-if ($btnToggleTemplates) {
-    $btnToggleTemplates.addEventListener("click", async () => {
-        if (currentMode === "latest") {
-            currentMode = "user";
-            $btnToggleTemplates.textContent = "Latest Templates";
-            $templatesHeader.textContent = "Your Templates";
-            resetPagesForLatestTemplates();
-            await loadAndRenderTemplates(getTemplatesByUserId, "user");
+// --- Tab Switching ---
+function setActiveTab(activeTabId) {
+    document.querySelectorAll('[role="tab"]').forEach(tab => {
+        if (tab.id === activeTabId) {
+            tab.classList.add('bg-white', 'shadow-sm', 'text-gray-900');
+            tab.classList.remove('text-gray-600', 'hover:text-gray-900');
+            tab.setAttribute('aria-selected', 'true');
         } else {
-            currentMode = "latest";
-            $btnToggleTemplates.textContent = "Your Templates";
-            $templatesHeader.textContent = "Latest Templates";
-            resetPagesForUserTemplates();
-            await loadAndRenderTemplates(getLatestTemplates, "latest");
+            tab.classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
+            tab.classList.add('text-gray-600', 'hover:text-gray-900');
+            tab.setAttribute('aria-selected', 'false');
         }
+    });
+}
+
+if ($tabTemplates) {
+    $tabTemplates.addEventListener("click", async () => {
+        if (currentMode === "user") return;
+        currentMode = "user";
+        setActiveTab("tab-templates");
+        resetPagesForLatestTemplates();
+        await loadAndRenderTemplates(getTemplatesByUserId, "user");
+    });
+}
+
+if ($tabLatest) {
+    $tabLatest.addEventListener("click", async () => {
+        if (currentMode === "latest") return;
+        currentMode = "latest";
+        setActiveTab("tab-latest");
+        resetPagesForUserTemplates();
+        await loadAndRenderTemplates(getLatestTemplates, "latest");
     });
 }
 

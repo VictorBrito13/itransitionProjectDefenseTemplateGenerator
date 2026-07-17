@@ -23,12 +23,10 @@ Cypress.Commands.add('login', (email, password) => {
  */
 Cypress.Commands.add('signup', (email, password, username) => {
   cy.visit('/user/sign-up');
-  cy.get('[data-cy="signup-email"]').clear().type(email);
-  cy.get('[data-cy="signup-username"]').clear().type(username);
+  cy.get('[data-cy="signup-email"]').clear().type(email).blur();
+  cy.get('[data-cy="signup-username"]').clear().type(username).blur();
   cy.get('[data-cy="signup-password"]').clear().type(password);
   cy.get('[data-cy="signup-confirm-password"]').clear().type(password);
-  cy.get('[data-cy="signup-email"]').blur();
-  cy.get('[data-cy="signup-username"]').blur();
   cy.get('[data-cy="signup-submit-btn"]').should('not.be.disabled').click();
   cy.url().should('eq', Cypress.config('baseUrl') + '/');
 });

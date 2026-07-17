@@ -7,12 +7,10 @@ describe('Sign Up', () => {
     cy.fixture('users').then((users) => {
       const { newUser } = users;
 
-      cy.get('[data-cy="signup-email"]').type(newUser.email);
-      cy.get('[data-cy="signup-username"]').type(newUser.username);
+      cy.get('[data-cy="signup-email"]').type(newUser.email).blur();
+      cy.get('[data-cy="signup-username"]').type(newUser.username).blur();
       cy.get('[data-cy="signup-password"]').type(newUser.password);
       cy.get('[data-cy="signup-confirm-password"]').type(newUser.password);
-      cy.get('[data-cy="signup-email"]').blur();
-      cy.get('[data-cy="signup-username"]').blur();
       cy.get('[data-cy="signup-submit-btn"]').should('not.be.disabled').click();
 
       cy.url().should('eq', Cypress.config('baseUrl') + '/');
@@ -30,12 +28,10 @@ describe('Sign Up', () => {
 
       // Try to sign up again with the same email
       cy.visit('/user/sign-up');
-      cy.get('[data-cy="signup-email"]').type(validUser.email);
-      cy.get('[data-cy="signup-username"]').type('differentuser');
+      cy.get('[data-cy="signup-email"]').type(validUser.email).blur();
+      cy.get('[data-cy="signup-username"]').type('differentuser').blur();
       cy.get('[data-cy="signup-password"]').type(validUser.password);
       cy.get('[data-cy="signup-confirm-password"]').type(validUser.password);
-      cy.get('[data-cy="signup-email"]').blur();
-      cy.get('[data-cy="signup-username"]').blur();
       cy.get('[data-cy="signup-submit-btn"]').should('not.be.disabled').click();
 
       // Should show error message (from server via TempData or error container)

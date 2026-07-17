@@ -11,7 +11,7 @@ describe('Template Viewing', () => {
     // Wait for templates to load
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Verify templates header exists
+    // Verify Latest Templates header is visible
     cy.get('[data-cy="home-templates-header"]').should('contain', 'Latest Templates');
   });
 
@@ -27,7 +27,7 @@ describe('Template Viewing', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
@@ -48,7 +48,7 @@ describe('Template Viewing', () => {
 
     // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
-      .find('[data-cy="template-card"]')
+      .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
