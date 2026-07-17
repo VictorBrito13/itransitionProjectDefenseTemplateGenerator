@@ -64,9 +64,12 @@
 
 **Depends on:** Phase 5
 
-**Plans:** 3 plans
+**Plans:** 4 plans
 
-**Wave 1** *(foundation — Cypress setup)*:
+**Wave 0** *(prep — add data-cy test attributes to all views)*:
+- [x] 06-00-PLAN.md — Add data-cy attributes to Razor views and JS dynamic elements
+
+**Wave 1** *(foundation — Cypress setup, blocked on Wave 0)*:
 - [ ] 06-01-PLAN.md — Cypress setup and custom commands for authentication
 
 **Wave 2** *(blocked on Wave 1 — requires Cypress foundation)*:
@@ -74,6 +77,8 @@
 - [ ] 06-03-PLAN.md — Template E2E tests (create, view, search, like/unlike)
 
 **Cross-cutting constraints:**
+- All interactive elements must have `data-cy` attributes with "cy-" prefix convention
+- All Cypress selectors must use `[data-cy="..."]` — no classes, IDs, or tags
 - All tests must use Cypress custom commands to avoid code duplication
 - Sign-in logic must be encapsulated in cy.login() custom command
 - Tests must cover both positive and negative scenarios
