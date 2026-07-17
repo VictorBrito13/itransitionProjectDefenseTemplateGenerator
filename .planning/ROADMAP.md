@@ -70,10 +70,10 @@
 - [x] 06-00-PLAN.md — Add data-cy attributes to Razor views and JS dynamic elements
 
 **Wave 1** *(foundation — Cypress setup, blocked on Wave 0)*:
-- [ ] 06-01-PLAN.md — Cypress setup and custom commands for authentication
+- [x] 06-01-PLAN.md — Cypress setup and custom commands for authentication
 
 **Wave 2** *(blocked on Wave 1 — requires Cypress foundation)*:
-- [ ] 06-02-PLAN.md — Authentication E2E tests (signup, login, logout, session-aware UI)
+- [x] 06-02-PLAN.md — Authentication E2E tests (signup, login, logout, session-aware UI)
 - [ ] 06-03-PLAN.md — Template E2E tests (create, view, search, like/unlike)
 
 **Cross-cutting constraints:**
