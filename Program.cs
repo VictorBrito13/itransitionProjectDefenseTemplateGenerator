@@ -19,7 +19,12 @@ builder.Services.AddControllersWithViews();
 
 string dbConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8,0,46));
-builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseMySql(dbConnection, serverVersion).EnableSensitiveDataLogging());
+builder.Services.AddDbContext<ApplicationDBContext>(options => {
+    options.UseMySql(dbConnection, serverVersion);
+    if (builder.Environment.IsDevelopment()) {
+        options.EnableSensitiveDataLogging();
+    }
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

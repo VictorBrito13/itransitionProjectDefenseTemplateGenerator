@@ -10,8 +10,9 @@ async function getTemplate() {
     const searcherParams = new URLSearchParams(location.search);
     const templateId = searcherParams.get("templateId");
     
-    const template = await (await fetch(`${location.origin}/template/get-template?templateId=${templateId}`)).json();
-    return template;
+    const json = await (await fetch(`${location.origin}/template/get-template?templateId=${templateId}`)).json();
+    if (json.error) return json;
+    return json.data;
 }
 
 //This function is used to display a form
@@ -19,7 +20,7 @@ async function getTemplate() {
 //if editionMode is false when send button gets clicked is goint to send the from
 async function buildForm($parentElement, json, editionMode = false) {
 
-    if(json.errorMsg) {
+    if(json.error) {
         $parentElement.innerHTML = "<h1>This form does not exists</h1>";
     } else {
         //Print the questions
@@ -85,7 +86,6 @@ async function buildForm($parentElement, json, editionMode = false) {
                     method: "POST",
                     body: responses
                 });
-                console.log(json);
 
                 const { data } = json;
 

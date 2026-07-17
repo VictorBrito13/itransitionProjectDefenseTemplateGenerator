@@ -78,14 +78,18 @@
 
             <!-- Right: User actions -->
             <div class="flex items-center gap-3">
-                @if (Context.Session.GetString("User") != null)
+                @if (Context.Session.GetString("userSession") != null)
                 {
+                    var sessionJson = Context.Session.GetString("userSession");
+                    var sessionUser = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(sessionJson ?? "{}");
+                    var displayName = sessionUser.TryGetProperty("Username", out var usernameProp) ? usernameProp.GetString() : null;
+                    var avatarLetter = !string.IsNullOrEmpty(displayName) ? displayName[0].ToString().ToUpper() : "?";
                     <div class="relative" x-data="{ open: false }">
                         <button
                             @@click="open = !open"
                             class="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
                             <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                                @Context.Session.GetString("User")?.Substring(0, 1).ToUpper()
+                                @avatarLetter
                             </div>
                         </button>
                         <div
@@ -149,7 +153,7 @@
                     </svg>
                     Home
                 </a>
-                @if (Context.Session.GetString("User") != null)
+                @if (Context.Session.GetString("userSession") != null)
                 {
                     <a asp-controller="Template" asp-action="CreateTemplate"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
@@ -184,7 +188,7 @@
                     </svg>
                     Home
                 </a>
-                @if (Context.Session.GetString("User") != null)
+                @if (Context.Session.GetString("userSession") != null)
                 {
                     <a asp-controller="Template" asp-action="CreateTemplate"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">

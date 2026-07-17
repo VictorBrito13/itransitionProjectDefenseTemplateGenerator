@@ -4,11 +4,18 @@ import { getTemplatesByUserId, resetPagesForUserTemplates } from "../utils/templ
 import printTemplates, { createSkeletonCard } from "../utils/templates/printTemplates.js";
 import debounce from "../utils/debounce.js";
 
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 const $btnToggleTemplates = document.getElementById("btn-toggle-templates");
 const $templatesHeader = document.getElementById("templates-header");
 const $templatesContainer = document.getElementById("latest-templates-container");
 const $inputSearchTemplatesByQuery = document.getElementById("search-template-control");
-const $searchResultsContainer = document.getElementById("search-result-contianer");
+const $searchResultsContainer = document.getElementById("search-result-container");
 const $loadMoreContainer = document.getElementById("load-more-container");
 
 let currentMode = "latest";
@@ -89,13 +96,13 @@ const debouncedSearch = debounce(async (query) => {
         } else if (Array.isArray(data)) {
             let content = "";
             data.forEach(template => {
-                const topicName = template.Topic?.Name || "Uncategorized";
-                const creatorName = template.Admins?.[0]?.User?.Username ?? "Unknown";
+                const topicName = escapeHtml(template.Topic?.Name || "Uncategorized");
+                const creatorName = escapeHtml(template.Admins?.[0]?.User?.Username ?? "Unknown");
                 content += `
                     <a href="/template/template?templateId=${template.TemplateId}" class="block px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-sm font-semibold text-gray-900">${template.Title}</h3>
+                                <h3 class="text-sm font-semibold text-gray-900">${escapeHtml(template.Title)}</h3>
                                 <p class="text-xs text-gray-500 mt-0.5">${topicName} &middot; by ${creatorName}</p>
                             </div>
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

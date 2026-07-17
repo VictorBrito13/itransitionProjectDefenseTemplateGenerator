@@ -15,9 +15,8 @@
             <p class="text-gray-500 mt-1">Get started with ItransitionTemplates</p>
         </div>
 
-        <!-- Server error display (replaced by toast notifications) -->
         @{
-            string errorMsg = (string) TempData["errorMsg"];
+            var errorMsg = TempData["errorMsg"]?.ToString();
         }
 
         <!-- Inline error container (fallback, hidden by default) -->
@@ -124,6 +123,22 @@
         </p>
     </div>
 </div>
+
+<script>
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorContainer = document.getElementById('error-container');
+            if (errorContainer) {
+                errorContainer.textContent = '@errorMsg';
+                errorContainer.classList.remove('hidden');
+            }
+            showToast('error', '@errorMsg');
+        });
+        </text>
+    }
+</script>
 
 @await Html.PartialAsync("_ToastPartial")
 

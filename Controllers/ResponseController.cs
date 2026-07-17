@@ -16,6 +16,15 @@ namespace ItransitionTemplates.Controllers
 
         [HttpPost("/response/add")]
         public async Task<ActionResult> SaveResponses([FromBody] Models.Response[] responses) {
+            Models.User? userSession = Auth.ValidateSession(HttpContext);
+            if (userSession == null) {
+                return JsonResponse.Error("Please sign in to submit responses", 401);
+            }
+
+            foreach (var r in responses) {
+                r.UserId = userSession.UserId;
+            }
+
             try {
                 await _responseService.AddResponses(responses);
                 return JsonResponse.Ok("Responses saved successfully");

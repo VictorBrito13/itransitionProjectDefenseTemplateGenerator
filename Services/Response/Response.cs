@@ -13,10 +13,10 @@ namespace ItransitionTemplates.Services.Response
         public async Task AddResponses(Models.Response[] responses) {
             await _context.AddRangeAsync(responses);
 
-            int n = _context.SaveChanges();
+            int n = await _context.SaveChangesAsync();
 
             if(n < 1)
-                throw new ServiceException("Failed to save responses — please try again", ServiceErrorCode.Database);
+                throw new ServiceException("Failed to save responses, please try again", ServiceErrorCode.Database);
         }
     }
 }

@@ -28,12 +28,10 @@ if(urlParamsSearcher.get("templateId")) {
     document.getElementById("danger-zone-container").style.display = "block";
 
     const $templateTitle = document.getElementById("setting-template-title");
-    const $tempalteDescription = document.getElementById("setting-template-description");
-    //Make a petition to get the template
+    const $templateDescription = document.getElementById("setting-template-description");
     const template = await getTemplate();
-    $tempalteDescription.textContent = template.Description;
+    $templateDescription.textContent = template.Description;
     $templateTitle.textContent = template.Title;
-    console.log(template);
 
     //button to delete the template
     deleteTemplate(template.TemplateId);
@@ -77,7 +75,6 @@ if(urlParamsSearcher.get("templateId")) {
                     }
                 });
             });
-            console.log(admins);
             
         } else if($modal_Add_Admins_Or_Users_Allowed_To_Answer.dataset["userType"] === "allowUser") {
             usersAllowedToAnswer = []
@@ -93,14 +90,12 @@ if(urlParamsSearcher.get("templateId")) {
                     }
                 });
             });
-            console.log(usersAllowedToAnswer);
             
         }
     });
 
     function generateUserHmtl(user) {
         const $p = document.createElement("p");
-        console.log(user.Email)
         $p.textContent = user.Email;
         $p.dataset["userid"] = user.UserId;
         $p.dataset["username"] = user.Username;
@@ -153,15 +148,15 @@ if(urlParamsSearcher.get("templateId")) {
             showError(json.error.message);
         } else {
             const $btn = document.createElement("button");
-            $btn.textContent = json.user.Email;
+            $btn.textContent = json.data.Email;
             $btn.type = "button";
             $btn.className = "w-full text-left px-3 py-2 text-sm text-primary hover:bg-primary/5 rounded-lg transition-colors";
 
             $btn.addEventListener("click", e => {
                 const $p = document.createElement("p");
-                $p.textContent = json.user.Email;
-                $p.dataset["userid"] = json.user.UserId;
-                $p.dataset["username"] = json.user.Username;
+                $p.textContent = json.data.Email;
+                $p.dataset["userid"] = json.data.UserId;
+                $p.dataset["username"] = json.data.Username;
                 $p.className = "flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm text-gray-700";
                 $usersContainer.appendChild($p);
             });
@@ -220,9 +215,6 @@ $btnCreateTemplate.addEventListener("click", async e => {
         usersAllowedToAnswer: usersAllowedToAnswer.map(a => { return { UserId: a.UserId, TemplateId: a.TemplateId} })
     };
 
-    console.log(templateConfig);
-
-    //Create or update a new teplate
     if(urlParamsSearcher.get("templateId")) {
         //Petition to update a template
         const isTemplateUpdated = await fetch(`${location.origin}/template/update?templateId=${urlParamsSearcher.get("templateId")}`, {
@@ -233,9 +225,8 @@ $btnCreateTemplate.addEventListener("click", async e => {
             body: JSON.stringify(templateConfig)
         });
         const templateUpdatedJSON = await isTemplateUpdated.json();
-        console.log(templateUpdatedJSON);
 
-        if(templateUpdatedJSON.status === 401) {
+        if(templateUpdatedJSON.error?.code === 401) {
             location.assign(`${location.origin}/user/log-in`);
         }
 
@@ -257,19 +248,17 @@ $btnCreateTemplate.addEventListener("click", async e => {
         });
         const templateSavedJSON = await templateSaved.json();
 
-        if(templateSavedJSON.status === 401) {
+        if(templateSavedJSON.error?.code === 401) {
             location.assign(`${location.origin}/user/log-in`);
         }
         
-        console.log(templateSavedJSON);
-
         if(templateSavedJSON.error) {
             showError(templateSavedJSON.error.message);
         } else {
             showToast('success', 'Your template has been saved successfully.');
             $serverMsgs.innerHTML =
             `Your template has been saved successfully. You can update your template
-            <a class="underline font-medium hover:text-emerald-100" href="${location.origin}/template/create?templateId=${templateSavedJSON.templateId}">here</a>`;
+            <a class="underline font-medium hover:text-emerald-100" href="${location.origin}/template/create?templateId=${templateSavedJSON.data.TemplateId}">here</a>`;
         }
     }
 });

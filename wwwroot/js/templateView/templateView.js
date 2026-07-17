@@ -19,15 +19,6 @@ const $submitSection = document.getElementById("submit-section");
 
 const template = await getTemplate();
 
-//Inser the log  out button in the html
-try {
-    insertLogOutButton();
-} catch(e) {
-    console.error(e);
-}
-
-console.log(template);
-
 if(template.error) {
     showErrorInContainer(template.error.message, $serverMsgs);
 
@@ -51,7 +42,7 @@ if(template.error) {
 
         if($btnLikeTemplate.dataset["likeAction"] === "like") {
             
-            const likedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=like`)).json();
+            const likedRes = await (await fetch(`${location.origin}/template/like?templateId=${template.TemplateId}&action=like`)).json();
 
             if(likedRes.error) {
                 showError(likedRes.error.message);
@@ -65,7 +56,7 @@ if(template.error) {
                 $likesNumber.textContent = likedRes.data;
             }
         } else if($btnLikeTemplate.dataset["likeAction"] === "unlike") {
-            const unlikedRes = await (await fetch(`${location.origin}/template/like?userId=${userId}&templateId=${template.TemplateId}&action=unlike`)).json();
+            const unlikedRes = await (await fetch(`${location.origin}/template/like?templateId=${template.TemplateId}&action=unlike`)).json();
 
             if(unlikedRes.error) {
                 showError(unlikedRes.error.message);
@@ -113,7 +104,6 @@ if(template.error) {
     //Default value for the date input
     const $formControlDate = document.getElementById("form-date");
     const now = new Date();
-    console.log(now.toISOString().slice(0, 19));
 
     const formattedDateTime = now.toISOString().slice(0, 19);
 
@@ -290,7 +280,6 @@ function setupSubmitHandler(templateData) {
                 method: "POST",
                 body: responses
             });
-            console.log(json);
 
             const { data } = json;
 

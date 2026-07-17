@@ -17,8 +17,18 @@ namespace ItransitionTemplates.Services.User
 
         public async Task<Models.User> Login(Models.User user) {
             if(user == null || user.Email == null || user.Password == null) return null;
-            user.Password = HashText.GetHashString(user.Password);
-            return await _context.Users.Where(u => (u.Email == user.Email) && (u.Password == user.Password)).FirstOrDefaultAsync();
+            Models.User? found = await _context.Users.Where(u => u.Email == user.Email).FirstOrDefaultAsync();
+            if (found == null) return null;
+
+            if (HashText.VerifyHash(user.Password, found.Password)) return found;
+
+            if (HashText.VerifyOldSha256Hash(user.Password, found.Password)) {
+                found.Password = HashText.GetHashString(user.Password);
+                await _context.SaveChangesAsync();
+                return found;
+            }
+
+            return null;
         }
 
         public async Task<Models.User> AddUser(Models.User user) {
@@ -43,8 +53,8 @@ namespace ItransitionTemplates.Services.User
                     if(idxDuplicateEntryError >= 0) {
                         int startIdx = errorMsg.IndexOf('\'', idxDuplicateEntryError);
                         int endIdx = errorMsg.IndexOf('\'', startIdx + 1);
-                        string duplicateEntryValue = errorMsg.Substring(startIdx, endIdx - startIdx);
-                        throw new DBException($"There is an entry with the same value for {duplicateEntryValue}", DBExceptionType.DuplicateEntry);
+                        string duplicateEntryValue = errorMsg.Substring(startIdx, endIdx - startIdx).Replace("'", "");
+                        throw new DBException($"There is an entry with the same value for: {duplicateEntryValue}", DBExceptionType.DuplicateEntry);
                     } else if(idxNullValue >= 0) {
                         throw new DBException("Ensure you are not missing values to create a user", DBExceptionType.NullValue);
                     }
@@ -55,10 +65,8 @@ namespace ItransitionTemplates.Services.User
 
         public async Task<Models.User> GetUserByUsername(string username) {
             try {
-                Models.User user = await _context.Users.FromSqlRaw("SELECT userId, username, email, password FROM users WHERE MATCH(username, email) AGAINST ({0} IN NATURAL LANGUAGE MODE)", username)
-                .FirstAsync();
-
-                if(user == null) return user;
+                Models.User? user = await _context.Users.FromSqlRaw("SELECT userId, username, email, password FROM users WHERE MATCH(username, email) AGAINST ({0} IN NATURAL LANGUAGE MODE)", username)
+                .FirstOrDefaultAsync();
 
                 return user;
             } catch(Exception err) {

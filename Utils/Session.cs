@@ -10,10 +10,12 @@ namespace ItransitionTemplates.Utils
         }
 
         //Get an object in the session
-        public static T GetObject<T>(HttpContext context, string key) {
+        public static T? GetObject<T>(HttpContext context, string key) where T : class {
             string? s = context.Session.GetString(key);
 
-            T? o = JsonSerializer.Deserialize<T>(s??"{}");
+            if (s == null) return null;
+
+            T? o = JsonSerializer.Deserialize<T>(s);
             return o;
         }
 

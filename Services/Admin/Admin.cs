@@ -1,4 +1,5 @@
 using ItransitionTemplates.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItransitionTemplates.Services.Admin
 {
@@ -18,6 +19,10 @@ namespace ItransitionTemplates.Services.Admin
             }
 
             return null;
+        }
+
+        public async Task<bool> IsUserAdmin(ulong userId, ulong templateId) {
+            return await _context.Admins.AnyAsync(a => a.UserId == userId && a.TemplateId == templateId);
         }
     }
 }

@@ -27,7 +27,7 @@ public class UserController : Controller {
             Session.Store(HttpContext, "userSession", new { UserId=userFound.UserId, Username=userFound.Username, Email=userFound.Email});
             return RedirectToAction("Index", "Home");
         } else {
-            TempData["errorMsg"] = "Invalid email or password — please check your credentials and try again";
+            TempData["errorMsg"] = "Invalid email or password, please check your credentials and try again";
             return View("LogInView");
         }
     }
@@ -45,11 +45,11 @@ public class UserController : Controller {
             Session.Store(HttpContext, "userSession", new { UserId=createdUser.UserId, Username=createdUser.Username, Email=createdUser.Email});
             return RedirectToAction("Index", "Home");
         } catch (DBException err) {
-            TempData["ErrorMsg"] = err.Msg;
+            TempData["errorMsg"] = err.Msg;
             return View("SignUpView");
         } catch (Exception err) {
             _logger.LogError(err, "Unknown error during user sign-up");
-            TempData["errorMsg"] = "Failed to create account — please try again";
+            TempData["errorMsg"] = "Failed to create account, please try again";
             return View("SignUpView");
         }
     }

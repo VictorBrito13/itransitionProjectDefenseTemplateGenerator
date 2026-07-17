@@ -62,7 +62,7 @@ export default class MultipleOptionsQuestion extends BaseQuestion {
                 $div.className = "d-flex gap-3 mb-3";
                 $h4.textContent = opt.value;
                 $h4.className = "option";
-                $h4.contentEditable;
+                $h4.contentEditable = "true";
                 $btnDeleteOption.type = "button";
                 $btnDeleteOption.className = "px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors";
                 $btnDeleteOption.textContent = "Delete";

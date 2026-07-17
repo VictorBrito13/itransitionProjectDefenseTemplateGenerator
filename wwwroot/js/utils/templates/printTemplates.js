@@ -14,6 +14,13 @@ const topicColors = {
 
 const defaultColor = { bg: "bg-gray-100", text: "text-gray-700", gradient: "from-gray-400 to-gray-600" };
 
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 function getTopicColor(topicId) {
     return topicColors[topicId] || defaultColor;
 }
@@ -37,8 +44,8 @@ export function createSkeletonCard() {
 
 function createTemplateCard(template, templatesMode) {
     const topicColor = getTopicColor(template.TopicId);
-    const topicName = template.Topic?.Name || "Uncategorized";
-    const creatorName = template.Admins?.[0]?.User?.Username ?? "Unknown";
+    const topicName = escapeHtml(template.Topic?.Name || "Uncategorized");
+    const creatorName = escapeHtml(template.Admins?.[0]?.User?.Username ?? "Unknown");
     const likeCount = template.Likes?.length ?? 0;
     const href = templatesMode === "user"
         ? `/template/create?templateId=${template.TemplateId}`
@@ -52,8 +59,8 @@ function createTemplateCard(template, templatesMode) {
                 </svg>
             </div>
             <div class="p-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">${template.Title}</h3>
-                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${template.Description}</p>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">${escapeHtml(template.Title)}</h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${escapeHtml(template.Description)}</p>
                 <span class="inline-block px-3 py-1 ${topicColor.bg} ${topicColor.text} text-xs font-medium rounded-full">${topicName}</span>
             </div>
             <div class="px-6 py-4 border-t border-gray-100 flex justify-between items-center">

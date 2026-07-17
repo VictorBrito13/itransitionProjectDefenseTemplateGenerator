@@ -22,20 +22,25 @@ namespace ItransitionTemplates.Controllers {
 
         [HttpPost("/question/add")]
         public async Task<ActionResult<Models.Question[]>> AddQuestions([FromBody] QuestionAndOptions questionAndOptions) {
-            if (questionAndOptions == null || questionAndOptions.questions.Length == 0)
+            Models.User? userSession = Auth.ValidateSession(HttpContext);
+            if (userSession == null) {
+                return JsonResponse.Error("Please sign in to add questions", 401);
+            }
+
+            if (questionAndOptions == null || questionAndOptions.questions == null || questionAndOptions.questions.Length == 0)
             {
-                return JsonResponse.Error("No questions provided — please add at least one question");
+                return JsonResponse.Error("No questions provided, please add at least one question");
             }
             
             Models.Question[] saved = await _QuestionService.AddQuestions(questionAndOptions.questions);
             Models.QuestionOption[] optionsSaved = await _QuestionOptionService.AddOptions(questionAndOptions.questionOptions);
 
             if(saved == null) {
-                return JsonResponse.Error("Failed to save questions — please try again");
+                return JsonResponse.Error("Failed to save questions, please try again");
             }
 
             if(optionsSaved == null) {
-                return JsonResponse.Error("Failed to save question options — please try again");
+                return JsonResponse.Error("Failed to save question options, please try again");
             }
 
             return JsonResponse.Ok("success");

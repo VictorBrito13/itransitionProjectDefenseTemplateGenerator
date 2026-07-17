@@ -10,15 +10,14 @@ export default function deleteTemplate(templateId) {
 
         const deleteJSON = await deleteRes.json();
 
-        if(deleteJSON.status === 401) {
+        if(deleteJSON.error?.code === 401) {
             location.assign(`${location.origin}/user/log-in`);
         }
 
-        //The template was deleted
         if(deleteJSON.data) {
             location.assign(`${location.origin}/`);
         } else {
-            $serverMsgs.innerHTML = `<p class="bg-danger p-3 rounded text-light">${deleteJSON.errorMsg}</p>`
+            showError(deleteJSON.error?.message || 'Failed to delete template');
         }
     });
 }

@@ -1,21 +1,35 @@
 @{
     ViewData["Title"] = "Template";
+    var errorMsg = TempData["errorMsg"]?.ToString();
+    var userEmail = TempData["userEmail"]?.ToString();
+    var userId = TempData["userId"]?.ToString();
 }
 
 <div class="max-w-3xl mx-auto">
     <!-- Server messages -->
     <div id="server-msgs"></div>
 
-    @{
-        string errorMsg = (string) TempData["errorMsg"];
-        string userEmail = (string) TempData["userEmail"];
-        string userId = TempData["userId"].ToString();
-        if(errorMsg != null) {
-            <!-- Error displayed via toast notification -->
-            <div class="hidden">
-                <p>@errorMsg</p>
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <!-- Error displayed via toast notification -->
+        <div class="glass rounded-2xl p-8 mb-6 text-center">
+            <div class="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
             </div>
-        } else {
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Unable to load template</h2>
+            <p class="text-gray-600 mb-6">@errorMsg</p>
+            <a href="/" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Go Home
+            </a>
+        </div>
+    }
+    else
+    {
             <!-- Template Header -->
             <div id="form-header" class="glass rounded-2xl p-8 mb-6">
                 <div class="flex items-start justify-between">
@@ -82,7 +96,6 @@
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">Thank you for your response!</h2>
                 <p class="text-gray-600">Your response has been recorded.</p>
             </div>
-        }
     }
 
     @await Html.PartialAsync("_ToastPartial")

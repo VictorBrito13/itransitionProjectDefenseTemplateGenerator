@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace ItransitionTemplates.Services.User
 {
     public interface IUserService {

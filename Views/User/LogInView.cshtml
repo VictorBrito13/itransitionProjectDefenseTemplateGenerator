@@ -15,9 +15,8 @@
             <p class="text-gray-500 mt-1">Sign in to your account</p>
         </div>
 
-        <!-- Server error display (replaced by toast notifications) -->
         @{
-            string errorMsg = (string) TempData["errorMsg"];
+            var errorMsg = TempData["errorMsg"]?.ToString();
         }
 
         <!-- Inline error container (fallback, hidden by default) -->
@@ -143,10 +142,12 @@ import { showFieldError, clearFieldError } from "/js/utils/validation.js";
     passwordInput.addEventListener('blur', validatePassword);
 
     // Show server error in fallback container
-    @if (errorMsg != null)
+    @if (!string.IsNullOrEmpty(errorMsg))
     {
         <text>
         errorContainer.textContent = '@errorMsg';
+        errorContainer.classList.remove('hidden');
+        showToast('error', '@errorMsg');
         </text>
     }
 

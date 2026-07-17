@@ -60,45 +60,46 @@ namespace ItransitionTemplates.Services.Template
 
         //Update the template
         public async Task UpdateTemplate(ulong templateId, Models.Template template) {
-            Models.Template found = await GetTemplateById(templateId);
+            Models.Template? found = await _context.Templates
+                .Where(t => t.TemplateId == templateId)
+                .FirstOrDefaultAsync();
 
             if(found == null)
-                throw new ServiceException("Template not found — it may have been deleted", ServiceErrorCode.NotFound);
+                throw new ServiceException("Template not found, it may have been deleted", ServiceErrorCode.NotFound);
 
-            //Properties updates
             found.Title = template.Title;
             found.Description = template.Description;
             found.TopicId = template.TopicId;
-            found.Admins = template.Admins;
-            found.usersAllowedToAnswer = template.usersAllowedToAnswer;
             found.IsPublic = template.IsPublic;
-            found.Questions = template.Questions;
             found.Image_url = template.Image_url;
 
-            int n = _context.SaveChanges();
+            int n = await _context.SaveChangesAsync();
 
             if(n < 1)
                 throw new ServiceException("Failed to save template changes", ServiceErrorCode.Database);
         }
 
-        //Give a like to a template or unlike the template
         public async Task<Like[]> LikeAction(ulong userId, ulong templateId, string action) {
-            var template = await _context.Templates.Where(t => t.TemplateId == templateId).FirstAsync();
-
-
-            Models.Like like = new Models.Like();
-            like.UserId = userId;
-            like.TemplateId = templateId;
+            var template = await _context.Templates.Where(t => t.TemplateId == templateId).FirstOrDefaultAsync();
+            if (template == null) return null;
 
             if(action == "like") {
+                var existing = await _context.Likes.FirstOrDefaultAsync(l => l.TemplateId == templateId && l.UserId == userId);
+                if (existing != null) {
+                    return await _context.Likes.Where(l => l.TemplateId == templateId).ToArrayAsync();
+                }
+                Models.Like like = new Models.Like { UserId = userId, TemplateId = templateId };
                 await _context.Likes.AddAsync(like);
             } else {
-                _context.Likes.Remove(like);
+                var existing = await _context.Likes.FirstOrDefaultAsync(l => l.TemplateId == templateId && l.UserId == userId);
+                if (existing != null) {
+                    _context.Likes.Remove(existing);
+                }
             }
 
             int n = await _context.SaveChangesAsync();
 
-            if(n >= 1) return await _context.Likes.Where(l => l.TemplateId == like.TemplateId).ToArrayAsync();
+            if(n >= 1) return await _context.Likes.Where(l => l.TemplateId == templateId).ToArrayAsync();
 
             return null;
         }
@@ -107,7 +108,7 @@ namespace ItransitionTemplates.Services.Template
             Models.Template found = await GetTemplateById(templateId);
 
             if(found == null)
-                throw new ServiceException("Template not found — it may have already been deleted", ServiceErrorCode.NotFound);
+                throw new ServiceException("Template not found, it may have already been deleted", ServiceErrorCode.NotFound);
 
             _context.Templates.Remove(found);
 
