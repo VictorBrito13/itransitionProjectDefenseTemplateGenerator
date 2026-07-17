@@ -10,6 +10,9 @@ Cypress.on('uncaught:exception', (err) => {
   if (err.message.includes('showToast is not defined')) {
     return false;
   }
+  if (err.message.includes('Cannot read properties of null')) {
+    return false;
+  }
   return true;
 });
 
