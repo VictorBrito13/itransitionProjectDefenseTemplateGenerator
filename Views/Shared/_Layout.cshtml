@@ -45,6 +45,7 @@
             <div class="flex items-center gap-3">
                 <!-- Mobile hamburger -->
                 <button
+                    data-cy="mobile-hamburger"
                     @@click="sidebarOpen = !sidebarOpen"
                     class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 md:hidden"
                     aria-label="Toggle navigation">
@@ -52,7 +53,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center gap-2">
+                <a data-cy="logo-home-link" asp-area="" asp-controller="Home" asp-action="Index" class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -69,6 +70,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     <input
+                        data-cy="navbar-search"
                         type="search"
                         placeholder="Search templates..."
                         class="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-colors"
@@ -86,6 +88,7 @@
                     var avatarLetter = !string.IsNullOrEmpty(displayName) ? displayName[0].ToString().ToUpper() : "?";
                     <div class="relative" x-data="{ open: false }">
                         <button
+                            data-cy="user-avatar-btn"
                             @@click="open = !open"
                             class="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
                             <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
@@ -102,7 +105,7 @@
                             x-transition:leave-start="opacity-100 scale-100"
                             x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-48 glass rounded-xl shadow-soft border border-gray-100 py-1 z-50">
-                            <a asp-controller="User" asp-action="LogOut" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <a data-cy="sign-out-link" asp-controller="User" asp-action="LogOut" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                 Sign out
                             </a>
                         </div>
@@ -110,10 +113,10 @@
                 }
                 else
                 {
-                    <a asp-controller="User" asp-action="LogInView" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                    <a data-cy="sign-in-link" asp-controller="User" asp-action="LogInView" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                         Sign in
                     </a>
-                    <a asp-controller="User" asp-action="SignUpView" class="btn-primary text-sm">
+                    <a data-cy="get-started-link" asp-controller="User" asp-action="SignUpView" class="btn-primary text-sm">
                         Get started
                     </a>
                 }
@@ -123,6 +126,7 @@
 
     <!-- Sidebar overlay (mobile) -->
     <div
+        data-cy="sidebar-overlay"
         x-show="sidebarOpen"
         @@click="sidebarOpen = false"
         x-transition:enter="transition-opacity ease-linear duration-300"
@@ -146,7 +150,7 @@
         class="fixed inset-y-0 left-0 z-50 w-64 glass border-r border-gray-200 transform md:hidden">
         <nav class="flex flex-col h-full pt-20 pb-4 px-3">
             <div class="flex-1 space-y-1">
-                <a asp-controller="Home" asp-action="Index"
+                <a data-cy="sidebar-home-link" asp-controller="Home" asp-action="Index"
                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -155,7 +159,7 @@
                 </a>
                 @if (Context.Session.GetString("userSession") != null)
                 {
-                    <a asp-controller="Template" asp-action="CreateTemplate"
+                    <a data-cy="sidebar-create-template-link" asp-controller="Template" asp-action="CreateTemplate"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -165,7 +169,7 @@
                 }
                 else
                 {
-                    <a asp-controller="User" asp-action="LogInView"
+                    <a data-cy="sidebar-login-link" asp-controller="User" asp-action="LogInView"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -181,7 +185,7 @@
     <aside class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:z-20 md:w-64 md:glass md:border-r md:border-gray-200 md:pt-20 md:pb-4 md:px-3">
         <nav class="flex flex-col h-full">
             <div class="flex-1 space-y-1">
-                <a asp-controller="Home" asp-action="Index"
+                <a data-cy="desktop-sidebar-home-link" asp-controller="Home" asp-action="Index"
                    class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -190,7 +194,7 @@
                 </a>
                 @if (Context.Session.GetString("userSession") != null)
                 {
-                    <a asp-controller="Template" asp-action="CreateTemplate"
+                    <a data-cy="desktop-sidebar-create-template-link" asp-controller="Template" asp-action="CreateTemplate"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -200,7 +204,7 @@
                 }
                 else
                 {
-                    <a asp-controller="User" asp-action="LogInView"
+                    <a data-cy="desktop-sidebar-login-link" asp-controller="User" asp-action="LogInView"
                        class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -225,6 +229,6 @@
     @await RenderSectionAsync("Scripts", required: false)
 
     <!-- Toast container for Sonner.js -->
-    <div id="toast-container"></div>
+    <div data-cy="toast-container" id="toast-container"></div>
 </body>
 </html>
