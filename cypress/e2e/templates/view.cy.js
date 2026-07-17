@@ -1,69 +1,86 @@
+const mockTemplates = [
+  {
+    TemplateId: 1,
+    Title: 'Test Template',
+    Description: 'A test template for E2E testing',
+    TopicId: 1,
+    Topic: { Name: 'General' },
+    Admins: [{ User: { Username: 'testuser' } }],
+    Likes: [],
+  },
+  {
+    TemplateId: 2,
+    Title: 'Searchable Template',
+    Description: 'Unique description for search testing',
+    TopicId: 2,
+    Topic: { Name: 'Technology' },
+    Admins: [{ User: { Username: 'admin' } }],
+    Likes: [{ LikeId: 1 }],
+  },
+];
+
 describe('Template Viewing', () => {
   beforeEach(() => {
     cy.fixture('users.json').as('users');
-    cy.fixture('templates.json').as('templates');
   });
 
   it('should display templates on home page', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
-
-    // Verify Latest Templates header is visible
     cy.get('[data-cy="home-templates-header"]').should('contain', 'Latest Templates');
   });
 
   it('should open template details when clicking a template', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify template view page loads
     cy.get('[data-cy="form-title"]').should('be.visible');
     cy.get('[data-cy="form-description"]').should('be.visible');
   });
 
   it('should show template questions on template view', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify response form exists
     cy.get('[data-cy="response-form"]').should('be.visible');
-
-    // Verify submit button exists
     cy.get('[data-cy="btn-submit-response"]').should('be.visible');
   });
 
   it('should redirect to login for unauthenticated template view', function () {
-    // Visit template view page without login
     cy.visit('/template/template');
-
-    // Should redirect to login page
     cy.url().should('include', '/user/log-in');
   });
 });

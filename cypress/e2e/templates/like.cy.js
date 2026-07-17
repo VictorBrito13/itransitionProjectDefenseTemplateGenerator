@@ -1,158 +1,170 @@
+const mockTemplates = [
+  {
+    TemplateId: 1,
+    Title: 'Test Template',
+    Description: 'A test template for E2E testing',
+    TopicId: 1,
+    Topic: { Name: 'General' },
+    Admins: [{ User: { Username: 'testuser' } }],
+    Likes: [],
+  },
+  {
+    TemplateId: 2,
+    Title: 'Searchable Template',
+    Description: 'Unique description for search testing',
+    TopicId: 2,
+    Topic: { Name: 'Technology' },
+    Admins: [{ User: { Username: 'admin' } }],
+    Likes: [{ LikeId: 1 }],
+  },
+];
+
 describe('Template Like/Unlike', () => {
   beforeEach(() => {
     cy.fixture('users.json').as('users');
-    cy.fixture('templates.json').as('templates');
   });
 
   it('should like a template when authenticated', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify template view page loads
     cy.get('[data-cy="form-title"]').should('be.visible');
 
-    // Get initial like count
     cy.get('[data-cy="likes-number"]').then(($likes) => {
-      const initialLikes = parseInt($likes.text());
+      const initialLikes = parseInt($likes.text()) || 0;
 
-      // Click like button
+      cy.intercept('GET', '/template/like*').as('likeTemplate');
       cy.get('[data-cy="btn-like-template"]').click();
+      cy.wait('@likeTemplate');
 
-      // Verify like count increases
       cy.get('[data-cy="likes-number"]').should('contain', initialLikes + 1);
     });
   });
 
   it('should unlike a template when already liked', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify template view page loads
     cy.get('[data-cy="form-title"]').should('be.visible');
 
-    // Like the template first
+    cy.intercept('GET', '/template/like*').as('likeTemplate');
+
     cy.get('[data-cy="btn-like-template"]').click();
+    cy.wait('@likeTemplate');
 
-    // Get current like count
     cy.get('[data-cy="likes-number"]').then(($likes) => {
-      const currentLikes = parseInt($likes.text());
+      const likedCount = parseInt($likes.text()) || 0;
 
-      // Click unlike button
       cy.get('[data-cy="btn-like-template"]').click();
+      cy.wait('@likeTemplate');
 
-      // Verify like count decreases
-      cy.get('[data-cy="likes-number"]').should('contain', currentLikes - 1);
+      cy.get('[data-cy="likes-number"]').should('contain', likedCount - 1);
     });
   });
 
   it('should show error when not authenticated', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Try to like without login - should redirect to login
     cy.url().should('include', '/user/log-in');
   });
 
   it('should persist like across page refresh', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify template view page loads
     cy.get('[data-cy="form-title"]').should('be.visible');
 
-    // Like the template
+    cy.intercept('GET', '/template/like*').as('likeTemplate');
     cy.get('[data-cy="btn-like-template"]').click();
+    cy.wait('@likeTemplate');
 
-    // Get like count after liking
     cy.get('[data-cy="likes-number"]').then(($likes) => {
-      const likedCount = parseInt($likes.text());
+      const likedCount = parseInt($likes.text()) || 0;
 
-      // Refresh the page
       cy.reload();
 
-      // Verify like count persists
       cy.get('[data-cy="likes-number"]').should('contain', likedCount);
     });
   });
 
   it('should update like count in real-time', function () {
-    // Login first
-    cy.login(this.users.validUser.email, this.users.validUser.password);
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
 
-    // Visit home page
+    cy.login(this.users.validUser.email, this.users.validUser.password);
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Click on first template card
     cy.get('[data-cy="home-templates-container"]')
       .find('[data-cy="template-card-link"]')
       .first()
       .click();
 
-    // Verify template view page loads
     cy.get('[data-cy="form-title"]').should('be.visible');
 
-    // Get initial like count
     cy.get('[data-cy="likes-number"]').then(($likes) => {
-      const initialLikes = parseInt($likes.text());
+      const initialLikes = parseInt($likes.text()) || 0;
 
-      // Intercept like API
       cy.intercept('GET', '/template/like*').as('likeTemplate');
-
-      // Click like button
       cy.get('[data-cy="btn-like-template"]').click();
-
-      // Wait for API response
       cy.wait('@likeTemplate');
 
-      // Verify like count updates without page refresh
       cy.get('[data-cy="likes-number"]').should('contain', initialLikes + 1);
     });
   });

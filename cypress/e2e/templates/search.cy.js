@@ -1,95 +1,116 @@
+const mockTemplates = [
+  {
+    TemplateId: 1,
+    Title: 'Test Template',
+    Description: 'A test template for E2E testing',
+    TopicId: 1,
+    Topic: { Name: 'General' },
+    Admins: [{ User: { Username: 'testuser' } }],
+    Likes: [],
+  },
+  {
+    TemplateId: 2,
+    Title: 'Searchable Template',
+    Description: 'Unique description for search testing',
+    TopicId: 2,
+    Topic: { Name: 'Technology' },
+    Admins: [{ User: { Username: 'admin' } }],
+    Likes: [{ LikeId: 1 }],
+  },
+];
+
 describe('Template Search', () => {
   beforeEach(() => {
     cy.fixture('users.json').as('users');
-    cy.fixture('templates.json').as('templates');
   });
 
   it('should search templates by title', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Intercept search API
-    cy.intercept('GET', '/template/get-by-query*').as('searchTemplates');
+    cy.intercept('GET', '/template/get-by-query*', {
+      statusCode: 200,
+      body: [mockTemplates[0]],
+    }).as('searchTemplates');
 
-    // Enter search term
-    cy.get('[data-cy="home-search-input"]')
-      .clear()
-      .type('Test');
+    cy.get('[data-cy="home-search-input"]').clear().type('Test');
 
-    // Wait for search results
     cy.wait('@searchTemplates');
-
-    // Verify search results container is visible
     cy.get('[data-cy="home-search-results"]').should('be.visible');
   });
 
   it('should search templates by description', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Intercept search API
-    cy.intercept('GET', '/template/get-by-query*').as('searchTemplates');
+    cy.intercept('GET', '/template/get-by-query*', {
+      statusCode: 200,
+      body: [mockTemplates[1]],
+    }).as('searchTemplates');
 
-    // Enter search term in description
-    cy.get('[data-cy="home-search-input"]')
-      .clear()
-      .type('description');
+    cy.get('[data-cy="home-search-input"]').clear().type('description');
 
-    // Wait for search results
     cy.wait('@searchTemplates');
-
-    // Verify search results container is visible
     cy.get('[data-cy="home-search-results"]').should('be.visible');
   });
 
   it('should show message for no results', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Intercept search API with empty result
     cy.intercept('GET', '/template/get-by-query*', {
       statusCode: 404,
-      body: { error: 'No templates were found try other terms' }
+      body: { error: 'No templates were found try other terms' },
     }).as('searchNoResults');
 
-    // Enter non-existent search term
-    cy.get('[data-cy="home-search-input"]')
-      .clear()
-      .type('nonexistenttemplate12345');
+    cy.get('[data-cy="home-search-input"]').clear().type('nonexistenttemplate12345');
 
-    // Wait for search response
     cy.wait('@searchNoResults');
-
-    // Verify no results message appears
     cy.get('[data-cy="home-search-results"]').should('be.visible');
   });
 
   it('should clear search and show all templates', function () {
-    // Visit home page
+    cy.intercept('GET', '/template/templates*', {
+      statusCode: 200,
+      body: mockTemplates,
+    }).as('getTemplates');
+
     cy.visit('/');
 
-    // Wait for templates to load
+    cy.wait('@getTemplates');
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
 
-    // Enter search term
-    cy.get('[data-cy="home-search-input"]')
-      .clear()
-      .type('Test');
+    cy.intercept('GET', '/template/get-by-query*', {
+      statusCode: 200,
+      body: [mockTemplates[0]],
+    }).as('searchTemplates');
 
-    // Clear search
-    cy.get('[data-cy="home-search-input"]')
-      .clear();
+    cy.get('[data-cy="home-search-input"]').clear().type('Test');
+    cy.wait('@searchTemplates');
 
-    // Verify all templates are shown again
+    cy.get('[data-cy="home-search-input"]').clear();
+
     cy.get('[data-cy="home-templates-container"]').should('be.visible');
   });
 });
