@@ -3,3 +3,5 @@ obj/
 pub
 node_modules/
 wwwroot/css/tailwind.min.css
+cypress/screenshots/
+cypress/videos/
