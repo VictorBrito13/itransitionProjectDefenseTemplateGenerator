@@ -11,12 +11,11 @@ describe('Sign Up', () => {
     const password = 'TestPass123!';
 
     cy.get('[data-cy="signup-email"]').type(email);
+    cy.get('[data-cy="signup-username"]').click();
     cy.get('[data-cy="signup-username"]').type(username);
+    cy.get('[data-cy="signup-password"]').click();
     cy.get('[data-cy="signup-password"]').type(password);
     cy.get('[data-cy="signup-confirm-password"]').type(password);
-    cy.get('body').click();
-    cy.get('[data-cy="signup-email"]').blur();
-    cy.get('[data-cy="signup-username"]').blur();
     cy.get('[data-cy="signup-submit-btn"]').should('not.be.disabled').click();
 
     cy.url().should('eq', Cypress.config('baseUrl') + '/');
@@ -32,12 +31,11 @@ describe('Sign Up', () => {
     // Try again with same email
     cy.visit('/user/sign-up');
     cy.get('[data-cy="signup-email"]').type(email);
+    cy.get('[data-cy="signup-username"]').click();
     cy.get('[data-cy="signup-username"]').type(`different${uniqueId}`);
+    cy.get('[data-cy="signup-password"]').click();
     cy.get('[data-cy="signup-password"]').type('TestPass123!');
     cy.get('[data-cy="signup-confirm-password"]').type('TestPass123!');
-    cy.get('body').click();
-    cy.get('[data-cy="signup-email"]').blur();
-    cy.get('[data-cy="signup-username"]').blur();
     cy.get('[data-cy="signup-submit-btn"]').should('not.be.disabled').click();
 
     cy.get('[data-cy="signup-error-container"]')
