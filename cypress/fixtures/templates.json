@@ -1,0 +1,16 @@
+{
+  "validTemplate": {
+    "title": "Test Template",
+    "description": "A test template for E2E testing",
+    "topicId": 1
+  },
+  "searchTemplate": {
+    "title": "Searchable Template",
+    "description": "Unique description for search testing"
+  },
+  "invalidTemplate": {
+    "title": "",
+    "description": "",
+    "topicId": 0
+  }
+}
