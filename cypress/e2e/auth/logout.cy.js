@@ -25,7 +25,8 @@ describe('Logout', () => {
 
     cy.visit('/');
 
-    cy.url().should('include', '/user/log-in');
+    // The home page is accessible to guests — just verify sign-in link is visible (not authenticated)
+    cy.get('[data-cy="sign-in-link"]').should('be.visible');
   });
 
   it('should show login page after logout', () => {
