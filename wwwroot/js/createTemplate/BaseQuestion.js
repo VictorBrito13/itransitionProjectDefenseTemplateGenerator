@@ -43,6 +43,7 @@ export default class BaseQuestion {
         const $btnDeleteQuestion = document.createElement("button");
         label.contentEditable = true;
         label.className = "me-3";
+        $btnDeleteQuestion.dataset.cy = "delete-question-btn";
         $btnDeleteQuestion.className = "px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500 transition-colors";
         $btnDeleteQuestion.textContent = "delete the question";
         deleteElementOnClick($btnDeleteQuestion, container);

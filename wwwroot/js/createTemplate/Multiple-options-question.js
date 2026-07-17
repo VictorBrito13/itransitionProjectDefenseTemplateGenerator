@@ -42,6 +42,7 @@ export default class MultipleOptionsQuestion extends BaseQuestion {
         label.className = "me-3";
 
         // Edit options button
+        $btnEditOptions.dataset.cy = "edit-options-btn";
         $btnEditOptions.textContent = "Edit options";
         $btnEditOptions.type = "button";
         $btnEditOptions.className = "px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-600 focus:ring-2 focus:ring-primary transition-colors";
@@ -64,6 +65,7 @@ export default class MultipleOptionsQuestion extends BaseQuestion {
                 $h4.className = "option";
                 $h4.contentEditable = "true";
                 $btnDeleteOption.type = "button";
+                $btnDeleteOption.dataset.cy = "delete-option-btn";
                 $btnDeleteOption.className = "px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors";
                 $btnDeleteOption.textContent = "Delete";
                 deleteElementOnClick($btnDeleteOption, $div);
@@ -75,6 +77,7 @@ export default class MultipleOptionsQuestion extends BaseQuestion {
         });
 
         // Delete question button
+        $btnDeleteQuestion.dataset.cy = "delete-question-btn";
         $btnDeleteQuestion.className = "px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500 transition-colors";
         $btnDeleteQuestion.textContent = "delete the question";
         deleteElementOnClick($btnDeleteQuestion, container);
