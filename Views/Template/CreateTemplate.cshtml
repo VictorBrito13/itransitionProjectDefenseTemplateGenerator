@@ -5,18 +5,18 @@
 <div x-data="templateBuilder()" class="max-w-4xl mx-auto">
 
     <!-- Server response messages -->
-    <div id="server-responses"></div>
+    <div data-cy="server-responses" id="server-responses"></div>
 
     <!-- Page Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900" id="page-title">Create a new template</h1>
+        <h1 data-cy="page-title" class="text-3xl font-bold text-gray-900" id="page-title">Create a new template</h1>
         <div class="flex items-center gap-4 mt-4">
             @{
                 string? topicsString = (string) TempData["topics"];
                 ItransitionTemplates.Models.Topic[]? topics = JsonSerializer.Deserialize<ItransitionTemplates.Models.Topic[]>(topicsString??"[]");
                 <div class="flex-1">
                     <label class="text-sm font-medium text-gray-700 mb-1 block">Select a topic</label>
-                    <select id="setting-template-topic" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
+                    <select data-cy="template-topic-select" id="setting-template-topic" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors">
                         @{
                             if(topics == null || topics.Length == 0) {
                                 <option>No topics here</option>
@@ -30,7 +30,7 @@
                 </div>
             }
             <div class="flex items-end">
-                <button type="button" class="px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-emerald-600 transition-colors" id="btn-create-template">Create Template</button>
+                <button data-cy="btn-create-template" type="button" class="px-6 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-emerald-600 transition-colors" id="btn-create-template">Create Template</button>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Add Questions</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             <!-- Single-line Text -->
-            <button type="button" id="q-sl" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+            <button data-cy="add-single-line-btn" type="button" id="q-sl" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
                 </svg>
@@ -48,7 +48,7 @@
             </button>
 
             <!-- Paragraph -->
-            <button type="button" id="q-ml" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+            <button data-cy="add-paragraph-btn" type="button" id="q-ml" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h7"/>
                 </svg>
@@ -56,7 +56,7 @@
             </button>
 
             <!-- Number -->
-            <button type="button" id="q-pi" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+            <button data-cy="add-number-btn" type="button" id="q-pi" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
                 </svg>
@@ -64,7 +64,7 @@
             </button>
 
             <!-- Checkboxes -->
-            <button type="button" id="q-cb" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+            <button data-cy="add-checkboxes-btn" type="button" id="q-cb" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -72,7 +72,7 @@
             </button>
 
             <!-- Multiple Choice -->
-            <button type="button" id="q-mo" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+            <button data-cy="add-multiple-choice-btn" type="button" id="q-mo" class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 14a4 4 0 110-8 4 4 0 010 8z"/>
                 </svg>
@@ -84,15 +84,15 @@
     <!-- Template Editor Area -->
     <div class="glass rounded-2xl p-8 mb-6">
         <!-- Template title -->
-        <h2 id="setting-template-title" contenteditable="true" class="text-2xl font-bold text-gray-900 outline-none" data-placeholder="Template title">Template title</h2>
+        <h2 data-cy="template-title-input" id="setting-template-title" contenteditable="true" class="text-2xl font-bold text-gray-900 outline-none" data-placeholder="Template title">Template title</h2>
 
         <!-- Template description -->
-        <p id="setting-template-description" contenteditable="true" class="text-gray-600 mt-2 outline-none" data-placeholder="Add a description...">Template Description</p>
+        <p data-cy="template-description-input" id="setting-template-description" contenteditable="true" class="text-gray-600 mt-2 outline-none" data-placeholder="Add a description...">Template Description</p>
 
         <!-- Visibility toggle -->
         <div class="flex items-center gap-3 mt-6">
             <label class="text-sm text-gray-600">Visibility</label>
-            <button type="button" role="switch" id="visibility-toggle-btn"
+            <button data-cy="visibility-toggle" type="button" role="switch" id="visibility-toggle-btn"
                     class="w-12 h-6 bg-gray-200 rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                     x-bind:class="isPublic ? 'bg-secondary' : 'bg-gray-200'"
                     x-on:click="isPublic = !isPublic; $refs.visibilitySelect.value = isPublic ? 1 : 0">
@@ -101,7 +101,7 @@
             </button>
             <span class="text-sm font-medium text-gray-700" x-text="isPublic ? 'Public' : 'Private'"></span>
             <!-- Hidden select for backward compatibility with JS -->
-            <select id="template-visibility-switch" x-ref="visibilitySelect" class="hidden">
+            <select data-cy="visibility-select" id="template-visibility-switch" x-ref="visibilitySelect" class="hidden">
                 <option value="1">Public</option>
                 <option value="0">Private</option>
             </select>
@@ -109,11 +109,11 @@
 
         <!-- Admin / Allowed Users buttons -->
         <div class="flex items-center gap-3 mt-4">
-            <button type="button" class="hidden px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors" id="btn-add-admin"
+            <button data-cy="btn-add-admin" type="button" class="hidden px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors" id="btn-add-admin"
                     x-on:click="openAdminModal('admin', 'Add an admin')">
                 Add an admin
             </button>
-            <button type="button" class="hidden px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors" id="btn-add-allowed-users"
+            <button data-cy="btn-add-allowed-users" type="button" class="hidden px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors" id="btn-add-allowed-users"
                     x-on:click="openAdminModal('allowUser', 'Allow users to answer this template')">
                 Allow users to answer
             </button>
@@ -122,23 +122,23 @@
 
     <!-- Template Questions Form -->
     <div class="glass rounded-2xl p-8 mb-6">
-        <form id="template-questions">
+        <form data-cy="template-questions-form" id="template-questions">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input type="email" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="email" id="email" disabled>
+                <input data-cy="template-email-input" type="email" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="email" id="email" disabled>
             </div>
             <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                <input type="datetime-local" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="date" id="date" disabled>
+                <input data-cy="template-date-input" type="datetime-local" class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" name="date" id="date" disabled>
             </div>
         </form>
     </div>
 
     <!-- Danger Zone -->
-    <div id="danger-zone-container" class="hidden border-2 border-red-200 rounded-2xl p-6 mt-8">
+    <div data-cy="danger-zone" id="danger-zone-container" class="hidden border-2 border-red-200 rounded-2xl p-6 mt-8">
         <h2 class="text-red-600 font-semibold text-lg">Danger Zone</h2>
         <p class="text-sm text-gray-500 mt-1">Permanently delete this template. This action cannot be undone.</p>
-        <button type="button" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+        <button data-cy="btn-delete-template-trigger" type="button" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 x-on:click="deleteModalOpen = true">
             Delete Template
         </button>
@@ -165,8 +165,8 @@
              x-transition:leave-end="opacity-0 scale-95">
             <!-- Modal Header -->
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900" id="modal-admins-users-allowed-title">Add a new user to</h3>
-                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                <h3 data-cy="admin-modal-title" class="text-lg font-semibold text-gray-900" id="modal-admins-users-allowed-title">Add a new user to</h3>
+                <button data-cy="admin-modal-close-btn" type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                         x-on:click="adminModalOpen = false">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -176,22 +176,22 @@
 
             <!-- Search -->
             <div class="mb-4">
-                <input type="search" id="form-control-search-user" placeholder="Search by username..."
+                <input data-cy="admin-search-user-input" type="search" id="form-control-search-user" placeholder="Search by username..."
                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
-                <div id="search-result" class="mt-2"></div>
+                <div data-cy="admin-search-results" id="search-result" class="mt-2"></div>
             </div>
 
             <!-- Modal Body -->
             <div class="max-h-60 overflow-y-auto">
                 <h4 class="text-sm font-medium text-gray-700 mb-2">Users:</h4>
-                <div id="users-container" class="space-y-2"></div>
+                <div data-cy="admin-users-container" id="users-container" class="space-y-2"></div>
             </div>
 
             <!-- Modal Footer -->
             <div class="flex justify-end gap-3 mt-6">
-                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                <button data-cy="admin-modal-cancel-btn" type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                         x-on:click="adminModalOpen = false">Cancel</button>
-                <button type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+                <button data-cy="admin-modal-save-btn" type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
                         id="btn-save-user">Save changes</button>
             </div>
         </div>
@@ -217,7 +217,7 @@
             <!-- Modal Header -->
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900">Edit options</h3>
-                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                <button data-cy="options-modal-close-btn" type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                         x-on:click="optionsModalOpen = false">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -229,20 +229,20 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Add options</label>
-                    <textarea id="textAreaAddOpts" rows="4" placeholder="Add options — separate each option with a new line"
+                    <textarea data-cy="options-textarea" id="textAreaAddOpts" rows="4" placeholder="Add options — separate each option with a new line"
                               class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary resize-none"></textarea>
                 </div>
                 <div>
                     <h4 class="text-sm font-medium text-gray-700 mb-2">Current options</h4>
-                    <div id="options-list" class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3 space-y-2"></div>
+                    <div data-cy="options-list" id="options-list" class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3 space-y-2"></div>
                 </div>
             </div>
 
             <!-- Modal Footer -->
             <div class="flex justify-end gap-3 mt-6">
-                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                <button data-cy="options-modal-cancel-btn" type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                         id="btn-close-options-changes" x-on:click="optionsModalOpen = false">Cancel</button>
-                <button type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+                <button data-cy="options-modal-save-btn" type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
                         id="btn-save-options-changes">Save changes</button>
             </div>
         </div>
@@ -268,7 +268,7 @@
             <!-- Modal Header -->
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-red-600">Delete Template</h3>
-                <button type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                <button data-cy="delete-modal-close-btn" type="button" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                         x-on:click="deleteModalOpen = false; deleteConfirmText = ''">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -280,15 +280,15 @@
             <div>
                 <p class="text-gray-600 mb-4">Are you sure you want to delete this template? This action cannot be undone.</p>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Type the template title to confirm:</label>
-                <input type="text" x-model="deleteConfirmText" placeholder="Enter template title"
+                <input data-cy="delete-confirm-input" type="text" x-model="deleteConfirmText" placeholder="Enter template title"
                        class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
             </div>
 
             <!-- Modal Footer -->
             <div class="flex justify-end gap-3 mt-6">
-                <button type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                <button data-cy="delete-modal-cancel-btn" type="button" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                         x-on:click="deleteModalOpen = false; deleteConfirmText = ''">Cancel</button>
-                <button type="button" id="delete-template"
+                <button data-cy="delete-confirm-btn" type="button" id="delete-template"
                         class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         x-bind:disabled="deleteConfirmText.trim() !== currentTemplateTitle">
                     Delete Template
