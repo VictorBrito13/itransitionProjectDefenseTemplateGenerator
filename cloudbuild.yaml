@@ -1,0 +1,92 @@
+# Cloud Build → Artifact Registry → Cloud Run
+#
+# Prerequisites (one-time):
+#   gcloud services enable cloudbuild.googleapis.com run.googleapis.com artifactregistry.googleapis.com sqladmin.googleapis.com secretmanager.googleapis.com
+#   gcloud artifacts repositories create ${_REPOSITORY} --repository-format=docker --location=${_REGION}
+#
+# Recommended: store the DB connection string in Secret Manager
+#   echo -n 'Server=...;Database=...;User=...;Password=...' | \
+#     gcloud secrets create db-connection --data-file=-
+#   gcloud secrets add-iam-policy-binding db-connection \
+#     --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+#     --role="roles/secretmanager.secretAccessor"
+#
+# Submit:
+#   gcloud builds submit --config=cloudbuild.yaml \
+#     --substitutions=_REGION=us-central1,_SERVICE_NAME=itransition-templates,_REPOSITORY=app-images,_DB_SECRET_NAME=db-connection,_CLOUD_SQL_INSTANCE=PROJECT:REGION:INSTANCE
+
+substitutions:
+  # --- Change these for your GCP project ---
+  _REGION: us-central1
+  _SERVICE_NAME: itransition-template-manager-app
+  _REPOSITORY: itransition-template-manager
+  # Secret Manager secret id that holds ConnectionStrings:DefaultConnection
+  _DB_SECRET_NAME: db-connection
+  _MEMORY: 512Mi
+  _CPU: "1"
+  _MIN_INSTANCES: "0"
+  _MAX_INSTANCES: "1"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    id: build
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$SHORT_SHA
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    id: push-sha
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$SHORT_SHA
+    waitFor: [build]
+
+  - name: gcr.io/cloud-builders/docker
+    id: push-latest
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest
+    waitFor: [build]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: deploy
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+
+        DEPLOY_ARGS=(
+          run deploy "${_SERVICE_NAME}"
+          --image="${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$SHORT_SHA"
+          --region="${_REGION}"
+          --platform=managed
+          --allow-unauthenticated
+          --port=8080
+          --memory="${_MEMORY}"
+          --cpu="${_CPU}"
+          --min-instances="${_MIN_INSTANCES}"
+          --max-instances="${_MAX_INSTANCES}"
+          --set-env-vars="ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080"
+        )
+
+        if [[ -n "${_DB_SECRET_NAME}" ]]; then
+          # Maps to Configuration key ConnectionStrings:DefaultConnection
+          DEPLOY_ARGS+=(--update-secrets="ConnectionStrings__DefaultConnection=${_DB_SECRET_NAME}:latest")
+        fi
+
+        gcloud "${DEPLOY_ARGS[@]}"
+    waitFor: [push-sha]
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$SHORT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest
+
+timeout: 1200s
