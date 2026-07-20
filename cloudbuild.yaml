@@ -1,31 +1,26 @@
 # Cloud Build → Artifact Registry → Cloud Run
 #
 # Prerequisites (one-time):
-#   gcloud services enable cloudbuild.googleapis.com run.googleapis.com artifactregistry.googleapis.com sqladmin.googleapis.com secretmanager.googleapis.com
+#   gcloud services enable cloudbuild.googleapis.com run.googleapis.com artifactregistry.googleapis.com sqladmin.googleapis.com
 #   gcloud artifacts repositories create ${_REPOSITORY} --repository-format=docker --location=${_REGION}
 #
-# Recommended: store the DB connection string in Secret Manager
-#   echo -n 'Server=...;Database=...;User=...;Password=...' | \
-#     gcloud secrets create db-connection --data-file=-
-#   gcloud secrets add-iam-policy-binding db-connection \
-#     --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
-#     --role="roles/secretmanager.secretAccessor"
-#
-# Submit:
+# Submit (pass the DB connection string as a substitution):
 #   gcloud builds submit --config=cloudbuild.yaml \
-#     --substitutions=_REGION=us-central1,_SERVICE_NAME=itransition-templates,_REPOSITORY=app-images,_DB_SECRET_NAME=db-connection,_CLOUD_SQL_INSTANCE=PROJECT:REGION:INSTANCE
+#     --substitutions=_REGION=us-central1,_SERVICE_NAME=itransition-templates,_REPOSITORY=app-images,_DB_CONNECTION_STRING='Server=...;Database=...;User=...;Password=...',_CLOUD_SQL_INSTANCE=PROJECT:REGION:INSTANCE
 
 substitutions:
   # --- Change these for your GCP project ---
   _REGION: us-central1
-  _SERVICE_NAME: itransition-template-manager-app
+  _SERVICE_NAME: itransition-templates-app
   _REPOSITORY: itransition-template-manager
-  # Secret Manager secret id that holds ConnectionStrings:DefaultConnection
-  _DB_SECRET_NAME: db-connection
+  # MySQL connection string → Cloud Run env ConnectionStrings__DefaultConnection
+  _DB_CONNECTION_STRING: ""
+  # Optional Cloud SQL instance: PROJECT:REGION:INSTANCE
+  _CLOUD_SQL_INSTANCE: ""
   _MEMORY: 512Mi
   _CPU: "1"
   _MIN_INSTANCES: "0"
-  _MAX_INSTANCES: "1"
+  _MAX_INSTANCES: "3"
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -63,6 +58,13 @@ steps:
       - |
         set -euo pipefail
 
+        # Use env-vars-file so '=' and ';' in the MySQL connection string are safe
+        printf '%s\n' \
+          'ASPNETCORE_ENVIRONMENT: Production' \
+          'ASPNETCORE_URLS: http://0.0.0.0:8080' \
+          "ConnectionStrings__DefaultConnection: \"${_DB_CONNECTION_STRING}\"" \
+          > /workspace/cloud-run-env.yaml
+
         DEPLOY_ARGS=(
           run deploy "${_SERVICE_NAME}"
           --image="${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$SHORT_SHA"
@@ -74,12 +76,11 @@ steps:
           --cpu="${_CPU}"
           --min-instances="${_MIN_INSTANCES}"
           --max-instances="${_MAX_INSTANCES}"
-          --set-env-vars="ASPNETCORE_ENVIRONMENT=Production,ASPNETCORE_URLS=http://0.0.0.0:8080"
+          --env-vars-file=/workspace/cloud-run-env.yaml
         )
 
-        if [[ -n "${_DB_SECRET_NAME}" ]]; then
-          # Maps to Configuration key ConnectionStrings:DefaultConnection
-          DEPLOY_ARGS+=(--update-secrets="ConnectionStrings__DefaultConnection=${_DB_SECRET_NAME}:latest")
+        if [[ -n "${_CLOUD_SQL_INSTANCE}" ]]; then
+          DEPLOY_ARGS+=(--add-cloudsql-instances="${_CLOUD_SQL_INSTANCE}")
         fi
 
         gcloud "${DEPLOY_ARGS[@]}"
