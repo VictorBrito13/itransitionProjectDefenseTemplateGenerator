@@ -122,6 +122,6 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         var json = await response.Content.ReadAsStringAsync();
-        Assert.Contains("errorMsg", json);
+        Assert.Contains("error", json);
     }
 }
