@@ -181,11 +181,11 @@
 
 **Wave 1** *(independent — session gates + IDOR fixes)*:
 
-- [ ] 07-01-PLAN.md — Session-gating + IDOR prevention (add Auth.ValidateSession to 5 unprotected endpoints, IsPublic filtering, ownership checks)
+- [x] 07-01-PLAN.md — Session-gating + IDOR prevention (add Auth.ValidateSession to 5 unprotected endpoints, IsPublic filtering, ownership checks)
 
 **Wave 2** *(blocked on Wave 1 — CSRF + hardening)*:
 
-- [ ] 07-02-PLAN.md — Anti-CSRF token enforcement + response security hardening
+- [x] 07-02-PLAN.md — Anti-CSRF token enforcement + response security hardening
 
 **Cross-cutting constraints:**
 - All authenticated endpoints must call `Auth.ValidateSession(HttpContext)` and return 401 on failure
