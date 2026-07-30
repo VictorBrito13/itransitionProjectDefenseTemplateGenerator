@@ -215,12 +215,15 @@ $btnCreateTemplate.addEventListener("click", async e => {
         usersAllowedToAnswer: usersAllowedToAnswer.map(a => { return { UserId: a.UserId, TemplateId: a.TemplateId} })
     };
 
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
     if(urlParamsSearcher.get("templateId")) {
         //Petition to update a template
         const isTemplateUpdated = await fetch(`${location.origin}/template/update?templateId=${urlParamsSearcher.get("templateId")}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
             body: JSON.stringify(templateConfig)
         });
@@ -242,7 +245,8 @@ $btnCreateTemplate.addEventListener("click", async e => {
         const templateSaved = await fetch(`${location.origin}/template/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
             },
             body: JSON.stringify(templateConfig)
         });

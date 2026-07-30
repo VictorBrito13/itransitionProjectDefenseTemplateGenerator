@@ -1,3 +1,8 @@
+function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta?.getAttribute('content') || '';
+}
+
 export default async function makeRequest(path, options = {}) {
     try {
         const { method, headers, body } = options;
@@ -11,6 +16,11 @@ export default async function makeRequest(path, options = {}) {
 
         if (body) {
             fetchOptions.body = JSON.stringify(body);
+        }
+
+        const stateChangingMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
+        if (stateChangingMethods.includes(fetchOptions.method.toUpperCase())) {
+            fetchOptions.headers['X-CSRF-TOKEN'] = getCsrfToken();
         }
 
         const response = await fetch(`${location.origin}/${path}`, fetchOptions);

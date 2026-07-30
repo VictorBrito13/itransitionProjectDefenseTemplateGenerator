@@ -24,6 +24,7 @@
 
         <!-- Sign Up form -->
         <form data-cy="signup-form" action="/user/sign-up" method="post" id="signUpForm" novalidate>
+            @Html.AntiForgeryToken()
             <!-- Email -->
             <div class="mb-5">
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>

@@ -2,10 +2,14 @@ const $btnDeleteTemplate = document.getElementById("delete-template");
 
 export default function deleteTemplate(templateId) {
     const $serverMsgs = document.getElementById("server-responses");
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
     $btnDeleteTemplate.addEventListener("click", async e => {
         const deleteRes = await fetch(`${location.origin}/template/delete?templateId=${templateId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            }
         });
 
         const deleteJSON = await deleteRes.json();
