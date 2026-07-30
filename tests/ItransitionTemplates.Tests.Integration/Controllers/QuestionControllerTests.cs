@@ -40,8 +40,12 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "q_creator@test.com",
+            username: "qcreator",
+            password: "Password123");
 
-        // Seed a template and a question for the options to reference
+        // Seed a template
         await _factory.SeedAsync(db =>
         {
             if (!db.Templates.Any(t => t.TemplateId == 600))
@@ -58,29 +62,6 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
             }
         });
 
-        // Seed a question that options can reference
-        ulong seededQuestionId = 0;
-        await _factory.SeedAsync(db =>
-        {
-            if (!db.Questions.Any(q => q.QuestionId == 600))
-            {
-                var q = new Question
-                {
-                    QuestionId = 600,
-                    QuestionString = "Seeded question",
-                    TemplateId = 600,
-                    QuestionType = QuestionType.singleLineString
-                };
-                db.Questions.Add(q);
-                db.SaveChanges();
-                seededQuestionId = q.QuestionId;
-            }
-            else
-            {
-                seededQuestionId = 600;
-            }
-        });
-
         var payload = new
         {
             questions = new[]
@@ -89,22 +70,10 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
                 {
                     questionString = "What is your name?",
                     templateId = (ulong)600,
-                    questionType = 0  // singleLineString enum value
+                    questionType = 0
                 }
             },
-            questionOptions = new[]
-            {
-                new
-                {
-                    option = "Option A",
-                    questionId = seededQuestionId
-                },
-                new
-                {
-                    option = "Option B",
-                    questionId = seededQuestionId
-                }
-            }
+            questionOptions = new object[] { }
         };
 
         var content = new StringContent(
@@ -113,7 +82,7 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
             "application/json");
 
         // Act
-        var response = await _client.PostAsync("/question/add", content);
+        var response = await authClient.PostAsync("/question/add", content);
 
         // Assert
         var responseBody = await response.Content.ReadAsStringAsync();
@@ -127,6 +96,10 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "q_creator2@test.com",
+            username: "qcreator2",
+            password: "Password123");
 
         var payload = new
         {
@@ -140,7 +113,7 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
             "application/json");
 
         // Act
-        var response = await _client.PostAsync("/question/add", content);
+        var response = await authClient.PostAsync("/question/add", content);
 
         // Assert — controller returns error (400) when questions array is empty
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

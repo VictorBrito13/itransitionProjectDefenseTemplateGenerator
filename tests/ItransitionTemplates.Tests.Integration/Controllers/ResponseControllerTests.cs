@@ -33,20 +33,14 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "responder@test.com",
+            username: "responder",
+            password: "Password123");
 
-        // Seed a user and a template+question for responses to reference
+        // Seed a template and question for responses to reference
         await _factory.SeedAsync(db =>
         {
-            if (!db.Users.Any(u => u.Email == "responder@test.com"))
-            {
-                db.Users.Add(new User
-                {
-                    Username = "responder",
-                    Email = "responder@test.com",
-                    Password = HashText.GetHashString("Password123")
-                });
-            }
-
             if (!db.Templates.Any(t => t.TemplateId == 700))
             {
                 db.Templates.Add(new Template
@@ -98,7 +92,7 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
             "application/json");
 
         // Act
-        var response = await _client.PostAsync("/response/add", content);
+        var response = await authClient.PostAsync("/response/add", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -109,9 +103,12 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
     [Fact]
     public async Task SaveResponses_EmptyPayload_ReturnsBadRequest()
     {
-        // Arrange — sending an empty array causes SaveChanges to return 0,
-        // service returns 403, controller returns error (400)
+        // Arrange
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "responder2@test.com",
+            username: "responder2",
+            password: "Password123");
 
         var payload = new object[] { };
         var content = new StringContent(
@@ -120,7 +117,7 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
             "application/json");
 
         // Act
-        var response = await _client.PostAsync("/response/add", content);
+        var response = await authClient.PostAsync("/response/add", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

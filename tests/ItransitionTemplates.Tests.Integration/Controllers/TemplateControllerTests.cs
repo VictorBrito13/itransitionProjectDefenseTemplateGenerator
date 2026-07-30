@@ -51,9 +51,13 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
         // Arrange
         await _factory.InitializeDatabaseAsync();
         await SeedTemplateAsync(100, "Test Template", 1);
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "viewer@test.com",
+            username: "viewer",
+            password: "Password123");
 
         // Act
-        var response = await _client.GetAsync("/template/get-template?templateId=100");
+        var response = await authClient.GetAsync("/template/get-template?templateId=100");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -66,9 +70,13 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "viewer2@test.com",
+            username: "viewer2",
+            password: "Password123");
 
         // Act
-        var response = await _client.GetAsync("/template/get-template?templateId=999999");
+        var response = await authClient.GetAsync("/template/get-template?templateId=999999");
 
         // Assert
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -145,11 +153,11 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
-        await SeedTemplateAsync(200, "Original Title", 1);
         var authClient = await _factory.CreateAuthenticatedClientAsync(
             email: "updater@test.com",
             username: "updater",
             password: "Password123");
+        await SeedTemplateWithAdminAsync(200, "Original Title", 1, "updater@test.com");
 
         var updatedTemplate = new
         {
@@ -209,11 +217,11 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
-        await SeedTemplateAsync(300, "To Delete", 1);
         var authClient = await _factory.CreateAuthenticatedClientAsync(
             email: "deleter@test.com",
             username: "deleter",
             password: "Password123");
+        await SeedTemplateWithAdminAsync(300, "To Delete", 1, "deleter@test.com");
 
         // Act
         var response = await authClient.DeleteAsync("/template/delete?templateId=300");
@@ -227,25 +235,11 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
-        await SeedTemplateAsync(400, "Likeable Template", 1);
         var authClient = await _factory.CreateAuthenticatedClientAsync(
             email: "liker@test.com",
             username: "liker",
             password: "Password123");
-
-        // Seed a user for the like action
-        await _factory.SeedAsync(db =>
-        {
-            if (!db.Users.Any(u => u.Email == "liker@test.com"))
-            {
-                db.Users.Add(new User
-                {
-                    Username = "liker",
-                    Email = "liker@test.com",
-                    Password = HashText.GetHashString("Password123")
-                });
-            }
-        });
+        await SeedTemplateWithAdminAsync(400, "Likeable Template", 1, "liker@test.com");
 
         // Get the user ID
         ulong userId = 0;
@@ -269,9 +263,13 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
         // Arrange
         await _factory.InitializeDatabaseAsync();
         await SeedTemplateAsync(500, "Popular Template", 1);
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "likes_viewer@test.com",
+            username: "likesviewer",
+            password: "Password123");
 
         // Act
-        var response = await _client.GetAsync("/template/likes?templateId=500");
+        var response = await authClient.GetAsync("/template/likes?templateId=500");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -283,9 +281,13 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
         // Arrange — InMemory DB does not support FromSqlRaw (MySQL MATCH...AGAINST),
         // so this endpoint will return an error. We verify it doesn't crash the server.
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "search@test.com",
+            username: "searchuser",
+            password: "Password123");
 
         // Act
-        var response = await _client.GetAsync("/template/get-by-query?text=zzzzz_nonexistent");
+        var response = await authClient.GetAsync("/template/get-by-query?text=zzzzz_nonexistent");
 
         // Assert — endpoint uses MySQL-specific raw SQL; with InMemory it returns an error
         Assert.True(
@@ -364,6 +366,36 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
                     TopicId = topicId,
                     IsPublic = true,
                     Image_url = "default.png"
+                });
+            }
+        });
+    }
+
+    private async Task SeedTemplateWithAdminAsync(ulong templateId, string title, ulong topicId, string adminEmail)
+    {
+        await _factory.SeedAsync(db =>
+        {
+            if (!db.Templates.Any(t => t.TemplateId == templateId))
+            {
+                var adminUser = db.Users.FirstOrDefault(u => u.Email == adminEmail);
+                if (adminUser == null) return;
+
+                var template = new Template
+                {
+                    TemplateId = templateId,
+                    Title = title,
+                    Description = $"Description for {title}",
+                    TopicId = topicId,
+                    IsPublic = true,
+                    Image_url = "default.png"
+                };
+                db.Templates.Add(template);
+                db.SaveChanges();
+
+                db.Admins.Add(new Admin
+                {
+                    UserId = adminUser.UserId,
+                    TemplateId = templateId
                 });
             }
         });
