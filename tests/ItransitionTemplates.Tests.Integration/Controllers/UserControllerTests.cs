@@ -161,4 +161,12 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         Assert.Contains("/user/log-in", response.Headers.Location?.ToString() ?? "");
     }
+
+    [Fact]
+    public async Task GetUserByUsername_Unauthenticated_ReturnsUnauthorized()
+    {
+        await _factory.InitializeDatabaseAsync();
+        var response = await _client.GetAsync("/user/get-by-username?username=testuser");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 }

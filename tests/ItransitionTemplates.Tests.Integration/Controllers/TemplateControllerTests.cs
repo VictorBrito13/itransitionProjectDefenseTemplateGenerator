@@ -318,6 +318,38 @@ public class TemplateControllerTests : IClassFixture<CustomWebApplicationFactory
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetTemplate_Unauthenticated_ReturnsUnauthorized()
+    {
+        await _factory.InitializeDatabaseAsync();
+        var response = await _client.GetAsync("/template/get-template?templateId=1");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTemplatesByUserId_Unauthenticated_ReturnsUnauthorized()
+    {
+        await _factory.InitializeDatabaseAsync();
+        var response = await _client.GetAsync("/template/template/user?page=0&limit=10&userId=1");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTemplateLikes_Unauthenticated_ReturnsUnauthorized()
+    {
+        await _factory.InitializeDatabaseAsync();
+        var response = await _client.GetAsync("/template/likes?templateId=1");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTemplatesByQuery_Unauthenticated_ReturnsUnauthorized()
+    {
+        await _factory.InitializeDatabaseAsync();
+        var response = await _client.GetAsync("/template/get-by-query?text=test");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     private async Task SeedTemplateAsync(ulong templateId, string title, ulong topicId)
     {
         await _factory.SeedAsync(db =>
