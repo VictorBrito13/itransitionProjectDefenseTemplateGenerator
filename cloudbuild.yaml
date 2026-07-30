@@ -31,7 +31,7 @@ substitutions:
   _MEMORY: 512Mi
   _CPU: "1"
   _MIN_INSTANCES: "0"
-  _MAX_INSTANCES: "3"
+  _MAX_INSTANCES: "1"
 
 options:
   logging: CLOUD_LOGGING_ONLY
