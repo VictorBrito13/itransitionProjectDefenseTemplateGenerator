@@ -73,7 +73,7 @@ public class QuestionControllerTests : IClassFixture<CustomWebApplicationFactory
                     questionType = 0
                 }
             },
-            questionOptions = new object[] { }
+            questionOptions = (object?)null
         };
 
         var content = new StringContent(

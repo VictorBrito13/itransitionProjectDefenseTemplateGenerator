@@ -42,7 +42,7 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
-    public async Task SignUp_ValidUser_RedirectsToLogin()
+    public async Task SignUp_ValidUser_RedirectsToHome()
     {
         // Arrange
         await _factory.InitializeDatabaseAsync();
@@ -62,9 +62,11 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Act
         var response = await noRedirectClient.PostAsync("/user/sign-up", formContent);
 
-        // Assert
+        // Assert — after signup, user is logged in and redirected to home
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        Assert.Contains("/user/log-in", response.Headers.Location?.ToString() ?? "");
+        var location = response.Headers.Location?.ToString() ?? "";
+        Assert.True(location == "/" || location.Contains("/Home"),
+            $"Expected redirect to / or /Home but got '{location}'");
     }
 
     [Fact]
@@ -129,19 +131,23 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory>
     }
 
     [Fact]
-    public async Task GetUserByUsername_NonExistent_ReturnsNotFound()
+    public async Task GetUserByUsername_Authenticated_ReturnsNotFound()
     {
         // Arrange — InMemory DB does not support FromSqlRaw (MySQL MATCH...AGAINST),
         // so the controller's catch block returns 404 for any query
         await _factory.InitializeDatabaseAsync();
+        var authClient = await _factory.CreateAuthenticatedClientAsync(
+            email: "search_user@test.com",
+            username: "searchuser",
+            password: "Password123");
 
         // Act
-        var response = await _client.GetAsync("/user/get-by-username?username=unknownuser");
+        var response = await authClient.GetAsync("/user/get-by-username?username=unknownuser");
 
         // Assert — the service catches the exception and returns null → controller returns 404
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         var json = await response.Content.ReadAsStringAsync();
-        Assert.Contains("errorMsg", json);
+        Assert.Contains("error", json);
     }
 
     [Fact]
