@@ -31,8 +31,8 @@
 - **Requirements:** TBD
 
 ## Phase 7 Status
-- **Status:** Not planned
-- **Plans:** 0 plans
+- **Status:** Planned
+- **Plans:** 2 plans (07-01, 07-02)
 - **Requirements:** REQ-20
 
 ## Decisions
@@ -72,3 +72,4 @@
 - 2026-07-17: Phase 6 completed — E2E Testing with Cypress (4/4 plans, 33 test cases)
 - 2026-07-17: Phase 6 Plan 01 completed — Cypress installed and configured
 - 2026-07-17: Phase 6 Plan 02 completed — Authentication E2E tests (signup, login, logout, session)
+- 2026-07-30: Phase 7 added — Security Hardening (planned)
