@@ -17,7 +17,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-string dbConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+string? dbConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(dbConnection))
+{
+    throw new InvalidOperationException(
+        "ConnectionStrings:DefaultConnection is missing. " +
+        "Set Cloud Run env var ConnectionStrings__DefaultConnection " +
+        "(not _DB_CONNECTION_STRING).");
+}
+
 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8,0,46));
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseMySql(dbConnection, serverVersion);

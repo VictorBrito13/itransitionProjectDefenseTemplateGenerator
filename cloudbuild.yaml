@@ -1,21 +1,32 @@
 # Cloud Build → Artifact Registry → Cloud Run
 #
+# IMPORTANT: `_DB_CONNECTION_STRING` is a Cloud Build SUBSTITUTION only.
+# At runtime the app reads Cloud Run env var:
+#   ConnectionStrings__DefaultConnection
+# (maps to ASP.NET Configuration key ConnectionStrings:DefaultConnection)
+#
+# Do NOT set an env var named `_DB_CONNECTION_STRING` on Cloud Run — the app ignores it.
+#
 # Prerequisites (one-time):
-#   gcloud services enable cloudbuild.googleapis.com run.googleapis.com artifactregistry.googleapis.com sqladmin.googleapis.com
+#   gcloud services enable cloudbuild.googleapis.com run.googleapis.com artifactregistry.googleapis.com
 #   gcloud artifacts repositories create ${_REPOSITORY} --repository-format=docker --location=${_REGION}
 #
-# Submit (pass the DB connection string as a substitution):
+# Submit (pass the DB connection string as a substitution — no spaces after ';'):
 #   gcloud builds submit --config=cloudbuild.yaml \
-#     --substitutions=_REGION=us-central1,_SERVICE_NAME=itransition-templates,_REPOSITORY=app-images,_DB_CONNECTION_STRING='Server=...;Database=...;User=...;Password=...',_CLOUD_SQL_INSTANCE=PROJECT:REGION:INSTANCE
+#     --substitutions=_DB_CONNECTION_STRING='Server=HOST;Database=DB;Uid=USER;Pwd=PASS'
+#
+# Or set it once on the running service (no rebuild needed):
+#   gcloud run services update ${_SERVICE_NAME} --region=${_REGION} \
+#     --update-env-vars='ConnectionStrings__DefaultConnection=Server=HOST;Database=DB;Uid=USER;Pwd=PASS'
 
 substitutions:
   # --- Change these for your GCP project ---
   _REGION: us-central1
   _SERVICE_NAME: itransition-templates-app
   _REPOSITORY: itransition-template-manager
-  # MySQL connection string → Cloud Run env ConnectionStrings__DefaultConnection
+  # Passed into Cloud Run as ConnectionStrings__DefaultConnection (must not be empty)
   _DB_CONNECTION_STRING: ""
-  # Optional Cloud SQL instance: PROJECT:REGION:INSTANCE
+  # Optional Cloud SQL instance: PROJECT:REGION:INSTANCE (not needed for external MySQL hosts)
   _CLOUD_SQL_INSTANCE: ""
   _MEMORY: 512Mi
   _CPU: "1"
@@ -58,12 +69,21 @@ steps:
       - |
         set -euo pipefail
 
+        if [[ -z "${_DB_CONNECTION_STRING}" ]]; then
+          echo "ERROR: _DB_CONNECTION_STRING substitution is empty."
+          echo "Pass it via --substitutions=_DB_CONNECTION_STRING='Server=...;Database=...;Uid=...;Pwd=...'"
+          echo "Or set Cloud Run env ConnectionStrings__DefaultConnection manually after deploy."
+          exit 1
+        fi
+
         # Use env-vars-file so '=' and ';' in the MySQL connection string are safe
         printf '%s\n' \
           'ASPNETCORE_ENVIRONMENT: Production' \
           'ASPNETCORE_URLS: http://0.0.0.0:8080' \
           "ConnectionStrings__DefaultConnection: \"${_DB_CONNECTION_STRING}\"" \
           > /workspace/cloud-run-env.yaml
+
+        echo "Deploying with ConnectionStrings__DefaultConnection set (length=${#_DB_CONNECTION_STRING} chars)"
 
         DEPLOY_ARGS=(
           run deploy "${_SERVICE_NAME}"
