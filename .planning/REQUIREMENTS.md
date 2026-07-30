@@ -109,3 +109,18 @@ Establish a comprehensive test suite:
 - Write integration tests for all 5 controllers using WebApplicationFactory
 - Use EF Core InMemory provider for test isolation
 - All tests must pass with `dotnet test`
+
+---
+
+# Requirements — ItransitionTemplates Phase 7
+
+## REQ-20: Security Hardening
+
+Close session-gating gaps, prevent IDOR/BOLA attacks, and add CSRF protection:
+- Session validation on all authenticated endpoints (return 401 on missing/invalid session)
+- Private template access control (enforce ownership or admin role for non-public templates)
+- `IsPublic` filtering in template queries (search, user-scoped listing)
+- User enumeration prevention on `get-by-username` endpoint
+- Anti-CSRF token validation on all state-changing POST/PUT/DELETE endpoints
+- Secure session cookie config (`SameSite=Strict`, `SecurePolicy=Always`)
+- Integration tests verifying 401 on unauthenticated access to protected endpoints

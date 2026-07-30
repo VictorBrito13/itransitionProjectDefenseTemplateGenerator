@@ -168,3 +168,29 @@
 - Logout button only visible when user is authenticated
 - Sign-in/Sign-up buttons hidden when user is authenticated
 - All changes must maintain existing responsive behavior
+
+### Phase 7: Security Hardening — Session Auth, IDOR Prevention & CSRF
+
+**Goal:** Close the session-gating and IDOR gaps identified in SECURITY-STRATEGY.md: add session validation to unprotected endpoints, enforce private-template access control, filter `IsPublic` in search queries, prevent user enumeration, and add anti-CSRF validation on state-changing POST endpoints.
+
+**Depends on:** Phase 3, Phase 4 (needs refactored controllers + error middleware)
+
+**Requirements:** [REQ-20]
+
+**Plans:** 2 plans
+
+**Wave 1** *(independent — session gates + IDOR fixes)*:
+
+- [ ] 07-01-PLAN.md — Session-gating + IDOR prevention (add Auth.ValidateSession to 5 unprotected endpoints, IsPublic filtering, ownership checks)
+
+**Wave 2** *(blocked on Wave 1 — CSRF + hardening)*:
+
+- [ ] 07-02-PLAN.md — Anti-CSRF token enforcement + response security hardening
+
+**Cross-cutting constraints:**
+- All authenticated endpoints must call `Auth.ValidateSession(HttpContext)` and return 401 on failure
+- Private template access must check ownership/admin via `AdminService.IsUserAdmin()`
+- `GetTemplatesByQuery` must filter by `IsPublic` or require auth
+- Anti-CSRF tokens required on all POST/PUT/DELETE endpoints
+- `SameSite=Strict` for session cookie in production
+- All changes must pass existing unit + integration tests
