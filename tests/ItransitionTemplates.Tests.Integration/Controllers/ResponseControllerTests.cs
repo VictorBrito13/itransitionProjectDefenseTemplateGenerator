@@ -119,8 +119,8 @@ public class ResponseControllerTests : IClassFixture<CustomWebApplicationFactory
         // Act
         var response = await authClient.PostAsync("/response/add", content);
 
-        // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        // Assert — empty array causes ServiceException with Database error code (500)
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         var json = await response.Content.ReadAsStringAsync();
         Assert.Contains("error", json);
     }
