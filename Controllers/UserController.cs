@@ -104,6 +104,11 @@ public class UserController : Controller {
 
     [HttpGet("/user/get-by-username")]
     public async Task<IActionResult> GetUserByUsername([FromQuery] string username) {
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        if (userSession == null) {
+            return JsonResponse.Error("Please sign in to search users", 401);
+        }
+
         try {
             Models.User user = await _UserService.GetUserByUsername(username);
 

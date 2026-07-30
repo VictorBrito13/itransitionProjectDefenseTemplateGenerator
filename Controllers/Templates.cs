@@ -89,7 +89,17 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/template/user")]
     public async Task<IActionResult> GetTemplatesByUserId([FromQuery] int page, [FromQuery] int limit, [FromQuery] ulong userId) {
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        if (userSession == null) {
+            return JsonResponse.Error("Please sign in to view templates", 401);
+        }
+
         Models.Template[] templates = await _TemplateService.GetTemplatesByUserId(page, limit, userId);
+
+        if (userId != userSession.UserId) {
+            templates = templates.Where(t => t.IsPublic).ToArray();
+        }
+
         return JsonResponse.Ok(templates);
     }
 
@@ -104,10 +114,22 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/get-template")]
     public async Task<IActionResult> GetTemplate([FromQuery] ulong templateId) {
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        if (userSession == null) {
+            return JsonResponse.Error("Please sign in to view this template", 401);
+        }
+
         Models.Template template = await _TemplateService.GetTemplateById(templateId);
 
         if(template == null) {
             return JsonResponse.NotFound("Resource not found");
+        }
+
+        if (!template.IsPublic)
+        {
+            bool isAdmin = await _AdminService.IsUserAdmin(userSession.UserId, templateId);
+            if (!isAdmin)
+                return JsonResponse.NotFound("Resource not found");
         }
 
         return Ok(template);
@@ -159,6 +181,11 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/likes")]
     public async Task<IActionResult> GetTemplateLikes([FromQuery] ulong templateId) {
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        if (userSession == null) {
+            return JsonResponse.Error("Please sign in to view likes", 401);
+        }
+
         Models.Template template = await _TemplateService.GetTemplateById(templateId);
 
         if(template != null) {
@@ -195,7 +222,13 @@ public class TemplateController : Controller {
 
     [HttpGet("/template/get-by-query")]
     public async Task<IActionResult> GetTemplatesByQuery([FromQuery] string text) {
+        Models.User? userSession = Auth.ValidateSession(HttpContext);
+        if (userSession == null) {
+            return JsonResponse.Error("Please sign in to search templates", 401);
+        }
+
         Models.Template[] templates = await _TemplateService.GetTemplatesByQuery(text);
+        templates = templates.Where(t => t.IsPublic).ToArray();
 
         if(templates.Length == 0) {
             return JsonResponse.NotFound("No templates were found try other terms");
